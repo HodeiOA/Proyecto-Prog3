@@ -12,13 +12,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import COMUN.clsCts.enFicDatos;
 
 /**
  * Esta clase gestiona la escritura y lectura en los ficheros.
  *
  */
-public  class clsDatos implements itfDatos
+public  class clsDatos 
 {
 	private final String fic_cliente=".\\Data\\clientes.dat";
 	private final String fic_empleado=".\\Data\\empleados.dat";
@@ -31,32 +30,13 @@ public  class clsDatos implements itfDatos
 	//Para que cuando el fichero existe no escriba el Formato de cabecera
 	AppendableObjectOutputStream aos;
 	
-	private String setFichero (enFicDatos fichero) 	//le paso el enum llamado fichero aquí
+	private String setFichero (String fichero) 	//le paso el enum llamado fichero aquí
 	{
 		String rufic = null;	//RUFIC ES LA RUTA DEL FICHERO.
-		
-		switch(fichero)
-		{
-			case FICHERO_DATOS_EMPLEADO:
-				rufic=fic_empleado;
-				break;
-			case FICHERO_DATOS_PELICULA:
-				rufic= fic_pelicula;
-				break;
-			case FICHERO_DATOS_CLIENTE:
-				rufic=fic_cliente;
-				break;
-			case FICHERO_DATOS_COMPRA:
-				rufic=fic_compra;
-				break;
-			case FICHERO_DATOS_VENTA:
-				rufic=fic_venta;
-				break;
-		}
 		return rufic;
 	}
 
-	public void ComenzarSave(enFicDatos fichero)  //FICHERO ES EL NOMBRE DEL ENUMERADO
+	public void ComenzarSave(String fichero)  //FICHERO ES EL NOMBRE DEL ENUMERADO
 	{
 		String ruta=setFichero(fichero);
 		File fic =new File (ruta);
@@ -96,7 +76,6 @@ public  class clsDatos implements itfDatos
 		}
 	}
 	
-@Override
 	public void Save(Serializable o) 
 	{
 		try
@@ -124,7 +103,6 @@ public  class clsDatos implements itfDatos
 		
 	}
 
-	@Override
 	public void TerminarSave() 
 	{
 		try
@@ -145,7 +123,7 @@ public  class clsDatos implements itfDatos
 	}
 
 	
-	public void ComenzarRead(enFicDatos fichero) throws IOException
+	public void ComenzarRead(String fichero) throws IOException
 	{
 		String ruta=setFichero(fichero);
 		File fic;
@@ -164,7 +142,6 @@ public  class clsDatos implements itfDatos
 		}
 	}
 	
-	@Override
 	public ArrayList<Serializable> Read() throws ClassNotFoundException 
 	{
 		ArrayList<Serializable> retorno= new ArrayList <Serializable>();
@@ -204,7 +181,7 @@ public  class clsDatos implements itfDatos
 		return retorno;
 	}
 
-	@Override
+
 	public void TerminarRead() 
 	{
 		try
@@ -225,8 +202,8 @@ public  class clsDatos implements itfDatos
 		
 	}
 
-	@Override
-	public void ResetFile(enFicDatos fichero) throws IOException 
+
+	public void ResetFile(String fichero) throws IOException 
 	{
 		String ruta = setFichero(fichero);
 		File fic = new File (ruta);

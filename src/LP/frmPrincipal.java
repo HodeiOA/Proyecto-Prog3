@@ -1,17 +1,9 @@
 package LP;
 
-import static COMUN.clsCts.COMMAND_ALTACLIENTE;
-import static COMUN.clsCts.COMMAND_ALTAEMPLEADO;
-import static COMUN.clsCts.COMMAND_ALTAPELICULA;
-
 import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,7 +16,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
 import java.awt.BorderLayout;
@@ -47,6 +38,9 @@ public class frmPrincipal extends JFrame implements ActionListener
 	private JMenuItem documento=new JMenuItem("Documento");
 	private JMenu Mcom =new JMenu("Comentarios");
 	private JMenuItem VerComentarios = new JMenuItem( "Ver comentarios"); //Hacer que cuando se estén viendo los comentarios pase a poner ocultar comentarios
+	// JMenu de sesión: cerrar sesión
+	//JMenu de guardar
+	//(??)Buscar
 	
 	//Paneles
 	private JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
@@ -122,7 +116,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 		panelListas.addTab("Documentos",icon,PDocum,
                 "Lista de documentos agregados");
 		
-		
+	
 		//Panel para la visualización del PDF
 		PanelPDF.setBackground(Color.DARK_GRAY);
 		getContentPane().add(PanelPDF, BorderLayout.CENTER);
@@ -131,7 +125,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 		//Panel para manipular el PDF
 		getContentPane().add(Pinferior, BorderLayout.SOUTH);
 		
-		//Pinferior.add(progreso);
+		Pinferior.add(progreso);
 		Pinferior.add(Banterior);
 		Pinferior.add(slider);
 		Pinferior.add(Bsiguiente);

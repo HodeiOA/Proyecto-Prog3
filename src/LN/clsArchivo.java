@@ -1,7 +1,5 @@
 package LN;
 
-import static COMUN.clsCts.PROP_DNI;
-
 public class clsArchivo implements Comparable
 {
 
@@ -15,14 +13,15 @@ public class clsArchivo implements Comparable
 	private int ultimaPagLeida;
 	private int tiempo;	//tiempo de lectura en  segundos
 	private boolean libroSi;
+	private static int sigCodArchivo;
 
 	public clsArchivo(String nomAutor, String apeAutor, String numArchivo, String titulo, String ruta, String tipo,
-			int numPags, int ultimaPagLeida, int tiempo, boolean libroSi) 
+			int numPags, int ultimaPagLeida, int tiempo, boolean libroSi ) 
 	{
 		super();
 		this.nomAutor = nomAutor;
 		this.apeAutor = apeAutor;
-		this.codArchivo = codArchivo;
+		this.codArchivo = sigCodArchivo;
 		this.titulo = titulo;
 		this.ruta = ruta;
 		this.tipo = tipo;
@@ -30,6 +29,8 @@ public class clsArchivo implements Comparable
 		this.ultimaPagLeida = ultimaPagLeida;
 		this.tiempo = tiempo;
 		this.libroSi = libroSi;
+		
+		sigCodArchivo ++;
 	}
 	
 	//Getters and Setters

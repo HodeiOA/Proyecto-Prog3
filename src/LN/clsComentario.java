@@ -2,7 +2,7 @@ package LN;
 
 public class clsComentario implements Comparable
 {
-	private static int SigID;
+	private static int sigID;
 	private int ID;
 	private String Texto;
 	private int codArchivo;
@@ -10,21 +10,21 @@ public class clsComentario implements Comparable
 	
 	public clsComentario(String texto, int codArchivo, int numPagina)
 	{
-		ID = SigID;
+		ID = sigID;
 		Texto = texto;
-		SigID++;
+		sigID++;
 		this.codArchivo = codArchivo;
 		this.numPagina = numPagina;
 	}
 
 	public static int getSigID() 
 	{
-		return SigID;
+		return sigID;
 	}
 	
 	public static void setSigID(int sigID)
 	{
-		SigID = sigID;
+		sigID = sigID;
 	}
 
 	public int getID() 
