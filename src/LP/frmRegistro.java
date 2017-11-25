@@ -24,7 +24,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import LN.clsLogin;
+import LN.clsGestor;
 import javafx.scene.control.PasswordField;
 
 public class frmRegistro extends JDialog implements ActionListener
@@ -104,7 +104,7 @@ public class frmRegistro extends JDialog implements ActionListener
 		nick = tfUsername.getText();
 		pass = String.valueOf(pfPassword.getPassword());		
 		
-		if (clsLogin.comprobar(nick, pass)) //true
+		if (clsGestor.comprobarExistencia(nick, pass)) //true
 		 {
 			 JOptionPane.showMessageDialog(this,"Holi " + nick + "has iniciado sesión correctamente!!!", "Login", JOptionPane.INFORMATION_MESSAGE);
 			 succeeded = true;
