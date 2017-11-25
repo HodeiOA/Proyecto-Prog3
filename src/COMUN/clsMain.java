@@ -1,9 +1,5 @@
 package COMUN;
 
-import java.awt.FlowLayout;
-
-import javax.swing.JFrame;
-
 import LP.frmPrincipal;
 import LP.frmRegistro;
 

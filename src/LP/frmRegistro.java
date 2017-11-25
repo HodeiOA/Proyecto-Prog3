@@ -2,30 +2,21 @@ package LP;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JRadioButton;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import LN.clsGestor;
-import javafx.scene.control.PasswordField;
 
 public class frmRegistro extends JDialog implements ActionListener
 {
@@ -48,10 +39,6 @@ public class frmRegistro extends JDialog implements ActionListener
 	public frmRegistro (JFrame frame)
 	{
 		super (frame,"Login", true);
-//		//grid
-//        GridBagConstraints cs = new GridBagConstraints();
-//        GridBagLayout gbl = new GridBagLayout();
-//        cs.fill = GridBagConstraints.HORIZONTAL;
         
 		//tamaño
         this.setSize(500, 300);
@@ -93,8 +80,7 @@ public class frmRegistro extends JDialog implements ActionListener
         //add action listeners
         btnLogin.addActionListener(this);
         btnEntrar.addActionListener(this);
-    
-	}
+ 	}
 	
 	public void comprobUser ()
 	{
@@ -161,7 +147,5 @@ public class frmRegistro extends JDialog implements ActionListener
 				break;	
 		}		
 	}
-
-	
 }
 
