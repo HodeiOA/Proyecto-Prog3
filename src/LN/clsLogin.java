@@ -2,14 +2,10 @@ package LN;
 
 public class clsLogin
 {
-		 
-	    public static boolean authenticate(String username, String password) 
+	    public static boolean comprobar(String username, String password) 
 	    {
-	        // hardcoded username and password
-	        if (username.equals("bob") && password.equals("secret")) 
-	        {
-	            return true;
-	        }
-	        return false;
+			return false;	    	
+	    	//leemos la base de datos, sacamos el nick y contraseña y lo metemos en un arraylist
+	    	//haces un for each y miramos si...
 	    }
 }

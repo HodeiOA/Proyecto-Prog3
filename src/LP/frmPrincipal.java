@@ -156,7 +156,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 			this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
 			Pcomentarios.add(EditC);
 			
-			SeleccionarArchivo();
+//			SeleccionarArchivo();
 //		}
 	}
 	

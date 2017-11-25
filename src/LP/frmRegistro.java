@@ -1,6 +1,7 @@
 package LP;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -36,8 +37,9 @@ public class frmRegistro extends JDialog implements ActionListener
     private JButton btnEntrar;
     private boolean succeeded;
     private JPanel panel;
-    private ActionListener al;
-	
+	private int x;
+	private int y;
+
 	/**
 	 * Constructor de la ventana
 	 * @param frame
@@ -51,8 +53,17 @@ public class frmRegistro extends JDialog implements ActionListener
 //        GridBagLayout gbl = new GridBagLayout();
 //        cs.fill = GridBagConstraints.HORIZONTAL;
         
+		//tamaño
+        this.setSize(500, 300);
+        x=frame.getWidth()/3;
+        y=frame.getHeight()/3;
+        this.setLocation(x, y);
+        
 		//panel
 		panel=new JPanel(); 
+		
+		//layout
+        panel.setLayout(new FlowLayout());
 		
 		//Botones
 		btnLogin= new JButton("Registrar"); 
@@ -66,17 +77,23 @@ public class frmRegistro extends JDialog implements ActionListener
 		tfUsername = new JTextField ();
 		pfPassword = new JPasswordField ();
 	
-		//añadir a panel
-		panel.add(btnEntrar,btnLogin);
-		panel.add(tfUsername, pfPassword);
-		panel.add(lbPassword, lbUsername);
-	
+		//añadir a mi panel y a frmPrincipal
+		panel.add(btnEntrar);
+		panel.add(btnLogin);
+		panel.add(tfUsername);
+		panel.add(pfPassword);
+		panel.add(lbPassword); 
+		panel.add(lbUsername);
+		
+		this.getContentPane().add(panel); //añadir el panel al otro panel de la ventana que la trae predeter.
+		
 		//color panel
         panel.setBorder((Border) new LineBorder(Color.GRAY));
         
         //add action listeners
         btnLogin.addActionListener(this);
         btnEntrar.addActionListener(this);
+    
 	}
 	
 	public void comprobUser ()
@@ -84,10 +101,10 @@ public class frmRegistro extends JDialog implements ActionListener
 		String nick;
 		String pass;
 
-		nick=tfUsername.getText();
-		pass= String.valueOf(pfPassword.getPassword());		
+		nick = tfUsername.getText();
+		pass = String.valueOf(pfPassword.getPassword());		
 		
-		if (clsLogin.authenticate(nick, pass)) //true
+		if (clsLogin.comprobar(nick, pass)) //true
 		 {
 			 JOptionPane.showMessageDialog(this,"Holi " + nick + "has iniciado sesión correctamente!!!", "Login", JOptionPane.INFORMATION_MESSAGE);
 			 succeeded = true;
