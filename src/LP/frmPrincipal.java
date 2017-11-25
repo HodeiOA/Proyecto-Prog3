@@ -4,8 +4,11 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -17,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -69,6 +73,11 @@ public class frmPrincipal extends JFrame implements ActionListener
 	//Listas para libros/documentos
 	JList ListLibros = new JList ();
 	JList ListDoc = new JList ();
+	
+	//JFileChooser:
+	private JFileChooser chooser;
+	private String path;
+	private Pattern filtro;
 	
 	public frmPrincipal (String titulo)
 	{
@@ -146,7 +155,45 @@ public class frmPrincipal extends JFrame implements ActionListener
 			Pcomentarios.add(Scroll);
 			this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
 			Pcomentarios.add(EditC);
+			
+			SeleccionarArchivo();
 //		}
+	}
+	
+	/**
+	 * Método para recoger/guardar un solo PDF con filtro de PDFs
+	 */
+	//Hacer uno para carpetas
+	public void SeleccionarArchivo()
+	{
+		//Hacer distinto si es guardar o importar y si es libro o documento
+		chooser = new JFileChooser();
+		//if(esguardar )
+		chooser.setApproveButtonText("Guardar");
+		// eslibro
+		chooser.setDialogTitle("Guardar cambios en el libro");
+		// es Doc
+		chooser.setDialogTitle("Guardar cambios en el documento");
+		//if(esImportar )
+		chooser.setApproveButtonText("Importar");
+		// eslibro
+		chooser.setDialogTitle("Importar libro");
+		// es Doc
+		chooser.setDialogTitle("Importar documento");
+		
+		//chooser.setAcceptAllFileFilterUsed(false); 
+		
+		//Filtrar extensiones de archivos
+		//Pattern filtro= Pattern.compile( "\\*\\.pdf", Pattern.CASE_INSENSITIVE );
+		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.PDF", "pdf");
+		chooser.setFileFilter(filtro);
+		
+		int response = chooser.showOpenDialog(this);
+		if(response == JFileChooser.APPROVE_OPTION)
+		{
+			path =chooser.getSelectedFile().toString();
+			//Recoger el file
+		}
 	}
 
 	@Override
