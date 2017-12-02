@@ -1,5 +1,7 @@
 package LN;
 
+import COMUN.clsNickRepetido;
+
 public class clsGestor
 {
 	public double porcentLeido(clsArchivo archi)
@@ -12,6 +14,7 @@ public class clsGestor
 	//métodos para login
 	public static boolean comprobarExistencia(String username, String password) 
     {
+		
 		return false;	    	
     	//leemos la base de datos, sacamos el nick y contraseña y lo metemos en un arraylist
     	//haces un for each y miramos si...
@@ -20,5 +23,7 @@ public class clsGestor
 		//si está entrando esperaremos que de true 
 		//y si se está registrando y todo va bien también fale
     }
+	
+	//crear cliente throws clsNickRepetido()
 	 
 }
