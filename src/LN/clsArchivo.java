@@ -133,5 +133,13 @@ public class clsArchivo implements Comparable
 		
 		return a.compareTo(b.getCodArchivo());
 	}
+
+	public static int getSigCodArchivo() {
+		return sigCodArchivo;
+	}
+
+	public static void setSigCodArchivo(int sigCodArchivo) {
+		clsArchivo.sigCodArchivo = sigCodArchivo;
+	}
 	
 }

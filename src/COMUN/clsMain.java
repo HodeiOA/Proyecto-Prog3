@@ -13,6 +13,8 @@ public class clsMain
 		
 		frmRegistro loginDlg = new frmRegistro(frameP);
         loginDlg.setVisible(true);
+        
+        clsComun.sigueinteArchivo();
 	}
 
 }

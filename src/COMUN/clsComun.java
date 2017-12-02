@@ -1,6 +1,8 @@
 package COMUN;
 import java.util.ArrayList;
+import java.util.HashSet;
 
+import LD.clsBD;
 import LN.clsArchivo;
 import LN.clsGestor;
 
@@ -12,32 +14,22 @@ public class clsComun
 	 */
 	public static void sigueinteArchivo()
 	{
-	
-		ArrayList listaArchivos;
-
-		int numArchivo;
+		HashSet <clsArchivo> listaArchivos = new HashSet();
+		int codArchivo=0;
 		
-		listaArchivos=new ArrayList();
+		listaArchivos = clsBD.LeerArchivos();	//aquí se le llama a la función  
 		
-		numArchivo=0;
-		
-//		listaArchivos = clsGestor.lista("clientes");	//aquí se le llama a la función  
-//		
-//		for(clsArchivo aux: listaArchivos)
-//		{
-//			if (numArchivo<aux.numArchivo)		
-//			{
-//				numArchivo=aux.numArchivo;
-//			}
-//			else
-//			{
-//				
-//			}
-//		}
-//		numArchivo++;
-//		numArchivo.setSigNumSocio(numArchivo);
-	
+		for(clsArchivo aux: listaArchivos)
+		{
+			if (codArchivo<aux.getCodArchivo())		
+			{
+				codArchivo=aux.getCodArchivo();
+			}
+		}
+		codArchivo++;
+		clsArchivo.setSigCodArchivo(codArchivo);
 	}
+	
 	public static void sigueinteComentario()
 	{
 
