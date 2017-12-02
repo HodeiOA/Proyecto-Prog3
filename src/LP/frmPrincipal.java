@@ -107,8 +107,8 @@ public class frmPrincipal extends JFrame implements ActionListener
 		setTitle(titulo);
 		//Leer el xml que guarda el tamaño de la ventana y meter los datos en altura y anchura
 		//Este if lo tendremos que hacer, pero lo comento hasta que podamos leer los valores
-		anchura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(0)));
-		altura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(1)));
+//		anchura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(0)));
+//		altura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(1)));
 		if(altura==0)
 		{
 			mipantalla=Toolkit.getDefaultToolkit();
@@ -119,8 +119,8 @@ public class frmPrincipal extends JFrame implements ActionListener
 		setSize(anchura, altura);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		x=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(2)));
-		y=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(3)));
+//		x=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(2)));
+//		y=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(3)));
 		if(x!=0)
 		{
 			setLocation(x, y);		
