@@ -248,21 +248,21 @@ public class frmPrincipal extends JFrame implements ActionListener
 				}
 	
 				@Override
-				public void windowDeactivated(WindowEvent arg0) {
-					// TODO Auto-generated method stub
-					
+				public void windowDeactivated(WindowEvent arg0)
+				{
+					// TODO Auto-generated method stub					
 				}
 	
 				@Override
-				public void windowDeiconified(WindowEvent arg0) {
+				public void windowDeiconified(WindowEvent arg0) 
+				{
 					// TODO Auto-generated method stub
-					
 				}
 	
 				@Override
-				public void windowIconified(WindowEvent arg0) {
+				public void windowIconified(WindowEvent arg0) 
+				{
 					// TODO Auto-generated method stub
-					
 				}
 	
 				@Override

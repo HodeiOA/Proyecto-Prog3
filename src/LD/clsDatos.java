@@ -18,13 +18,7 @@ import java.util.ArrayList;
  *
  */
 public  class clsDatos 
-{
-	private final String fic_cliente=".\\Data\\clientes.dat";
-	private final String fic_empleado=".\\Data\\empleados.dat";
-	private final String fic_pelicula=".\\Data\\peliculas.dat";
-	private final String fic_compra=".\\Data\\compra.dat";
-	private final String fic_venta=".\\Data\\ventas.dat";
-	
+{	
 	ObjectOutputStream oos;
 	ObjectInputStream ois;
 	//Para que cuando el fichero existe no escriba el Formato de cabecera
@@ -47,9 +41,6 @@ public  class clsDatos
 			//Si existe, creamos un objeto de escritura de objetos a fichero
 			try
 			{
-				//new FileOutputStream(fic,true) es el constructor de un FileOutputStream. Esto se podría haber hecho en 2 instrucciones, 
-				//pero habría que crear otra variable
-				//true=añadir
 				aos= new AppendableObjectOutputStream(new FileOutputStream(fic,true));
 			} 
 			catch (IOException e)
@@ -59,10 +50,10 @@ public  class clsDatos
 		}
 		else
 		{
-			//Si no existe, creamos el fichero en el disco duro en la ruta indicada y después escribe con ObjectOutput....
+//			Si no existe, creamos el fichero en el disco duro en la ruta indicada y después escribe con ObjectOutput....
 			try 
 			{
-//				fic.createNewFile();
+				fic.createNewFile();
 				//fic--> no ponemos true por lo que no añade, escribe de cero
 				oos= new ObjectOutputStream(new FileOutputStream(fic));
 			} 

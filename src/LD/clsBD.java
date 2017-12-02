@@ -1,17 +1,22 @@
 package LD;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
 
 import javax.swing.JOptionPane;
+
+import LN.clsArchivo;
 
 public class clsBD
 {
 	private static Connection connection = null;
 	private static Statement statement = null;
+	private static ResultSet rs=null;
 
 	/** Inicializa una BD SQLITE y devuelve una conexión con ella. Debe llamarse a este 
 	 * método antes que ningún otro, y debe devolver no null para poder seguir trabajando con la BD.
@@ -125,28 +130,6 @@ public class clsBD
 			// Si hay excepción es que la tabla ya existía (lo cual es correcto)
 			// e.printStackTrace();  
 		}
-	}
-	 /** considerando la trayectoria completa del disco como información clave.
-	 * @param st	Sentencia ya abierta de base de datos
-	 * @return	true si el fichero multimedia ya está en la tabla, false en caso contrario
-	 */
-	
-	public boolean chequearArchivoYaEnTabla( Statement st )
-	{
-//		try {
-//			String sentSQL = "select * from fichero_multimedia " +
-//					"where (fichero = '" + file.getAbsolutePath() + "')";
-//			System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
-//			ResultSet rs = st.executeQuery( sentSQL );
-//			if (rs.next()) {  // Normalmente se recorre con un while, pero aquí solo hay que ver si ya existe
-//				rs.close();
-//				return true;
-//			}
-//			return false;
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-			return false;
-//		}
 	}
 	
 	//Hacer inserts aquí
@@ -267,11 +250,6 @@ public class clsBD
 	//Update
 	public static boolean UpdateArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
-		// Adicional uno
-//				if (chequearArchivoYaEnTabla(statement)) {  // Si está ya en la tabla
-//					return modificarFilaEnTabla(st);
-//				}
-//				// Inserción normal
 				try {
 					String sentSQL = "update fichero_archivo set "+
 							"'" + "nomAutor =" + nomAutor + "', " +
@@ -373,5 +351,34 @@ public class clsBD
 				return false;
 				
 		}
+	}
+	
+	public static HashSet <clsArchivo> LeerArchivos()
+	{		
+		
+		 HashSet <clsArchivo> retorno=new  HashSet <clsArchivo>();
+				try 
+				{
+					String sentSQL = "select * from fichero_archivo";
+					rs = statement.executeQuery( sentSQL );
+					while (rs.next())
+					{ 
+						 clsArchivo archivo = new clsArchivo(
+								 rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
+								 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
+								 rs.getBoolean("libroSi"));				
+						rs.close();
+						retorno.add(archivo);
+					}
+					return retorno;
+				}
+				catch (SQLException e) 
+				{
+					e.printStackTrace();
+					return null;
+				}
+				
+			
+		
 	}
 }

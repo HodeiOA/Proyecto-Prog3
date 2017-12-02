@@ -1,5 +1,9 @@
 package LN;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import COMUN.clsNickRepetido;
 
 public class clsGestor
@@ -26,4 +30,12 @@ public class clsGestor
 	
 	//crear cliente throws clsNickRepetido()
 	 
+	public static HashSet<Object> LeerBD()
+	{
+		ArrayList<Comparable> TodoLoGuardado=new ArrayList <>();
+		
+		HashSet <Object> retorno = new HashSet <>();
+		
+		return retorno;
+	}
 }

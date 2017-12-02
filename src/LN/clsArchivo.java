@@ -14,7 +14,7 @@ public class clsArchivo implements Comparable
 	private boolean libroSi;
 	private static int sigCodArchivo;
 
-	public clsArchivo(String nomAutor, String apeAutor, String numArchivo, String titulo, String ruta, 
+	public clsArchivo(String nomAutor, String apeAutor, String titulo, String ruta, 
 			int numPags, int ultimaPagLeida, int tiempo, boolean libroSi ) 
 	{
 		super();
@@ -134,6 +134,4 @@ public class clsArchivo implements Comparable
 		return a.compareTo(b.getCodArchivo());
 	}
 	
-	
-
 }
