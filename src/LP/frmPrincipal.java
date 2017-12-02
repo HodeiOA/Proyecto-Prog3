@@ -4,6 +4,12 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
@@ -22,6 +28,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.sun.javafx.scene.paint.GradientUtils.Point;
+
+import LD.clsBD;
+import LD.clsProperties;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.SystemColor;
@@ -31,6 +42,8 @@ public class frmPrincipal extends JFrame implements ActionListener
 {
 	private int altura=0;
 	private int anchura=0;
+	private int x=0;
+	private int y=0;
 	private Dimension dim;
 	private Toolkit mipantalla;
 	
@@ -79,21 +92,40 @@ public class frmPrincipal extends JFrame implements ActionListener
 	private String path;
 	private Pattern filtro;
 	
+	//Para guardar propiedades
+	Properties misProps=new Properties();
+	ArrayList <String> ClavesPropiedades=new ArrayList();
+	String[] AnchuraAltura=new String[2];
+	String[] locationXY=new String[2];
+	
 	public frmPrincipal (String titulo)
 	{
+		ClavesPropiedades.add("anchura");
+		ClavesPropiedades.add("altura");
+		ClavesPropiedades.add("X");
+		ClavesPropiedades.add("Y");
 		setTitle(titulo);
 		//Leer el xml que guarda el tamaño de la ventana y meter los datos en altura y anchura
 		//Este if lo tendremos que hacer, pero lo comento hasta que podamos leer los valores
-//		if(altura==0)
-//		{
+		anchura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(0)));
+		altura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(1)));
+		if(altura==0)
+		{
 			mipantalla=Toolkit.getDefaultToolkit();
 			dim=mipantalla.getScreenSize();
 			altura=dim.height;
 			anchura=dim.width;
-//		}
+		}
 		setSize(anchura, altura);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		x=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(2)));
+		y=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(3)));
+		if(x!=0)
+		{
+			setLocation(x, y);		
+			
+		}
 		//Menú
 		//Construcción del menú
 		setJMenuBar(menuBar);
@@ -158,6 +190,88 @@ public class frmPrincipal extends JFrame implements ActionListener
 			
 //			SeleccionarArchivo();
 //		}
+			
+		this.addComponentListener(new ComponentListener()
+			{
+				@Override
+				public void componentHidden(ComponentEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void componentMoved(ComponentEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void componentResized(ComponentEvent arg0)
+				{
+					AnchuraAltura[0]= Integer.toString(getHeight());
+					AnchuraAltura[1]= Integer.toString(getWidth());
+					clsProperties.CambiarPropiedades(misProps, AnchuraAltura, locationXY, ClavesPropiedades);
+				}
+
+				@Override
+				public void componentShown(ComponentEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		this.addWindowListener(new WindowListener()		
+			{
+	
+				@Override
+				public void windowActivated(WindowEvent arg0) 
+				{
+					clsBD.initBD("BD Pdf reader");
+					clsProperties.CargarProps(misProps);
+					
+				}
+	
+				@Override
+				public void windowClosed(WindowEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void windowClosing(WindowEvent arg0) 
+				{
+					clsBD.close();
+//					locationXY[0]=
+//							x=Integer.parseInt((getLocation().getX()).round());
+//					locationXY[1]=Double.toString(getLocation().getY());
+//					clsProperties.CambiarPropiedades(misProps, AnchuraAltura, locationXY, ClavesPropiedades);
+//					clsProperties.Guardarpropiedad(misProps);
+				}
+	
+				@Override
+				public void windowDeactivated(WindowEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void windowDeiconified(WindowEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void windowIconified(WindowEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void windowOpened(WindowEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
 	}
 	
 	/**

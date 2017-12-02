@@ -2,6 +2,7 @@ package LD;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -67,7 +68,9 @@ public class clsBD
 		return statement;
 	}
 	
+	
 	//Crear tablas 
+	
 	/** Crea una tabla de archivos en una base de datos, si no existía ya.
 	 * Debe haberse inicializado la conexión correctamente.
 	 */
@@ -75,10 +78,11 @@ public class clsBD
 	{
 		if (statement==null) return;
 		try
-		{
-			//Poner primary key, references y foreign key
-			statement.executeUpdate("create table fichero_archivo " +
-				"()");
+		{ 
+			statement.executeQuery("create table fichero_archivo " +
+				"(nick string, nomAutor string, apeAutor string, codArchivo int, titulo string, ruta string, numPags int, ultimaPagLeida int,tiempo int,libroSi boolean"
+				+ "foreign key(nick string) references fichero_usuario(nick), primary key(codArchivo)");
+
 		} catch (SQLException e) {
 			// Si hay excepción es que la tabla ya existía (lo cual es correcto)
 			// e.printStackTrace();  
@@ -93,8 +97,8 @@ public class clsBD
 		if (statement==null) return;
 		try
 		{
-			statement.executeUpdate("create table fichero_usuario " +
-				"()");
+			statement.executeQuery("create table fichero_usuario " +
+				"(nick string, contraseña string, primary key (nick))");
 		} 
 		catch (SQLException e)
 		{
@@ -111,16 +115,261 @@ public class clsBD
 		if (statement==null) return;
 		try
 		{
-			statement.executeUpdate("create table fichero_usuario " +
-				"()");
+			statement.executeQuery("create table fichero_usuario " +
+				"( ID int, Texto string, codArchivo int, numPag int, primary key(ID), foreign key (codArchivo) references fichero_archivo(codArchivo)");
+
 		} catch (SQLException e) 
 		{
 			// Si hay excepción es que la tabla ya existía (lo cual es correcto)
 			// e.printStackTrace();  
 		}
 	}
+	 /** considerando la trayectoria completa del disco como información clave.
+	 * @param st	Sentencia ya abierta de base de datos
+	 * @return	true si el fichero multimedia ya está en la tabla, false en caso contrario
+	 */
+	
+	public boolean chequearArchivoYaEnTabla( Statement st )
+	{
+//		try {
+//			String sentSQL = "select * from fichero_multimedia " +
+//					"where (fichero = '" + file.getAbsolutePath() + "')";
+//			System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
+//			ResultSet rs = st.executeQuery( sentSQL );
+//			if (rs.next()) {  // Normalmente se recorre con un while, pero aquí solo hay que ver si ya existe
+//				rs.close();
+//				return true;
+//			}
+//			return false;
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+			return false;
+//		}
+	}
 	
 	//Hacer inserts aquí
+	public static boolean InsertArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
+	{
+		// Adicional uno
+//				if (chequearArchivoYaEnTabla(statement)) {  // Si está ya en la tabla
+//					return modificarFilaEnTabla(st);
+//				}
+//				// Inserción normal
+				try {
+					String sentSQL = "insert into fichero_archivo values(" +
+							"'" + nomAutor + "', " +
+							"'" + apeAutor + "', " +
+							"'" + codArchivo + "', " +
+							"'" + titulo + "', " +
+							"'" + ruta + "', " +
+							"'" + numPags + "', " +
+							"'" + ultimaPagLeida + "', " +
+							"'" + tiempo + "', " +
+							"'" + libroSi + "')";
+					int val = statement.executeUpdate( sentSQL );
+					if (val!=1) return false; 
+					return true;
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return false;
+				}
+
+	}
+	public static boolean InsertUsuario (String contraseña, String nick)
+	{
+		try {
+			String sentSQL = "insert into fichero_usuario values(" +
+					"'" + contraseña + "', " +
+					"'" + nick + "')";
+			int val = statement.executeUpdate( sentSQL );
+			if (val!=1) return false; 
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static boolean InsertComentario (int ID, String texto, int codArchivo, int numPag)
+	{
+		try {
+			String sentSQL = "insert into fichero_comentario values(" +
+					"'" + ID + "', " +
+					"'" + texto + "', " +
+					"'" + codArchivo + "', " +
+					"'" + numPag + "')";
+			int val = statement.executeUpdate( sentSQL );
+			if (val!=1) return false;  
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
 	//Delete
+	//Borra filas de uno en uno, por su identificativo
+	public static boolean BorrarFila (Object ident, String tabla)
+	{
+		
+		switch(tabla)
+		{
+			case "ARCHIVO":
+				try 
+				{
+					int codArchivo=(Integer)ident;
+					String sentSQL = "DELETE FROM fichero_archivo WHERE codArchivo = "+codArchivo;
+					int val = statement.executeUpdate( sentSQL );
+					if (val!=1) return false;  
+					return true;
+				}
+				catch (SQLException e) 
+				{
+					e.printStackTrace();
+					return false;
+				}
+				
+			case "USUARIO":
+				try 
+				{
+					String sentSQL = "DELETE FROM fichero_usuario WHERE nick = "+ident;
+					int val = statement.executeUpdate( sentSQL );
+					if (val!=1) return false; 
+					return true;
+				}
+				catch (SQLException e) 
+				{
+					e.printStackTrace();
+					return false;
+				}
+				
+			case "COMENTARIO":
+				try 
+				{
+					int ID=(Integer)ident;
+					String sentSQL = "DELETE FROM fichero_COMENTARIO WHERE ID = "+ID;
+					int val = statement.executeUpdate( sentSQL );
+					if (val!=1) return false; 
+					return true;
+				}
+				catch (SQLException e) 
+				{
+					e.printStackTrace();
+					return false;
+				}
+				
+			default:
+				return false;
+		}
+	}
 	//Update
+	public static boolean UpdateArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
+	{
+		// Adicional uno
+//				if (chequearArchivoYaEnTabla(statement)) {  // Si está ya en la tabla
+//					return modificarFilaEnTabla(st);
+//				}
+//				// Inserción normal
+				try {
+					String sentSQL = "update fichero_archivo set "+
+							"'" + "nomAutor =" + nomAutor + "', " +
+							"'" + "apeAutor =" + apeAutor + "', " +
+							"'" + "titulo = "+ titulo  + "', " +
+							"'" + "ruta = "+ruta + "', " +
+							"'" + "numPags = "+ numPags + "', " +
+							"'" + "ultimaPagLeida =" + ultimaPagLeida + "', " +
+							"'" + "tiempo =" + tiempo + "', " +
+							"'" + "libroSi ="+libroSi +
+							"where codArchivo = "+ codArchivo + "')";
+					System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
+					int val = statement.executeUpdate( sentSQL );
+					if (val!=1) return false;  // Se tiene que añadir 1 - error si no
+					return true;
+				} catch (SQLException e) 
+				{
+					e.printStackTrace();
+					return false;
+				}
+
+	}
+	public static boolean UpdateUsuario (String contraseña, String nick)
+	{
+		try {
+			String sentSQL = "update fichero_usuario set" +
+					"'" + "contraseña ="+ contraseña + 
+					"where nick=" + nick + "')";
+			System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
+			int val = statement.executeUpdate( sentSQL );
+			if (val!=1) return false;  // Se tiene que añadir 1 - error si no
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	public static boolean UpdateComentario (int ID, String texto, int codArchivo, int numPag)
+	{
+		try {
+			String sentSQL = "insert into fichero_comentario values(" +
+					"'" + ID + "', " +
+					"'" + texto + "', " +
+					"'" + codArchivo + "', " +
+					"'" + numPag + "')";
+			int val = statement.executeUpdate( sentSQL );
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+	
+	//Drops
+	public static boolean DropTable(String tabla)
+	{
+		switch (tabla)
+		{
+			case "ARCHIVO":
+				try
+				{
+					String sentSQL = "drop table fichero_archivo";
+					int val = statement.executeUpdate( sentSQL );
+					return true;
+				} 
+				catch (SQLException e) 
+				{
+					e.printStackTrace();
+					return false;
+				}
+			
+			case "USUARIO":
+				try
+				{
+					String sentSQL = "drop table fichero_usuario";
+					int val = statement.executeUpdate( sentSQL );
+					return true;
+				} 
+				catch (SQLException e) 
+				{
+					e.printStackTrace();
+					return false;
+				}
+				
+			case "COMENTARIO":
+				try
+				{
+					String sentSQL = "drop table fichero_comentario";
+					int val = statement.executeUpdate( sentSQL );
+					return true;
+				} 
+				catch (SQLException e) 
+				{
+					e.printStackTrace();
+					return false;
+				}
+			default: 
+				return false;
+				
+		}
+	}
 }

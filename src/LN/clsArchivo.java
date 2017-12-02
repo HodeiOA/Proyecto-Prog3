@@ -8,14 +8,13 @@ public class clsArchivo implements Comparable
 	private int codArchivo;	//el atributo identificativo
 	private String titulo;
 	private String ruta;	
-	private String tipo;
 	private int numPags;
 	private int ultimaPagLeida;
 	private int tiempo;	//tiempo de lectura en  segundos
 	private boolean libroSi;
 	private static int sigCodArchivo;
 
-	public clsArchivo(String nomAutor, String apeAutor, String numArchivo, String titulo, String ruta, String tipo,
+	public clsArchivo(String nomAutor, String apeAutor, String numArchivo, String titulo, String ruta, 
 			int numPags, int ultimaPagLeida, int tiempo, boolean libroSi ) 
 	{
 		super();
@@ -24,7 +23,6 @@ public class clsArchivo implements Comparable
 		this.codArchivo = sigCodArchivo;
 		this.titulo = titulo;
 		this.ruta = ruta;
-		this.tipo = tipo;
 		this.numPags = numPags;
 		this.ultimaPagLeida = ultimaPagLeida;
 		this.tiempo = tiempo;
@@ -59,12 +57,6 @@ public class clsArchivo implements Comparable
 	}
 	public void setRuta(String ruta) {
 		this.ruta = ruta;
-	}
-	public String getTipo() {
-		return tipo;
-	}
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
 	}
 	public int getNumPags() {
 		return numPags;
