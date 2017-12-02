@@ -80,8 +80,10 @@ public class clsBD
 		try
 		{ 
 			statement.executeQuery("create table fichero_archivo " +
-				"(nick string, nomAutor string, apeAutor string, codArchivo int, titulo string, ruta string, numPags int, ultimaPagLeida int,tiempo int,libroSi boolean"
-				+ "foreign key(nick string) references fichero_usuario(nick), primary key(codArchivo)");
+					"(nick string, nomAutor string, apeAutor string, codArchivo int, "
+					+ "titulo string, ruta string, numPags int, ultimaPagLeida int,tiempo int,libroSi boolean, "
+					+ "foreign key(nick) references fichero_usuario(nick), primary key(codArchivo)"
+					+ ")");
 
 		} catch (SQLException e) {
 			// Si hay excepción es que la tabla ya existía (lo cual es correcto)
