@@ -94,9 +94,9 @@ public class frmPrincipal extends JFrame implements ActionListener
 	
 	//Para guardar propiedades
 	Properties misProps=new Properties();
-	ArrayList <String> ClavesPropiedades=new ArrayList();
-	String[] AnchuraAltura=new String[2];
-	String[] locationXY=new String[2];
+	ArrayList <String> ClavesPropiedades = new ArrayList();
+	String[] AnchuraAltura = new String[2];
+	String[] locationXY = new String[2];
 	
 	public frmPrincipal (String titulo)
 	{
