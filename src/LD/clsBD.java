@@ -11,6 +11,8 @@ import java.util.HashSet;
 import javax.swing.JOptionPane;
 
 import LN.clsArchivo;
+import LN.clsComentario;
+import LN.clsUsuario;
 
 public class clsBD
 {
@@ -84,7 +86,7 @@ public class clsBD
 		if (statement==null) return;
 		try
 		{ 
-			statement.executeQuery("create table fichero_archivo " +
+			statement.executeUpdate("create table fichero_archivo " +
 					"(nick string, nomAutor string, apeAutor string, codArchivo int, "
 					+ "titulo string, ruta string, numPags int, ultimaPagLeida int,tiempo int,libroSi boolean, "
 					+ "foreign key(nick) references fichero_usuario(nick), primary key(codArchivo)"
@@ -104,7 +106,7 @@ public class clsBD
 		if (statement==null) return;
 		try
 		{
-			statement.executeQuery("create table fichero_usuario " +
+			statement.executeUpdate("create table fichero_usuario " +
 				"(nick string, contraseña string, primary key (nick))");
 		} 
 		catch (SQLException e)
@@ -122,7 +124,7 @@ public class clsBD
 		if (statement==null) return;
 		try
 		{
-			statement.executeQuery("create table fichero_usuario " +
+			statement.executeUpdate("create table fichero_cometario " +
 				"( ID int, Texto string, codArchivo int, numPag int, primary key(ID), foreign key (codArchivo) references fichero_archivo(codArchivo)");
 
 		} catch (SQLException e) 
@@ -133,13 +135,22 @@ public class clsBD
 	}
 	
 	//Hacer inserts aquí
+	/**
+	 * Método para introducir un nuevo archivo en la BD. Para crearlo, le pasamos los atributos necesarios para crear un nuevo
+	 * archivo y se los pasamos en una sentencia "INSERT"
+	 * @param nomAutor
+	 * @param apeAutor
+	 * @param codArchivo
+	 * @param titulo
+	 * @param ruta
+	 * @param numPags
+	 * @param ultimaPagLeida
+	 * @param tiempo
+	 * @param libroSi
+	 * @return devolverá un boolean para indicar si el insert se ha podido o no hacer
+	 */
 	public static boolean InsertArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
-		// Adicional uno
-//				if (chequearArchivoYaEnTabla(statement)) {  // Si está ya en la tabla
-//					return modificarFilaEnTabla(st);
-//				}
-//				// Inserción normal
 				try {
 					String sentSQL = "insert into fichero_archivo values(" +
 							"'" + nomAutor + "', " +
@@ -160,6 +171,14 @@ public class clsBD
 				}
 
 	}
+	
+	/**
+	 *  Método para introducir un nuevo usuario en la BD. Para crearlo, le pasamos los atributos necesarios para crear un nuevo
+	 * usuario y se los pasamos en una sentencia "INSERT"
+	 * @param contraseña
+	 * @param nick
+	 * @return devuelve un boolean indicando si el INSERT se ha podido hacer o no
+	 */
 	public static boolean InsertUsuario (String contraseña, String nick)
 	{
 		try {
@@ -175,6 +194,15 @@ public class clsBD
 		}
 	}
 	
+	/**
+	 *  Método para introducir un nuevo comentario en la BD. Para crearlo, le pasamos los atributos necesarios para crear un nuevo
+	 * comentario y se los pasamos en una sentencia "INSERT"
+	 * @param ID
+	 * @param texto
+	 * @param codArchivo
+	 * @param numPag
+	 * @return devuelve un boolean indicando si el INSERT se ha podido hacer o no
+	 */
 	public static boolean InsertComentario (int ID, String texto, int codArchivo, int numPag)
 	{
 		try {
@@ -194,6 +222,12 @@ public class clsBD
 	}
 	//Delete
 	//Borra filas de uno en uno, por su identificativo
+	/**
+	 * Borra una fila de la tabla indicada en el parámetro "tabla" 
+	 * @param ident atributo identificativo del objeto que tenemos que eliminar
+	 * @param tabla indica de qué tabla vamos a tener que eliminar el registro
+	 * @return devuelve un boolean indicando si la operación se ha podido hacer o no
+	 */
 	public static boolean BorrarFila (Object ident, String tabla)
 	{
 		
@@ -248,6 +282,20 @@ public class clsBD
 		}
 	}
 	//Update
+	/**
+	 * Modifica un archivo de la BD
+	 * Para ello, le pasamos todos los atributos (los que cambian y los que no) para que el método sirva para todos los casos
+	 * @param nomAutor
+	 * @param apeAutor
+	 * @param codArchivo
+	 * @param titulo
+	 * @param ruta
+	 * @param numPags
+	 * @param ultimaPagLeida
+	 * @param tiempo
+	 * @param libroSi
+	 * @return indica si se ha realizado con éxito
+	 */ 
 	public static boolean UpdateArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
 				try {
@@ -272,6 +320,13 @@ public class clsBD
 				}
 
 	}
+	/**
+	 * Modificar un usuario de la BD
+	 *  Para ello, le pasamos todos los atributos (los que cambian y los que no) para que el método sirva para todos los casos
+	 * @param contraseña
+	 * @param nick
+	 * @return indic si ha tenido éxito
+	 */
 	public static boolean UpdateUsuario (String contraseña, String nick)
 	{
 		try {
@@ -287,6 +342,15 @@ public class clsBD
 			return false;
 		}
 	}
+	/**
+	 * Modificar un comentario de la BD
+	 *  Para ello, le pasamos todos los atributos (los que cambian y los que no) para que el método sirva para todos los casos
+	 * @param ID
+	 * @param texto
+	 * @param codArchivo
+	 * @param numPag
+	 * @return indica si ha tenido éxito o no
+	 */
 	public static boolean UpdateComentario (int ID, String texto, int codArchivo, int numPag)
 	{
 		try {
@@ -305,6 +369,11 @@ public class clsBD
 	}
 	
 	//Drops
+	/**
+	 * Borra una tabla
+	 * @param tabla indica qué tabla borra
+	 * @return indica si la acción se ha podido realizar o no
+	 */
 	public static boolean DropTable(String tabla)
 	{
 		switch (tabla)
@@ -352,10 +421,12 @@ public class clsBD
 				
 		}
 	}
-	
+	/**
+	 * Lectura de archivos de la BD
+	 * @return Devuelve la lista de archivos guardados en la BD hasta ahora
+	 */
 	public static HashSet <clsArchivo> LeerArchivos()
 	{		
-		
 		 HashSet <clsArchivo> retorno=new  HashSet <clsArchivo>();
 				try 
 				{
@@ -366,7 +437,7 @@ public class clsBD
 						 clsArchivo archivo = new clsArchivo(
 								 rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
 								 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
-								 rs.getBoolean("libroSi"));				
+								 rs.getBoolean("libroSi"), true, rs.getInt("codArchivo"));				
 						rs.close();
 						retorno.add(archivo);
 					}
@@ -376,9 +447,61 @@ public class clsBD
 				{
 					e.printStackTrace();
 					return null;
+				}	
+	}
+	
+	/**
+	 * Lectura de usuarios de la BD
+	 * @return Devuelve la lista de usuarios guardados en la BD hasta ahora
+	 */
+	public static HashSet <clsUsuario> LeerUsuarios()
+	{		
+		 HashSet <clsUsuario> retorno=new  HashSet <clsUsuario>();
+				try 
+				{
+					String sentSQL = "select * from fichero_usuario";
+					rs = statement.executeQuery( sentSQL );
+					while (rs.next())
+					{ 
+						 clsUsuario usuario = new clsUsuario(
+								 rs.getString("nick"), rs.getString("contraseña"));				
+						rs.close();
+						retorno.add(usuario);
+					}
+					return retorno;
 				}
-				
-			
-		
+				catch (SQLException e) 
+				{
+					e.printStackTrace();
+					return null;
+				}	
+	}
+	
+	/**
+	 * Lectura de comentarios de la BD
+	 * @return Devuelve la lista de comentarios guardados en la BD hasta ahora
+	 */
+	public static HashSet <clsComentario> LeerComentarios()
+	{		
+		 HashSet <clsComentario> retorno=new  HashSet <clsComentario>();
+				try 
+				{
+					String sentSQL = "select * from fichero_coemntario";
+					rs = statement.executeQuery( sentSQL );
+					while (rs.next())
+					{ 
+						//String texto, int codArchivo, int numPagina
+						clsComentario comentario = new clsComentario(
+								 rs.getString("texto"), rs.getInt("codArchivo"), rs.getInt("numPagina"), true, rs.getInt("ID"));				
+						rs.close();
+						retorno.add(comentario);
+					}
+					return retorno;
+				}
+				catch (SQLException e) 
+				{
+					e.printStackTrace();
+					return null;
+				}	
 	}
 }

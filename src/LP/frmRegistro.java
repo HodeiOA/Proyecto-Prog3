@@ -39,15 +39,15 @@ public class frmRegistro extends JDialog implements ActionListener
 	/**
 	 * Constructor de la ventana
 	 * @param frame es la ventana principal, frmPrincipal
-	 */
-    
-	
+	 */	
 	public frmRegistro (JFrame frame)
 	{
 		//constructor del JDialog
 		
 		super (frame,"Login", true);
-        
+		//Cambiar
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		
 		//tamaño
         this.setSize(400, 150);
         x=frame.getWidth()/3;
@@ -95,7 +95,6 @@ public class frmRegistro extends JDialog implements ActionListener
 		this.getContentPane().add(panelBot, BorderLayout.PAGE_END);
       	panelBot.setLayout(new FlowLayout());
         
-		
         btnLogin.addActionListener(this);
         btnEntrar.addActionListener(this);
  	}
@@ -110,7 +109,7 @@ public class frmRegistro extends JDialog implements ActionListener
 		
 		if (clsGestor.comprobarExistencia(nick, pass)) //true
 		 {
-			 JOptionPane.showMessageDialog(this,"Holi " + nick + "has iniciado sesión correctamente!!!", "Login", JOptionPane.INFORMATION_MESSAGE);
+			 JOptionPane.showMessageDialog(this,"Holi " + nick + "has iniciado sesión correctamente", "Login", JOptionPane.INFORMATION_MESSAGE);
 			 succeeded = true;
 			 //llamar a funcion que realice el registro en LN
 			 dispose();

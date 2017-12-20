@@ -15,12 +15,11 @@ public class clsArchivo implements Comparable
 	private static int sigCodArchivo;
 
 	public clsArchivo(String nomAutor, String apeAutor, String titulo, String ruta, 
-			int numPags, int ultimaPagLeida, int tiempo, boolean libroSi ) 
+			int numPags, int ultimaPagLeida, int tiempo, boolean libroSi, boolean leerBD, int IDBD ) 
 	{
 		super();
 		this.nomAutor = nomAutor;
 		this.apeAutor = apeAutor;
-		this.codArchivo = sigCodArchivo;
 		this.titulo = titulo;
 		this.ruta = ruta;
 		this.numPags = numPags;
@@ -28,7 +27,20 @@ public class clsArchivo implements Comparable
 		this.tiempo = tiempo;
 		this.libroSi = libroSi;
 		
-		sigCodArchivo ++;
+		//Esto lo hacemos porque para la BD necesitamos crear archivos el código que leemos de la BD
+		if(leerBD)
+		{
+			//leerBD=true, estamos usando el constructor para crear un archivo porque estamos leyéndolo de la BD
+			//le ponemos el código leído
+			this.codArchivo=IDBD;
+		}
+		else
+		{
+			//Estamos creando un archivo estándar, le ponemos el ID  secuencial.
+			this.codArchivo = sigCodArchivo;
+			sigCodArchivo ++;
+		}
+		
 	}
 	
 	//Getters and Setters

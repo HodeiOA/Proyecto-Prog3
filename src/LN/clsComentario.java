@@ -8,13 +8,25 @@ public class clsComentario implements Comparable
 	private int codArchivo;
 	private int numPagina;
 	
-	public clsComentario(String texto, int codArchivo, int numPagina)
+	public clsComentario(String texto, int codArchivo, int numPagina, boolean leerBD, int IDBD)
 	{
-		ID = sigID;
 		Texto = texto;
-		sigID++;
 		this.codArchivo = codArchivo;
 		this.numPagina = numPagina;
+		
+		//Esto lo hacemos porque para la BD necesitamos crear comentarios el código que leemos de la BD
+				if(leerBD)
+				{
+					//leerBD=true, estamos usando el constructor para crear un comentario porque estamos leyéndolo de la BD
+					//le ponemos el código leído
+					this.ID=IDBD;
+				}
+				else
+				{
+					//Estamos creando un comentario estándar, le ponemos el ID  secuencial.
+					ID = sigID;
+					sigID++;
+				}		
 	}
 
 	public static int getSigID() 
