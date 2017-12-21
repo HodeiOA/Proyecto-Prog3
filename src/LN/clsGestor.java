@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import COMUN.clsNickRepetido;
+import LD.clsBD;
 
 public class clsGestor
 {
@@ -16,26 +17,33 @@ public class clsGestor
 	}
 	
 	//métodos para login
-	public static boolean comprobarExistencia(String username, String password) 
+	public static void comprobarExistenciaUsuario(String nick, String contraseña) 
     {
-		
-		return false;	    	
+		boolean existe;
+		boolean insert;
     	//leemos la base de datos, sacamos el nick y contraseña y lo metemos en un arraylist
-    	//haces un for each y miramos si...
+		HashSet <clsUsuario> usuarioBD = clsBD.LeerUsuarios();
+		clsUsuario nuevoUsuario = new clsUsuario (nick, contraseña);
 		
-		
-		//si está entrando esperaremos que de true 
-		//y si se está registrando y todo va bien también fale
+		//Si lo introduce. da true, con lo cual no existía, por lo que retorno false
+		//Si ya existía el add da false, nosotros devolvemos false.
+		existe = !(usuarioBD.add(nuevoUsuario));
+		if(existe)
+		{
+			//Lanzar excepción
+		}
+		else
+		{
+			//No existe, lo creamos
+			insert=clsBD.InsertUsuario(contraseña, nick);
+			if(!insert)
+			{
+				//Excepción en la BD-En realidad se supone que esto nunca debería pasar, si pasa es culpa nuestra
+			}
+		}
     }
-	
 	//crear cliente throws clsNickRepetido()
+	
 	 
-	public static HashSet<Object> LeerBD()
-	{
-		ArrayList<Comparable> TodoLoGuardado=new ArrayList <>();
-		
-		HashSet <Object> retorno = new HashSet <>();
-		
-		return retorno;
-	}
+	
 }
