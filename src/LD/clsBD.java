@@ -92,8 +92,9 @@ public class clsBD
 					+ "foreign key(nick) references fichero_usuario(nick), primary key(codArchivo)"
 					+ ")");
 
-		} catch (SQLException e) {
-			// Si hay excepción es que la tabla ya existía (lo cual es correcto)
+		} catch (SQLException e) 
+		{
+			// Si hay excepción es que la tabla ya existía (lo cual es correcto). No la creamos y listo
 			// e.printStackTrace();  
 		}
 	}

@@ -225,13 +225,12 @@ public class frmPrincipal extends JFrame implements ActionListener
 				@Override
 				public void windowActivated(WindowEvent arg0) 
 				{
-					clsBD.initBD("BD Pdf reader");
-					clsProperties.CargarProps(misProps);
-					
+					clsProperties.CargarProps(misProps);	
 				}
 	
 				@Override
-				public void windowClosed(WindowEvent arg0) {
+				public void windowClosed(WindowEvent arg0) 
+				{
 					// TODO Auto-generated method stub
 					
 				}
@@ -305,7 +304,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 		int response = chooser.showOpenDialog(this);
 		if(response == JFileChooser.APPROVE_OPTION)
 		{
-			path =chooser.getSelectedFile().toString();
+			path = chooser.getSelectedFile().toString();
 			//Recoger el file
 		}
 	}

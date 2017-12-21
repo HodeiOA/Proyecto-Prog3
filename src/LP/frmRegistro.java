@@ -17,7 +17,9 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+import COMUN.clsNickNoExiste;
 import COMUN.clsNickRepetido;
+import LD.clsBD;
 import LN.clsGestor;
 
 public class frmRegistro extends JDialog implements ActionListener
@@ -96,36 +98,13 @@ public class frmRegistro extends JDialog implements ActionListener
       	panelBot.setLayout(new FlowLayout());
         
         btnLogin.addActionListener(this);
+        btnLogin.setActionCommand("REGISTRAR");
         btnEntrar.addActionListener(this);
+        btnEntrar.setActionCommand("ENTRAR");
  	}
 	
-	public void comprobUser ()
-	{
-		String nick;
-		String pass;
 
-		nick = tfUsername.getText();
-		pass = String.valueOf(pfPassword.getPassword());		
-		
-		if (clsGestor.comprobarExistencia(nick, pass)) //true
-		 {
-			 JOptionPane.showMessageDialog(this,"Holi " + nick + "has iniciado sesión correctamente", "Login", JOptionPane.INFORMATION_MESSAGE);
-			 succeeded = true;
-			 //llamar a funcion que realice el registro en LN
-			 dispose();
-		 } 
-		
-		 else 
-		 {
-			 JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Login", JOptionPane.ERROR_MESSAGE);
-		   // reinicio username y password
-		   tfUsername.setText("");
-           pfPassword.setText("");
-           succeeded = false;
-		 }
-	}
-	
-	public void guardarBDUser () 
+	public void Entrar () 
 	{
 		String nick;
 		String pass;
@@ -133,43 +112,86 @@ public class frmRegistro extends JDialog implements ActionListener
 		nick=tfUsername.getText();
 		pass= String.valueOf(pfPassword.getPassword());		
 		
-//		try
-//		{
-			if (nick!=null || pass!= null ) //true
+			if (!(nick.equals("") || pass.equals(""))) 
 			 {
-				 JOptionPane.showMessageDialog(this,"Holi " + nick + "te has registrado correctamente!!!", "Registro", JOptionPane.INFORMATION_MESSAGE);
-				 succeeded = true;
-				 dispose();
+				try
+				{
+					clsGestor.comprobarExistenciaUsuario(nick, pass);
+					
+				} 
+				catch (clsNickRepetido e)
+				{
+
+					 JOptionPane.showMessageDialog(this,"Holi " + nick + ". Has entrado correctamente", "Usuario correcto", JOptionPane.INFORMATION_MESSAGE);
+					 dispose();
+				}
+				catch (clsNickNoExiste e)
+				{
+					JOptionPane.showMessageDialog(this, e.getMessage(), "Registro", JOptionPane.ERROR_MESSAGE);
+				};
 			 } 
-			
 			 else 
 			 {
 				 JOptionPane.showMessageDialog(this, "Usuario o contraseña no introducidos", "Registro", JOptionPane.ERROR_MESSAGE);
 			   // reinicio username y password
 			   tfUsername.setText("");
 	           pfPassword.setText("");
-	           succeeded = false;
 			 }
-//		}
+	}
+	public void Registro()
+	{
+		String nick;
+		String pass;
+
+		nick=tfUsername.getText();
+		pass= String.valueOf(pfPassword.getPassword());		
 		
-//		catch (clsNickRepetido e) 
-//		{
-//			JOptionPane.showMessageDialog(this,e.getMessage());
-//		} 
+			if (!(nick.equals("") || pass.equals(""))) 
+			 {
+				//Como estamos en registro, en este caso existe debe dar false, de lo contrario no puede registarse, pues ya hay alguien con su mismo nick
+				try 
+				{
+					clsGestor.comprobarExistenciaUsuario(nick, pass);
+					
+				} catch (clsNickRepetido e)
+				{
+					JOptionPane.showMessageDialog(this, e.getMessage(), "Registro", JOptionPane.ERROR_MESSAGE);
+//					
+				}
+				catch (clsNickNoExiste e)
+				{
+					//En este caso, aunque sea una excepción porque en otro caso es un error, que dé esta excepción es que todo va bien
+					JOptionPane.showMessageDialog(this,"¡Registro existoso!");
+//					 //crear nuevo usuario en la BD
+//					 boolean insert=clsBD.InsertUsuario(pass, nick);
+//					 if (!insert)
+//					 {
+//						 //error de BD
+//					 }
+				};
+			 } 
+			 else 
+			 {
+				 JOptionPane.showMessageDialog(this, "Usuario o contraseña no introducidos", "Registro", JOptionPane.ERROR_MESSAGE);
+			   // reinicio username y password
+			   tfUsername.setText("");
+	           pfPassword.setText("");
+			 }	
 		
 	}
 	
+	
 	public void actionPerformed(ActionEvent arg0)
 	{
-		String comando = arg0.getActionCommand(); // qué es?¿
+		String comando = arg0.getActionCommand(); 
 		
 		switch(comando)
 		{
-			case ("Entrar") :
-				comprobUser();
+			case ("ENTRAR") :
+				Entrar();
 				break;	
-			case ("Registrar") :
-				guardarBDUser();
+			case ("REGISTRAR") :
+				Registro();
 				break;	
 		}		
 	}

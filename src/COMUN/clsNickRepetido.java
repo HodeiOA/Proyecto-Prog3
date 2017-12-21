@@ -5,8 +5,8 @@ package COMUN;
  */
 public class clsNickRepetido extends Exception
 {
-	private final String MENSAJE="El Nick introducido pertenece a una persona ya registrada";
 	private String nick;
+	private String MENSAJE;
 	
 	public clsNickRepetido(String nick)
 	{
@@ -15,6 +15,7 @@ public class clsNickRepetido extends Exception
 	
 	public String getMessage() 
 	{
-		return MENSAJE + "( "+nick+" )";
+		MENSAJE="El nick utilizado ("+ nick+ ") ya existe. Por favor, regístrate con otro nick";
+		return MENSAJE;
 	}
 }

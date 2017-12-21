@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import COMUN.clsNickRepetido;
+import COMUN.clsNickNoExiste;
 import LD.clsBD;
 
 public class clsGestor
@@ -17,7 +18,7 @@ public class clsGestor
 	}
 	
 	//métodos para login
-	public static void comprobarExistenciaUsuario(String nick, String contraseña) 
+	public static void comprobarExistenciaUsuario(String nick, String contraseña) throws clsNickRepetido, clsNickNoExiste
     {
 		boolean existe;
 		boolean insert;
@@ -30,19 +31,18 @@ public class clsGestor
 		existe = !(usuarioBD.add(nuevoUsuario));
 		if(existe)
 		{
-			//Lanzar excepción
+			clsNickRepetido repe=new clsNickRepetido(nick);
+			throw repe;
 		}
 		else
 		{
-			//No existe, lo creamos
-			insert=clsBD.InsertUsuario(contraseña, nick);
-			if(!insert)
-			{
-				//Excepción en la BD-En realidad se supone que esto nunca debería pasar, si pasa es culpa nuestra
-			}
+			clsNickNoExiste noExiste= new clsNickNoExiste(nick);
+			throw noExiste;
+			
 		}
+		
+		//return existe;
     }
-	//crear cliente throws clsNickRepetido()
 	
 	 
 	
