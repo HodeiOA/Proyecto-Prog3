@@ -8,8 +8,10 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
@@ -90,7 +92,8 @@ public class frmPrincipal extends JFrame implements ActionListener
 	//JFileChooser:
 	private JFileChooser chooser;
 	private String path;
-	private Pattern filtro;
+	private String ultimaCarpeta;
+	private static Pattern filtro;
 	
 	//Para guardar propiedades
 	Properties misProps=new Properties();
@@ -276,25 +279,24 @@ public class frmPrincipal extends JFrame implements ActionListener
 	/**
 	 * Método para recoger/guardar un solo PDF con filtro de PDFs
 	 */
-	//Hacer uno para carpetas
-	public void SeleccionarArchivo()
+	public void SeleccionarArchivo(boolean esLibro)
 	{
 		//Hacer distinto si es guardar o importar y si es libro o documento
 		chooser = new JFileChooser();
-		//if(esguardar )
-		chooser.setApproveButtonText("Guardar");
-		// eslibro
-		chooser.setDialogTitle("Guardar cambios en el libro");
-		// es Doc
-		chooser.setDialogTitle("Guardar cambios en el documento");
-		//if(esImportar )
+//		//if(esguardar )
+//		chooser.setApproveButtonText("Guardar");
+//		// eslibro
+//		chooser.setDialogTitle("Guardar cambios en el libro");
+//		// es Doc
+//		chooser.setDialogTitle("Guardar cambios en el documento");
+//		//if(esImportar )
 		chooser.setApproveButtonText("Importar");
 		// eslibro
 		chooser.setDialogTitle("Importar libro");
 		// es Doc
 		chooser.setDialogTitle("Importar documento");
 		
-		//chooser.setAcceptAllFileFilterUsed(false); 
+		chooser.setAcceptAllFileFilterUsed(false); 
 		
 		//Filtrar extensiones de archivos
 		//Pattern filtro= Pattern.compile( "\\*\\.pdf", Pattern.CASE_INSENSITIVE );
@@ -304,8 +306,74 @@ public class frmPrincipal extends JFrame implements ActionListener
 		int response = chooser.showOpenDialog(this);
 		if(response == JFileChooser.APPROVE_OPTION)
 		{
-			path = chooser.getSelectedFile().toString();
+			path = chooser.getSelectedFile().getPath();
+			// aquí habrá que lanzar una pantalla para EL RESTO DE ATRIBUTOS además de la ruta
 			//Recoger el file
+			//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nokmbre (1)" o el número que sea
+			//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
+		}
+	}
+	
+	public void SeleccionarArchivosDeCarpeta(boolean esLibro)
+	{
+		
+		String carp = ultimaCarpeta;  
+		//Elejimos donde abrir el chooser
+		if (ultimaCarpeta==null) carp = System.getProperty("user.dir");
+		File dirActual = new File( carp );
+		chooser = new JFileChooser( dirActual );
+		chooser.setApproveButtonText("Importar");
+		//Elejimos qué chooser abrir
+		if(esLibro)
+		{
+			chooser.setDialogTitle("Importar libro");
+		}
+		else
+		{
+			chooser.setDialogTitle("Importar documento");
+		}
+		//Hacemos que solo pueda seleccionar carpetas
+		chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
+		
+		int response = chooser.showOpenDialog(this);
+		
+		if (response == JFileChooser.APPROVE_OPTION)
+		{
+			//cambiamos el valor de ultimaCarpeta
+			ultimaCarpeta=chooser.getSelectedFile().getPath();
+			RecursividadCarpeta(ultimaCarpeta);
+			//Creamos un nuevo archivo por cada pdf que haya en el directorio
+			//Para ello, primero vemos si estamos en una carpeta, por lo que la primera vez siempre entrará			
+		} 
+	}
+	
+	public static void RecursividadCarpeta(String path)
+	{
+		File fic = new File (path);
+		if (fic.isDirectory()) 
+		{
+			int ficsAnyadidos = 0;
+			for( File f : fic.listFiles() ) 
+			{
+				/*Por cada fichero en Fic, volveremos a llamar a este método hasta llegar al interior de una carpeta en la que no haya
+				*más, por lo que pasará por todos los ficheros en el interior de la carpeta
+				**/
+				RecursividadCarpeta(f.getPath());
+			}
+		} else
+		{ 
+			//En este caso recursivo, el caso en el que NO es una carpeta será el caso base
+			//Es decir, el algoritmo recursivo lleará hasta la carpeta del fin de la ruta de carpetas 
+			//En ese momento, añadirá todos los PDFs en su interior
+			if (filtro.matcher(fic.getName()).matches() )
+			{
+				// Si cumple el patrón, se añade
+				path = fic.getPath();
+				// aquí habrá que lanzar una pantalla para EL RESTO DE ATRIBUTOS además de la ruta
+				//Recoger el file
+				//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nokmbre (1)" o el número que sea
+				//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
+			} 
 		}
 	}
 
