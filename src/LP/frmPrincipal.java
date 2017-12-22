@@ -68,7 +68,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 	private JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
 	private JPanel PLibros=new JPanel(); //Panel dentro de la pestaña libros
 	private JPanel PDocum=new JPanel(); //Panel dentro de la pestaña documentos
-	private JPanel PanelPDF=new JPanel();
+	private clsPanelPDF PanelPDF = new clsPanelPDF();
 	private JPanel Pinferior= new JPanel();
 	
 	//Botones
@@ -108,8 +108,8 @@ public class frmPrincipal extends JFrame implements ActionListener
 	HashSet <clsArchivo> HashArchivos = new HashSet();
 	HashSet <clsArchivo> HashLibros = new HashSet();
 	HashSet <clsArchivo> HashDocumentos = new HashSet();
-	frmModelArchivos modelLibros = new frmModelArchivos();
-	frmModelArchivos modelDocumentos = new frmModelArchivos();
+	modelArchivos modelLibros = new modelArchivos();
+	modelArchivos modelDocumentos = new modelArchivos();
 
 	
 	public frmPrincipal (String titulo)
@@ -173,7 +173,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 		
 	
 		//Panel para la visualización del PDF
-		PanelPDF.setBackground(Color.DARK_GRAY);
+		PanelPDF.setBackground(Color.BLACK);
 		getContentPane().add(PanelPDF, BorderLayout.CENTER);
 		Pinferior.setBackground(SystemColor.inactiveCaption);
 		
