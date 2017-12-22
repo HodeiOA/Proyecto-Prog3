@@ -31,7 +31,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.sun.javafx.scene.paint.GradientUtils.Point;
 
 import LD.clsBD;
 import LD.clsProperties;
@@ -88,9 +87,17 @@ public class frmPrincipal extends JFrame implements ActionListener
 	private JPanel Pcomentarios= new JPanel();
 	private boolean editable = false;
 	
+
+	//Para el Listmodel
+	HashSet <clsArchivo> HashArchivos = new HashSet();
+	HashSet <clsArchivo> HashLibros = new HashSet();
+	HashSet <clsArchivo> HashDocumentos = new HashSet();
+	modelArchivos modelLibros = new modelArchivos();
+	modelArchivos modelDocumentos = new modelArchivos();
+	
 	//Listas para libros/documentos
-	JList ListLibros = new JList ();
-	JList ListDoc = new JList ();
+	JList ListLibros;
+	JList ListDoc;
 	
 	//JFileChooser:
 	private JFileChooser chooser;
@@ -104,12 +111,6 @@ public class frmPrincipal extends JFrame implements ActionListener
 	String[] AnchuraAltura = new String[2];
 	String[] locationXY = new String[2];
 	
-	//Para el Listmodel
-	HashSet <clsArchivo> HashArchivos = new HashSet();
-	HashSet <clsArchivo> HashLibros = new HashSet();
-	HashSet <clsArchivo> HashDocumentos = new HashSet();
-	modelArchivos modelLibros = new modelArchivos();
-	modelArchivos modelDocumentos = new modelArchivos();
 
 	
 	public frmPrincipal (String titulo)
@@ -154,6 +155,10 @@ public class frmPrincipal extends JFrame implements ActionListener
 		//Layout para el panel
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
+		//Añadir los listModel
+		ListLibros=new JList(modelLibros);
+		ListDoc=new JList (modelDocumentos);
+		
 		//Panel Para libros/Documentos
 	
 		ImageIcon icon = null;
@@ -163,8 +168,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 		PLibros.add(ListLibros);
 		PDocum.add(AddDoc);
 		PDocum.add(ListDoc);
-		
-		//He puesto el tamaño a ojo porque si no el que me ponía de por sí era muy estrecho
+
 		panelListas.setPreferredSize(new Dimension(225, 40));
 		panelListas.addTab("Libros",icon,PLibros,
                 "Lista de libros agregados");
@@ -173,7 +177,6 @@ public class frmPrincipal extends JFrame implements ActionListener
 		
 	
 		//Panel para la visualización del PDF
-		PanelPDF.setBackground(Color.BLACK);
 		getContentPane().add(PanelPDF, BorderLayout.CENTER);
 		Pinferior.setBackground(SystemColor.inactiveCaption);
 		
@@ -190,7 +193,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 		//Panel para comentarios
 //		if(comentarios)
 //		{
-		//Aquí leeríamos los comentarios por página/Libro con uun for y crearíamos tantos TextArea y ScrolPane como hicienran falta	
+		//Aquí leeríamos los comentarios por página/Libro con uun for y crearíamos tantos TextArea y ScrolPane como hicieran falta	
 			JButton EditC = new JButton ("editar"); //En su listerner, cambiar editable=true;
 			
 			Pcomentarios.setPreferredSize(new Dimension(225, 40));
@@ -314,7 +317,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 		chooser.setAcceptAllFileFilterUsed(false); 
 		
 		//Filtrar extensiones de archivos
-		//Pattern filtro= Pattern.compile( "\\*\\.pdf", Pattern.CASE_INSENSITIVE );
+		//filtro= Pattern.compile( "\\*\\.pdf", Pattern.CASE_INSENSITIVE );
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.PDF", "pdf");
 		chooser.setFileFilter(filtro);
 		
@@ -324,28 +327,27 @@ public class frmPrincipal extends JFrame implements ActionListener
 			path = chooser.getSelectedFile().getPath();
 			// aquí habrá que lanzar una pantalla para EL RESTO DE ATRIBUTOS además de la ruta
 			//Recoger el file
-			//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nokmbre (1)" o el número que sea
+			//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nombre (1)" o el número que sea
 			//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
 		}
 	}
 	
 	public void SeleccionarArchivosDeCarpeta(boolean esLibro)
 	{
-		
 		String carp = ultimaCarpeta;  
-		//Elejimos donde abrir el chooser
+		//Elegimos dónde abrir el chooser
 		if (ultimaCarpeta==null) carp = System.getProperty("user.dir");
 		File dirActual = new File( carp );
 		chooser = new JFileChooser( dirActual );
 		chooser.setApproveButtonText("Importar");
-		//Elejimos qué chooser abrir
+		//Elegimos qué chooser abrir
 		if(esLibro)
 		{
-			chooser.setDialogTitle("Importar libro");
+			chooser.setDialogTitle("Importar carpeta libros");
 		}
 		else
 		{
-			chooser.setDialogTitle("Importar documento");
+			chooser.setDialogTitle("Importar carpeta documentos");
 		}
 		//Hacemos que solo pueda seleccionar carpetas
 		chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
@@ -367,7 +369,6 @@ public class frmPrincipal extends JFrame implements ActionListener
 		File fic = new File (path);
 		if (fic.isDirectory()) 
 		{
-			int ficsAnyadidos = 0;
 			for( File f : fic.listFiles() ) 
 			{
 				/*Por cada fichero en Fic, volveremos a llamar a este método hasta llegar al interior de una carpeta en la que no haya

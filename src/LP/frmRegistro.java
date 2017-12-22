@@ -161,7 +161,7 @@ public class frmRegistro extends JDialog implements ActionListener
 				catch (clsNickNoExiste e)
 				{
 					//En este caso, aunque sea una excepción porque en otro caso es un error, que dé esta excepción es que todo va bien
-					JOptionPane.showMessageDialog(this,"¡Registro existoso!");
+					JOptionPane.showMessageDialog(this,"¡Registro exitoso!");
 //					 //crear nuevo usuario en la BD
 //					 boolean insert=clsBD.InsertUsuario(pass, nick);
 //					 if (!insert)
