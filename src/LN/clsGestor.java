@@ -44,6 +44,18 @@ public class clsGestor
 		//return existe;
     }
 	
-	 
-	
+	public static void llenarLibrosDocum(HashSet <clsArchivo> HashArchivos, HashSet <clsArchivo> HashLibros, HashSet <clsArchivo> HashDocumentos)
+	{
+		for (clsArchivo a: HashArchivos )
+		{
+			if(a.getLibroSi())
+			{
+				HashLibros.add(a);
+			}
+			else
+			{
+				HashDocumentos.add(a);
+			}
+		}
+	}
 }

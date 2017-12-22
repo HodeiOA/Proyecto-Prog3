@@ -1,5 +1,6 @@
 package LN;
 
+
 public class clsArchivo implements Comparable
 {
 
@@ -96,7 +97,7 @@ public class clsArchivo implements Comparable
 		this.codArchivo = codArchivo;
 	}
 	
-	public boolean isLibroSi() {
+	public boolean getLibroSi() {
 		return libroSi;
 	}
 

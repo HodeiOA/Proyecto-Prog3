@@ -10,6 +10,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -34,6 +35,8 @@ import com.sun.javafx.scene.paint.GradientUtils.Point;
 
 import LD.clsBD;
 import LD.clsProperties;
+import LN.clsArchivo;
+import LN.clsGestor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -100,6 +103,14 @@ public class frmPrincipal extends JFrame implements ActionListener
 	ArrayList <String> ClavesPropiedades = new ArrayList();
 	String[] AnchuraAltura = new String[2];
 	String[] locationXY = new String[2];
+	
+	//Para el Listmodel
+	HashSet <clsArchivo> HashArchivos = new HashSet();
+	HashSet <clsArchivo> HashLibros = new HashSet();
+	HashSet <clsArchivo> HashDocumentos = new HashSet();
+	frmModelArchivos modelLibros = new frmModelArchivos();
+	frmModelArchivos modelDocumentos = new frmModelArchivos();
+
 	
 	public frmPrincipal (String titulo)
 	{
@@ -227,8 +238,12 @@ public class frmPrincipal extends JFrame implements ActionListener
 	
 				@Override
 				public void windowActivated(WindowEvent arg0) 
-				{
+				{					
 					clsProperties.CargarProps(misProps);	
+					HashArchivos = clsBD.LeerArchivos();
+					clsGestor.llenarLibrosDocum (HashArchivos, HashLibros, HashDocumentos);
+					modelLibros.cargarInfo(HashLibros);
+					modelDocumentos.cargarInfo(HashDocumentos);
 				}
 	
 				@Override
