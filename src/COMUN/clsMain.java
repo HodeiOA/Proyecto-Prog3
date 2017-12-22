@@ -17,8 +17,8 @@ public class clsMain
 		clsBD.crearTablaComentario();
 		clsBD.crearTablaUsuario();
 		
-		frmRegistro loginDlg = new frmRegistro(frameP);
-        loginDlg.setVisible(true);
+//		frmRegistro loginDlg = new frmRegistro(frameP);
+//        loginDlg.setVisible(true);
         
         clsComun.sigueinteArchivo();
 	}

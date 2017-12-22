@@ -54,11 +54,14 @@ public class frmPrincipal extends JFrame implements ActionListener
 	//MENÚ
 	private JMenuBar menuBar=new JMenuBar();
 	private JMenu archivo=new JMenu("Archivo");
-	private JMenu importar=new JMenu("Importar");
+	private JMenu importarArchivo=new JMenu("Importar archivo");
+	private JMenu importaCarpeta=new JMenu("Importar carpeta");
 	private JMenuItem libro=new JMenuItem("Libro");
 	private JMenuItem documento=new JMenuItem("Documento");
+	private JMenuItem libroC=new JMenuItem("Libro");
+	private JMenuItem documentoC=new JMenuItem("Documento");
 	private JMenu Mcom =new JMenu("Comentarios");
-	private JMenuItem VerComentarios = new JMenuItem( "Ver comentarios"); //Hacer que cuando se estén viendo los comentarios pase a poner ocultar comentarios
+	private JMenuItem VerComentarios = new JMenuItem( "Exportar comentarios"); //Hacer que cuando se estén viendo los comentarios pase a poner ocultar comentarios
 	// JMenu de sesión: cerrar sesión
 	//JMenu de guardar
 	//(??)Buscar
@@ -141,14 +144,20 @@ public class frmPrincipal extends JFrame implements ActionListener
 			setLocation(x, y);		
 			
 		}
+		
 		//Menú
 		//Construcción del menú
 		setJMenuBar(menuBar);
 		menuBar.add(archivo);
 				
-		archivo.add(importar);
-		importar.add(libro);
-				
+		archivo.add(importarArchivo);
+		importarArchivo.add(libro);
+		importarArchivo.add(documento);
+		
+		archivo.add(importaCarpeta);
+		importaCarpeta.add(libroC);
+		importaCarpeta.add(documentoC);
+		
 		menuBar.add(Mcom);
 		Mcom.add(VerComentarios);
 		
@@ -205,7 +214,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 			this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
 			Pcomentarios.add(EditC);
 			
-//			SeleccionarArchivo();
+			SeleccionarArchivo(true);
 //		}
 			
 		this.addComponentListener(new ComponentListener()
@@ -325,6 +334,7 @@ public class frmPrincipal extends JFrame implements ActionListener
 		if(response == JFileChooser.APPROVE_OPTION)
 		{
 			path = chooser.getSelectedFile().getPath();
+			PanelPDF.abrirPDF(path);
 			// aquí habrá que lanzar una pantalla para EL RESTO DE ATRIBUTOS además de la ruta
 			//Recoger el file
 			//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nombre (1)" o el número que sea
