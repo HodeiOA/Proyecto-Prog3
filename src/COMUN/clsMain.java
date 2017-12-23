@@ -18,8 +18,8 @@ public class clsMain
 		frmPrincipal frameP = new frmPrincipal("PDF Reader Deusto");
 		frameP.setVisible(true);
 		
-		frmRegistro loginDlg = new frmRegistro(frameP);
-        loginDlg.setVisible(true);
+//		frmRegistro loginDlg = new frmRegistro(frameP);
+//       loginDlg.setVisible(true);
         
         clsComun.sigueinteArchivo();
 	}

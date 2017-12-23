@@ -68,4 +68,30 @@ public class clsPanelPDF extends JScrollPane
 		}
 		// Si ponemos indicador de página, cambiar el número de la variable
 	}
+
+	public int getPagActual() 
+	{
+		return PagActual;
+	}
+
+	public void setPagActual(int pagActual) 
+	{
+		PagActual = pagActual;
+	}
+
+	public String getRuta()
+	{
+		return ruta;
+	}
+
+	public void setRuta(String ruta)
+	{
+		this.ruta = ruta;
+	}
+	
+	public int PaginasTotal ()
+	{
+		return PDFdecoder.getNumberOfPages();
+	}
+	
 }

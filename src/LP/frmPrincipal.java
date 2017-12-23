@@ -28,6 +28,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -60,10 +61,10 @@ public class frmPrincipal extends JFrame implements ActionListener
 	private JMenuItem documento=new JMenuItem("Documento");
 	private JMenuItem libroC=new JMenuItem("Libro");
 	private JMenuItem documentoC=new JMenuItem("Documento");
+	private JMenuItem BorrarArchivo= new JMenuItem ("Eliminar archivo");
 	private JMenu Mcom =new JMenu("Comentarios");
 	private JMenuItem VerComentarios = new JMenuItem( "Exportar comentarios"); //Hacer que cuando se estén viendo los comentarios pase a poner ocultar comentarios
 	// JMenu de sesión: cerrar sesión
-	//JMenu de guardar
 	//(??)Buscar
 	
 	//Paneles
@@ -76,6 +77,10 @@ public class frmPrincipal extends JFrame implements ActionListener
 	//Botones
 	JButton Banterior= new JButton("<<"); //mirar taller bicis
 	JButton Bsiguiente= new JButton(">>"); 
+	
+	//Marcador de página, cambiante según los botones de arriba y/o el slider
+	JTextArea numPag = new JTextArea ();
+	String indicadorPaginas; //Cada vez que cambiemos la página, cambiaremos el String
 	
 	//Otros compontentes
 	JProgressBar progreso=new JProgressBar();
@@ -158,6 +163,9 @@ public class frmPrincipal extends JFrame implements ActionListener
 		importaCarpeta.add(libroC);
 		importaCarpeta.add(documentoC);
 		
+		archivo.add(BorrarArchivo);
+		BorrarArchivo.setEnabled(false); //Esto lo cambiaremos cuando tenga algo seleccionado en la lista. Mientras tanto, false
+		
 		menuBar.add(Mcom);
 		Mcom.add(VerComentarios);
 		
@@ -191,11 +199,15 @@ public class frmPrincipal extends JFrame implements ActionListener
 		
 		//Panel para manipular el PDF
 		getContentPane().add(Pinferior, BorderLayout.SOUTH);
+		indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.PaginasTotal();
+		numPag.setText(indicadorPaginas);
+		numPag.setEditable(false);
 		
 		Pinferior.add(progreso);
 		Pinferior.add(Banterior);
 		Pinferior.add(slider);
 		Pinferior.add(Bsiguiente);
+		Pinferior.add(numPag);
 		
 		Pinferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
