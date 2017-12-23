@@ -91,9 +91,14 @@ public class clsGestor
 	}
 	
 	//DELETE
-	public void BorrarObjetoBD()
+	/**
+	 * 
+	 * @param ident
+	 * @param tabla debe ser un valor de entre "ARCHIVO", "COMENTARIO" y "USUARIO". de lo contrario, no hará nada
+	 */
+	public void BorrarObjetoBD(Object ident, String tabla)
 	{
-		
+		clsBD.BorrarFila(ident, tabla);
 	}
 	
 	//UPDATES

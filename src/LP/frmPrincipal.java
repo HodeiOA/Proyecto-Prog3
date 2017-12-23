@@ -37,13 +37,17 @@ import LD.clsBD;
 import LD.clsProperties;
 import LN.clsArchivo;
 import LN.clsGestor;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.SystemColor;
 import java.awt.FlowLayout;
+import java.awt.Font;
 
-public class frmPrincipal extends JFrame implements ActionListener
+public class frmPrincipal extends JFrame implements ActionListener, ChangeListener, ListChangeListener
 {
 	private int altura=0;
 	private int anchura=0;
@@ -199,9 +203,19 @@ public class frmPrincipal extends JFrame implements ActionListener
 		
 		//Panel para manipular el PDF
 		getContentPane().add(Pinferior, BorderLayout.SOUTH);
+		//Preparar el textode los números de página
 		indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.PaginasTotal();
 		numPag.setText(indicadorPaginas);
 		numPag.setEditable(false);
+		numPag.setBackground(SystemColor.inactiveCaption);
+		//prepara el texto del slider
+		//slider= new JSlider(JSlider.HORIZONTAL, 1, PanelPDF.PaginasTotal(), PanelPDF.getPagActual() );
+		slider= new JSlider(JSlider.HORIZONTAL, 1, 3, 2 );
+		slider.setPaintTicks(true);//las rayitas que marcan los números
+		slider.setMajorTickSpacing(5); // de cuanto en cuanto los números en el slider
+		slider.setMinorTickSpacing(1); //las rayitas de cuanto en cuanto
+		slider.setPaintLabels(true); //si se ve los números del slider
+		slider.setBackground(SystemColor.inactiveCaption);
 		
 		Pinferior.add(progreso);
 		Pinferior.add(Banterior);
@@ -418,6 +432,18 @@ public class frmPrincipal extends JFrame implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void changed(ObservableValue arg0, Object arg1, Object arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onChanged(Change arg0) {
 		// TODO Auto-generated method stub
 		
 	}

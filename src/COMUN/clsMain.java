@@ -1,5 +1,7 @@
 package COMUN;
 
+import javax.swing.SwingUtilities;
+
 import LD.clsBD;
 import LP.frmPrincipal;
 import LP.frmRegistro;
@@ -15,12 +17,16 @@ public class clsMain
 		clsBD.crearTablaUsuario();
 		
 		//Esto tiene que ir aquí porque, de ir antes, habrá problemas con la BD
-		frmPrincipal frameP = new frmPrincipal("PDF Reader Deusto");
-		frameP.setVisible(true);
-		
-		frmRegistro loginDlg = new frmRegistro(frameP);
-       loginDlg.setVisible(true);
-        
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() 
+		    {
+		    	frmPrincipal frameP = new frmPrincipal("PDF Reader Deusto");
+				frameP.setVisible(true);
+				frmRegistro loginDlg = new frmRegistro(frameP);
+		        loginDlg.setVisible(true);
+		    }
+		  });
+	        
         clsComun.sigueinteArchivo();
 	}
 

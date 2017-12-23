@@ -1,5 +1,6 @@
 package LP;
 import java.awt.Color;
+import java.io.File;
 
 import javax.swing.JScrollPane;
 
@@ -91,7 +92,7 @@ public class clsPanelPDF extends JScrollPane
 	
 	public int PaginasTotal ()
 	{
-		return PDFdecoder.getNumberOfPages();
+		return PDFdecoder.getPageCount();
 	}
 	
 }
