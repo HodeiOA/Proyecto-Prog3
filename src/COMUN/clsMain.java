@@ -9,16 +9,17 @@ public class clsMain
 	
 	public static void main(String[] args) 
 	{
-		frmPrincipal frameP = new frmPrincipal("PDF Reader Deusto");
-		frameP.setVisible(true);
-		
 		clsBD.initBD("BD Pdf reader");
 		clsBD.crearTablaArcivo();
 		clsBD.crearTablaComentario();
 		clsBD.crearTablaUsuario();
 		
-//		frmRegistro loginDlg = new frmRegistro(frameP);
-//        loginDlg.setVisible(true);
+		//Esto tiene que ir aquí porque, de ir antes, habrá problemas con la BD
+		frmPrincipal frameP = new frmPrincipal("PDF Reader Deusto");
+		frameP.setVisible(true);
+		
+		frmRegistro loginDlg = new frmRegistro(frameP);
+        loginDlg.setVisible(true);
         
         clsComun.sigueinteArchivo();
 	}

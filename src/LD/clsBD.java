@@ -431,17 +431,22 @@ public class clsBD
 		 HashSet <clsArchivo> retorno=new  HashSet <clsArchivo>();
 				try 
 				{
-					String sentSQL = "select * from fichero_archivo";
-					rs = statement.executeQuery( sentSQL );
-					while (rs.next())
-					{ 
-						 clsArchivo archivo = new clsArchivo(
-								 rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
-								 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
-								 rs.getBoolean("libroSi"), true, rs.getInt("codArchivo"));				
-						rs.close();
-						retorno.add(archivo);
+					String sentSQL = "SELECT * FROM fichero_archivo";
+					rs=statement.executeQuery( sentSQL );
+					if(rs!=null)
+					{
+						while (rs.next())
+						{ 
+							 clsArchivo archivo = new clsArchivo(
+									 rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
+									 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
+									 rs.getBoolean("libroSi"), true, rs.getInt("codArchivo"));				
+							rs.close();
+							retorno.add(archivo);
+						}
+							
 					}
+						
 					return retorno;
 				}
 				catch (SQLException e) 
@@ -461,14 +466,18 @@ public class clsBD
 				try 
 				{
 					String sentSQL = "select * from fichero_usuario";
-					rs = statement.executeQuery( sentSQL );
-					while (rs.next())
-					{ 
-						 clsUsuario usuario = new clsUsuario(
-								 rs.getString("nick"), rs.getString("contraseña"));				
-						rs.close();
-						retorno.add(usuario);
+					rs=statement.executeQuery( sentSQL );
+					if(rs!=null)
+					{
+						while (rs.next())
+						{ 
+							 clsUsuario usuario = new clsUsuario(
+									 rs.getString("nick"), rs.getString("contraseña"));				
+							rs.close();
+							retorno.add(usuario);
+						}
 					}
+
 					return retorno;
 				}
 				catch (SQLException e) 
@@ -488,14 +497,17 @@ public class clsBD
 				try 
 				{
 					String sentSQL = "select * from fichero_coemntario";
-					rs = statement.executeQuery( sentSQL );
-					while (rs.next())
-					{ 
-						//String texto, int codArchivo, int numPagina
-						clsComentario comentario = new clsComentario(
-								 rs.getString("texto"), rs.getInt("codArchivo"), rs.getInt("numPagina"), true, rs.getInt("ID"));				
-						rs.close();
-						retorno.add(comentario);
+					rs=statement.executeQuery( sentSQL );
+					if(rs!=null)
+					{
+						while (rs.next())
+						{ 
+							//String texto, int codArchivo, int numPagina
+							clsComentario comentario = new clsComentario(
+									 rs.getString("texto"), rs.getInt("codArchivo"), rs.getInt("numPagina"), true, rs.getInt("ID"));				
+							rs.close();
+							retorno.add(comentario);
+						}
 					}
 					return retorno;
 				}
