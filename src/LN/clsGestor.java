@@ -58,4 +58,58 @@ public class clsGestor
 			}
 		}
 	}
+	
+	//Solo hacemos llamadas a BD, pero hacemos métodods en Gestor para mantener la estructura del programa
+	
+	//INSERTS
+	public static void guardarArchivo(String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
+	{ 
+		boolean exito;
+		exito=clsBD.InsertArchivo(nomAutor, apeAutor, codArchivo, titulo, ruta, numPags, ultimaPagLeida, tiempo, libroSi); //Cada vez que se cierre el pdf, cambiar ultimaPagleida y tiempo
+		if(!exito)
+		{
+			//no se ha podido guardar
+		}
+	}
+	public static void guardarUsuario(String contraseña, String nick)
+	{
+		boolean exito;
+		exito=clsBD.InsertUsuario(contraseña, nick);
+		if(!exito)
+		{
+			//no se ha podido guardar
+		}
+	}
+	public static void guardarComentario(int ID, String texto, int codArchivo, int numPag)
+	{
+		boolean exito;
+		exito=clsBD.InsertComentario(ID, texto, codArchivo, numPag);
+		if(!exito)
+		{
+			//no se ha podido guardar
+		}
+	}
+	
+	//DELETE
+	public void BorrarObjetoBD()
+	{
+		
+	}
+	
+	//UPDATES
+	public void ModificarArchivo()
+	{
+		
+	}
+	
+	public void ModificarUsuario()
+	{
+		
+	}
+	
+	public void ModificarComentario()
+	{
+		
+	}
+	
 }

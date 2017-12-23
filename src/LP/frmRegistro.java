@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -21,6 +22,7 @@ import COMUN.clsNickNoExiste;
 import COMUN.clsNickRepetido;
 import LD.clsBD;
 import LN.clsGestor;
+import LN.clsUsuario;
 
 public class frmRegistro extends JDialog implements ActionListener
 {
@@ -108,7 +110,8 @@ public class frmRegistro extends JDialog implements ActionListener
 	{
 		String nick;
 		String pass;
-
+		HashSet <clsUsuario> usuarios=clsBD.LeerUsuarios();
+		
 		nick=tfUsername.getText();
 		pass= String.valueOf(pfPassword.getPassword());		
 		
@@ -121,9 +124,24 @@ public class frmRegistro extends JDialog implements ActionListener
 				} 
 				catch (clsNickRepetido e)
 				{
-
-					 JOptionPane.showMessageDialog(this,"Holi " + nick + ". Has entrado correctamente", "Usuario correcto", JOptionPane.INFORMATION_MESSAGE);
-					 dispose();
+					//Comprobar que la contraseña es correcta
+					for(clsUsuario a: usuarios)
+					{
+						if(a.getNick().equals(nick))
+						{
+							if(a.getContraseña().equals(pass))
+							{
+								JOptionPane.showMessageDialog(this,"Holi " + nick + ". Has entrado correctamente", "Usuario correcto", JOptionPane.INFORMATION_MESSAGE);
+								 dispose();
+							}
+							else
+							{
+								JOptionPane.showMessageDialog(this,"La contraseña introducida no concuerda con la del nick "+ nick + ". Por favor, vuelve a intentarlo", "Contraseña incorrecta", JOptionPane.ERROR_MESSAGE);
+								
+							}
+						}
+					}
+					 
 				}
 				catch (clsNickNoExiste e)
 				{
@@ -156,18 +174,13 @@ public class frmRegistro extends JDialog implements ActionListener
 				} catch (clsNickRepetido e)
 				{
 					JOptionPane.showMessageDialog(this, e.getMessage(), "Registro", JOptionPane.ERROR_MESSAGE);
-//					
+			
 				}
 				catch (clsNickNoExiste e)
 				{
 					//En este caso, aunque sea una excepción porque en otro caso es un error, que dé esta excepción es que todo va bien
 					JOptionPane.showMessageDialog(this,"¡Registro exitoso!");
-//					 //crear nuevo usuario en la BD
-//					 boolean insert=clsBD.InsertUsuario(pass, nick);
-//					 if (!insert)
-//					 {
-//						 //error de BD
-//					 }
+					clsGestor.guardarUsuario(pass, nick);
 				};
 			 } 
 			 else 
