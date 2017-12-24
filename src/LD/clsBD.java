@@ -355,11 +355,12 @@ public class clsBD
 	public static boolean UpdateComentario (int ID, String texto, int codArchivo, int numPag)
 	{
 		try {
-			String sentSQL = "insert into fichero_comentario values(" +
-					"'" + ID + "', " +
-					"'" + texto + "', " +
-					"'" + codArchivo + "', " +
-					"'" + numPag + "')";
+			String sentSQL = "update fichero_comentario set" +
+					"'" + "ID=" + ID + "', " +
+					"'" + "texto=" + texto + "', " +
+					"'" + "codArchivo =" + codArchivo + "', " +
+					"'" + "numPag" + numPag + 
+					"where ID = "+ ID +"')";
 			int val = statement.executeUpdate( sentSQL );
 			return true;
 		} catch (SQLException e) {

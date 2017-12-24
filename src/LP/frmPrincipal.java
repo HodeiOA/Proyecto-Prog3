@@ -24,6 +24,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
@@ -36,6 +37,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import LD.clsBD;
 import LD.clsProperties;
 import LN.clsArchivo;
+import LN.clsComentario;
 import LN.clsGestor;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -71,6 +73,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	// JMenu de sesión: cerrar sesión
 	//(??)Buscar
 	
+	//Para el menú que se despliega a al hacer click derecho sobre un elemento de la lista
+	JPopupMenu popup;
 	//Paneles
 	private JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
 	private JPanel PLibros=new JPanel(); //Panel dentro de la pestaña libros
@@ -240,6 +244,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
 			Pcomentarios.add(EditC);
 			
+			// Construccion del JPopupMenu para el click derecho
+			popup = new JPopupMenu();
+			popup.add(new JMenuItem("Detalles"));
+			popup.add(new JMenuItem("Eliminar archivo"));
+
 			SeleccionarArchivo(true);
 //		}
 			
@@ -278,7 +287,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				public void windowActivated(WindowEvent arg0) 
 				{					
 					clsProperties.CargarProps(misProps);	
-					HashArchivos = clsBD.LeerArchivos();
+					HashArchivos = clsGestor.LeerArchivosBD();
 					clsGestor.llenarLibrosDocum (HashArchivos, HashLibros, HashDocumentos);
 					modelLibros.cargarInfo(HashLibros);
 					modelDocumentos.cargarInfo(HashDocumentos);
@@ -327,6 +336,15 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				}
 				
 			});
+	}
+	
+	public void CrearComentarios()
+	{
+		HashSet <clsComentario> comentarios = clsGestor.LeerComentariosBD();
+		for (clsComentario c: comentarios)
+		{
+			Pcomentarios.add(new JTextArea (c.getTexto()));
+		}
 	}
 	
 	/**

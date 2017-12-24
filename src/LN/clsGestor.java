@@ -117,4 +117,20 @@ public class clsGestor
 		
 	}
 	
+	//Lecturas
+	public static HashSet <clsArchivo> LeerArchivosBD()
+	{
+		 HashSet <clsArchivo> retorno = clsBD.LeerArchivos();
+		 return retorno;
+	}
+	public static HashSet <clsUsuario> LeerUsuariosBD()
+	{
+		 HashSet <clsUsuario> retorno = clsBD.LeerUsuarios();
+		 return retorno;
+	}
+	public static HashSet <clsComentario> LeerComentariosBD()
+	{
+		HashSet <clsComentario> retorno = clsBD.LeerComentarios();
+		return retorno;
+	}
 }

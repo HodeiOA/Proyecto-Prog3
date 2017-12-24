@@ -110,7 +110,7 @@ public class frmRegistro extends JDialog implements ActionListener
 	{
 		String nick;
 		String pass;
-		HashSet <clsUsuario> usuarios=clsBD.LeerUsuarios();
+		HashSet <clsUsuario> usuarios=clsGestor.LeerUsuariosBD();
 		
 		nick=tfUsername.getText();
 		pass= String.valueOf(pfPassword.getPassword());		
