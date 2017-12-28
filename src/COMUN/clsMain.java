@@ -27,7 +27,9 @@ public class clsMain
 		    }
 		  });
 	        
-        clsComun.sigueinteArchivo();
+        clsComun.siguienteArchivo();
+        clsComun.siguienteComentario();
+
 	}
 
 }
