@@ -125,7 +125,7 @@ public class clsBD
 		if (statement==null) return;
 		try
 		{
-			statement.executeUpdate("create table fichero_cometario " +
+			statement.executeUpdate("create table fichero_comentario " +
 				"( ID int, Texto string, codArchivo int, numPag int, primary key(ID), foreign key (codArchivo) references fichero_archivo(codArchivo)");
 
 		} catch (SQLException e) 
@@ -226,7 +226,7 @@ public class clsBD
 	/**
 	 * Borra una fila de la tabla indicada en el parámetro "tabla" 
 	 * @param ident atributo identificativo del objeto que tenemos que eliminar
-	 * @param tabla indica de qué tabla vamos a tener que eliminar el registro
+	 * @param tabla indica de qué tabla vamos a tener que eliminar el registro: "ARCHIVO", "USUARIO" o "COMENTARIO"
 	 * @return devuelve un boolean indicando si la operación se ha podido hacer o no
 	 */
 	public static boolean BorrarFila (Object ident, String tabla)
@@ -267,7 +267,7 @@ public class clsBD
 				try 
 				{
 					int ID=(Integer)ident;
-					String sentSQL = "DELETE FROM fichero_COMENTARIO WHERE ID = "+ID;
+					String sentSQL = "DELETE FROM fichero_comentario WHERE ID = "+ID;
 					int val = statement.executeUpdate( sentSQL );
 					if (val!=1) return false; 
 					return true;
@@ -373,7 +373,7 @@ public class clsBD
 	//Drops
 	/**
 	 * Borra una tabla
-	 * @param tabla indica qué tabla borra
+	 * @param tabla indica qué tabla borra: "ARCHIVO", "USUARIO" o "COMENTARIO"
 	 * @return indica si la acción se ha podido realizar o no
 	 */
 	public static boolean DropTable(String tabla)
@@ -497,7 +497,7 @@ public class clsBD
 		 HashSet <clsComentario> retorno=new  HashSet <clsComentario>();
 				try 
 				{
-					String sentSQL = "select * from fichero_coemntario";
+					String sentSQL = "select * from fichero_comentario";
 					rs=statement.executeQuery( sentSQL );
 					if(rs!=null)
 					{

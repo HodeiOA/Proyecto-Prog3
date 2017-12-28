@@ -18,7 +18,7 @@ public class clsComun
 		HashSet <clsArchivo> listaArchivos = new HashSet();
 		int codArchivo=0;
 		
-		listaArchivos = clsBD.LeerArchivos();	//aquí se le llama a la función  
+		listaArchivos = clsGestor.LeerArchivosBD();	//aquí se le llama a la función  
 		
 		for(clsArchivo aux: listaArchivos)
 		{
@@ -36,7 +36,7 @@ public class clsComun
 		HashSet <clsComentario> listaComentarios = new HashSet();
 		int codComentario=0;
 		
-		listaComentarios = clsBD.LeerComentarios();	//aquí se le llama a la función  
+		listaComentarios = clsGestor.LeerComentariosBD();	//aquí se le llama a la función  
 		
 		for(clsComentario aux: listaComentarios)
 		{

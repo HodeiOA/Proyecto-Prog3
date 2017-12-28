@@ -381,6 +381,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			PanelPDF.abrirPDF(path);
 			// aquí habrá que lanzar una pantalla para EL RESTO DE ATRIBUTOS además de la ruta
 			//Recoger el file
+			//Para probarlo, creación de un clsArchivo Falso
+			clsArchivo a = new clsArchivo ("Maider", "c", "Maider mola", "", 0, 0, 0, true, false, 0);
+			HashArchivos.add(a);
+			modelLibros.cargarInfo(HashArchivos);
 			//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nombre (1)" o el número que sea
 			//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
 		}
