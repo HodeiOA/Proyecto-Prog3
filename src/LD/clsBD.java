@@ -87,9 +87,18 @@ public class clsBD
 		try
 		{ 
 			statement.executeUpdate("create table fichero_archivo " +
-					"(nick string, nomAutor string, apeAutor string, codArchivo int, "
-					+ "titulo string, ruta string, numPags int, ultimaPagLeida int,tiempo int,libroSi boolean, "
-					+ "foreign key(nick) references fichero_usuario(nick), primary key(codArchivo)"
+					"("
+					+ " nomAutor string,"
+					+ " apeAutor string,"
+					+ " codArchivo int, "
+					+ "titulo string,"
+					+ " ruta string,"
+					+ " numPags int,"
+					+ " ultimaPagLeida int,"
+					+ "tiempo int,"
+					+ "libroSi boolean, "
+					//+ "foreign key(nick) references fichero_usuario(nick),"
+					+ " primary key(codArchivo)"
 					+ ")");
 
 		} catch (SQLException e) 
@@ -126,7 +135,9 @@ public class clsBD
 		try
 		{
 			statement.executeUpdate("create table fichero_comentario " +
-				"( ID int, Texto string, codArchivo int, numPag int, primary key(ID), foreign key (codArchivo) references fichero_archivo(codArchivo)");
+				"( ID int, Texto string, codArchivo int, numPag int, primary key(ID)"
+				//+ ", foreign key (codArchivo) references fichero_archivo(codArchivo"
+				+ ")");
 
 		} catch (SQLException e) 
 		{
@@ -441,18 +452,18 @@ public class clsBD
 							 clsArchivo archivo = new clsArchivo(
 									 rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
 									 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
-									 rs.getBoolean("libroSi"), true, rs.getInt("codArchivo"));				
-							rs.close();
+									 rs.getBoolean("libroSi"), true, rs.getInt("codArchivo"));
 							retorno.add(archivo);
 						}
-							
+						rs.close();	
 					}
 						
 					return retorno;
 				}
 				catch (SQLException e) 
 				{
-					e.printStackTrace();
+					//e.printStackTrace();
+					retorno= new HashSet <clsArchivo>();
 					return null;
 				}	
 	}
@@ -474,9 +485,10 @@ public class clsBD
 						{ 
 							 clsUsuario usuario = new clsUsuario(
 									 rs.getString("nick"), rs.getString("contraseña"));				
-							rs.close();
+							
 							retorno.add(usuario);
 						}
+						rs.close();
 					}
 
 					return retorno;
@@ -506,9 +518,9 @@ public class clsBD
 							//String texto, int codArchivo, int numPagina
 							clsComentario comentario = new clsComentario(
 									 rs.getString("texto"), rs.getInt("codArchivo"), rs.getInt("numPagina"), true, rs.getInt("ID"));				
-							rs.close();
 							retorno.add(comentario);
 						}
+						rs.close();
 					}
 					return retorno;
 				}

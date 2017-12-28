@@ -23,6 +23,7 @@ import COMUN.clsNickRepetido;
 import LD.clsBD;
 import LN.clsGestor;
 import LN.clsUsuario;
+import oracle.jrockit.jfr.events.DynamicValueDescriptor;
 
 public class frmRegistro extends JDialog implements ActionListener
 {
@@ -32,7 +33,6 @@ public class frmRegistro extends JDialog implements ActionListener
 	private JLabel lbPassword;
     private JButton btnLogin;
     private JButton btnEntrar;
-    private boolean succeeded;
     private JPanel panelUsu;
     private JPanel panelCont;
     private JPanel panelBot;
@@ -126,7 +126,7 @@ public class frmRegistro extends JDialog implements ActionListener
 				{
 					//Comprobar que la contraseña es correcta
 					for(clsUsuario a: usuarios)
-					{
+					{ 
 						if(a.getNick().equals(nick))
 						{
 							if(a.getContraseña().equals(pass))
@@ -134,17 +134,25 @@ public class frmRegistro extends JDialog implements ActionListener
 								JOptionPane.showMessageDialog(this,"Holi " + nick + ". Has entrado correctamente", "Usuario correcto", JOptionPane.INFORMATION_MESSAGE);
 								 dispose();
 							}
-							else
+						}
+					}
+					//Repetimos el for, ya que si lo ponemos en un else arriba, solo muestra el mensaje para el primer usuario
+					//Si la contraseña era correcta, no se muestra esto, ya que se cierra la ventana, por lo que esto solo pasa si la contraseña 
+					//no es correcta
+					for(clsUsuario a: usuarios)
+					{
+						if(a.getNick().equals(nick))
+						{
+							if(!(a.getContraseña().equals(pass)))
 							{
 								JOptionPane.showMessageDialog(this,"La contraseña introducida no concuerda con la del nick "+ nick + ". Por favor, vuelve a intentarlo", "Contraseña incorrecta", JOptionPane.ERROR_MESSAGE);
-								
 							}
 						}
 					}
-					 
 				}
 				catch (clsNickNoExiste e)
 				{
+					System.out.println("nick no repetido");
 					JOptionPane.showMessageDialog(this, e.getMessage(), "Registro", JOptionPane.ERROR_MESSAGE);
 				};
 			 } 

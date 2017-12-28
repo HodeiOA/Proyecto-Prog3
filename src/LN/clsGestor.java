@@ -38,7 +38,6 @@ public class clsGestor
 		{
 			clsNickNoExiste noExiste= new clsNickNoExiste(nick);
 			throw noExiste;
-			
 		}
 		
 		//return existe;
@@ -46,17 +45,21 @@ public class clsGestor
 	
 	public static void llenarLibrosDocum(HashSet <clsArchivo> HashArchivos, HashSet <clsArchivo> HashLibros, HashSet <clsArchivo> HashDocumentos)
 	{
-		for (clsArchivo a: HashArchivos )
+		if( HashArchivos !=null)
 		{
-			if(a.getLibroSi())
+			for (clsArchivo a: HashArchivos )
 			{
-				HashLibros.add(a);
-			}
-			else
-			{
-				HashDocumentos.add(a);
+				if(a.getLibroSi())
+				{
+					HashLibros.add(a);
+				}
+				else
+				{
+					HashDocumentos.add(a);
+				}
 			}
 		}
+			
 	}
 	
 	//Solo hacemos llamadas a BD, pero hacemos métodods en Gestor para mantener la estructura del programa

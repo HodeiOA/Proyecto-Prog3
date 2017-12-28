@@ -15,6 +15,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -39,6 +40,7 @@ import LD.clsProperties;
 import LN.clsArchivo;
 import LN.clsComentario;
 import LN.clsGestor;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -51,6 +53,7 @@ import java.awt.Font;
 
 public class frmPrincipal extends JFrame implements ActionListener, ChangeListener, ListChangeListener
 {
+	private static final AbstractButton AddDocumento = null;
 	private int altura=0;
 	private int anchura=0;
 	private int x=0;
@@ -105,14 +108,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	
 
 	//Para el Listmodel
-	HashSet <clsArchivo> HashArchivos = new HashSet();
-	HashSet <clsArchivo> HashLibros = new HashSet();
-	HashSet <clsArchivo> HashDocumentos = new HashSet();
-	modelArchivos modelLibros = new modelArchivos();
-	modelArchivos modelDocumentos = new modelArchivos();
+	static HashSet <clsArchivo> HashArchivos = new HashSet();
+	static HashSet <clsArchivo> HashLibros = new HashSet();
+	static HashSet <clsArchivo> HashDocumentos = new HashSet();
+	static modelArchivos modelLibros;
+	static modelArchivos modelDocumentos;
 	
 	//Listas para libros/documentos
-	JList ListLibros;
+	static JList ListLibros;
 	JList ListDoc;
 	
 	//JFileChooser:
@@ -122,7 +125,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private static Pattern filtro;
 	
 	//Para guardar propiedades
-	Properties misProps=new Properties();
+	static Properties misProps=new Properties();
 	ArrayList <String> ClavesPropiedades = new ArrayList();
 	String[] AnchuraAltura = new String[2];
 	String[] locationXY = new String[2];
@@ -136,6 +139,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ClavesPropiedades.add("X");
 		ClavesPropiedades.add("Y");
 		setTitle(titulo);
+		
+		CargarDatos();
 		//Leer el xml que guarda el tamaño de la ventana y meter los datos en altura y anchura
 		//Este if lo tendremos que hacer, pero lo comento hasta que podamos leer los valores
 //		anchura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(0)));
@@ -189,10 +194,31 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ImageIcon icon = null;
 		getContentPane().add(panelListas, BorderLayout.WEST);
 		
-		PLibros.add(AddLibro);
+		PLibros.add(AddLibro); 
 		PLibros.add(ListLibros);
 		PDocum.add(AddDoc);
 		PDocum.add(ListDoc);
+		
+
+		//Le añadimos el Listener a AddLibros
+		AddLibro.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				SeleccionarArchivo(true);
+			}
+		});
+		
+//		//Le añadimos el Listener a AddDocumento
+//				AddDocumento.addActionListener(new ActionListener()
+//				{
+//					@Override
+//					public void actionPerformed(ActionEvent e)
+//					{
+//						SeleccionarArchivo(false);
+//					}
+//				});
 
 		panelListas.setPreferredSize(new Dimension(225, 40));
 		panelListas.addTab("Libros",icon,PLibros,
@@ -249,7 +275,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			popup.add(new JMenuItem("Detalles"));
 			popup.add(new JMenuItem("Eliminar archivo"));
 
-			SeleccionarArchivo(true);
+			
 //		}
 			
 		this.addComponentListener(new ComponentListener()
@@ -286,11 +312,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				@Override
 				public void windowActivated(WindowEvent arg0) 
 				{					
-					clsProperties.CargarProps(misProps);	
-					HashArchivos = clsGestor.LeerArchivosBD();
-					clsGestor.llenarLibrosDocum (HashArchivos, HashLibros, HashDocumentos);
-					modelLibros.cargarInfo(HashLibros);
-					modelDocumentos.cargarInfo(HashDocumentos);
+					CargarDatos();
 				}
 	
 				@Override
@@ -348,6 +370,21 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	}
 	
 	/**
+	 * En este método cargamos los datos, en este caso la lista de películas.
+	 */
+	public static void CargarDatos()
+	{
+		clsProperties.CargarProps(misProps);	
+		HashArchivos = clsGestor.LeerArchivosBD();
+		clsGestor.llenarLibrosDocum (HashArchivos, HashLibros, HashDocumentos);
+		modelLibros= new modelArchivos(HashLibros);
+		modelDocumentos= new modelArchivos(HashDocumentos);
+		ListLibros=new JList(modelLibros);
+		ListLibros.setModel(modelLibros);
+	}
+	
+	
+	/**
 	 * Método para recoger/guardar un solo PDF con filtro de PDFs
 	 */
 	public void SeleccionarArchivo(boolean esLibro)
@@ -384,7 +421,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			//Para probarlo, creación de un clsArchivo Falso
 			clsArchivo a = new clsArchivo ("Maider", "c", "Maider mola", "", 0, 0, 0, true, false, 0);
 			HashArchivos.add(a);
-			modelLibros.cargarInfo(HashArchivos);
+//			modelLibros.cargarInfo(HashArchivos);
+			CargarDatos();
+			clsGestor.guardarArchivo(a.getNomAutor(), a.getApeAutor(), a.getCodArchivo(), a.getTitulo(), a.getRuta(), a.getNumPags(), a.getUltimaPagLeida(), a.getTiempo(), a.getLibroSi());
 			//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nombre (1)" o el número que sea
 			//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
 		}
