@@ -383,18 +383,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		HashArchivos = clsGestor.LeerArchivosBD();
 		clsGestor.llenarLibrosDocum (HashArchivos, HashLibros, HashDocumentos);
 
-//		for (clsArchivo a: HashLibros)
-//		{
-//			System.out.println("Libros" + a.getNomAutor());
-//		}
-//		for (clsArchivo a: HashDocumentos)
-//		{
-//			System.out.println("Doc"+a.getNomAutor());
-//		}
-//		for (clsArchivo a: HashArchivos)
-//		{
-//			System.out.println("Arch"+a.getNomAutor());
-//		}
 		modelLibros = new modelArchivos(HashLibros);
 		modelDocumentos = new modelArchivos(HashDocumentos);
 	}
