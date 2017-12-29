@@ -154,5 +154,13 @@ public class clsArchivo implements Comparable
 	public static void setSigCodArchivo(int sigCodArchivo) {
 		clsArchivo.sigCodArchivo = sigCodArchivo;
 	}
+
+	@Override
+	public String toString() 
+	{
+		return ("Archivo");
+	}
+	
+	
 	
 }

@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractButton;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -47,6 +48,7 @@ import javafx.collections.ListChangeListener;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.SystemColor;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -80,7 +82,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	JPopupMenu popup;
 	//Paneles
 	private JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
-	private JPanel PLibros=new JPanel(); //Panel dentro de la pestaña libros
+	private static JPanel PLibros=new JPanel(); //Panel dentro de la pestaña libros
 	private JPanel PDocum=new JPanel(); //Panel dentro de la pestaña documentos
 	private clsPanelPDF PanelPDF = new clsPanelPDF();
 	private JPanel Pinferior= new JPanel();
@@ -115,8 +117,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	static modelArchivos modelDocumentos;
 	
 	//Listas para libros/documentos
-	static JList ListLibros;
-	JList ListDoc;
+	static JList ListLibros=new JList();
+	static JList ListDoc;
 	
 	//JFileChooser:
 	private JFileChooser chooser;
@@ -194,11 +196,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ImageIcon icon = null;
 		getContentPane().add(panelListas, BorderLayout.WEST);
 		
-		PLibros.add(AddLibro); 
+	
 		PLibros.add(ListLibros);
-		PDocum.add(AddDoc);
+		PLibros.add(AddLibro); 
 		PDocum.add(ListDoc);
-		
+		PDocum.add(AddDoc);		
 
 		//Le añadimos el Listener a AddLibros
 		AddLibro.addActionListener(new ActionListener()
@@ -312,7 +314,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				@Override
 				public void windowActivated(WindowEvent arg0) 
 				{					
-					CargarDatos();
+					
 				}
 	
 				@Override
@@ -379,8 +381,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		clsGestor.llenarLibrosDocum (HashArchivos, HashLibros, HashDocumentos);
 		modelLibros= new modelArchivos(HashLibros);
 		modelDocumentos= new modelArchivos(HashDocumentos);
-		ListLibros=new JList(modelLibros);
+
 		ListLibros.setModel(modelLibros);
+		ListDoc.setModel(modelDocumentos);
 	}
 	
 	

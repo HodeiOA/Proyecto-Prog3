@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import javax.swing.event.ListDataListener;
 
 import LN.clsArchivo;
 
-public class modelArchivos extends AbstractListModel implements ListModel
+public class modelArchivos extends DefaultListModel <clsArchivo>
 {
-	private Object[][] info;
+	private String[] info;
 	HashSet <clsArchivo> ArchivosModel = new HashSet <clsArchivo>();
 	private int filas;
 	private int contador=0;
@@ -23,17 +24,16 @@ public class modelArchivos extends AbstractListModel implements ListModel
 	public modelArchivos(HashSet <clsArchivo> HashArchivos)
 	{
 		super();	
-		cargarInfo(HashArchivos);
 		ArchivosModel=HashArchivos;
+		cargarInfo(HashArchivos);
 	}
+	
 	public void cargarInfo(HashSet <clsArchivo> HashArchivos )
 	{
 		filas=HashArchivos.size();
-		info = new Object[filas][];
 		
 		for(clsArchivo a: HashArchivos)
 		{
-			HashArchivos.add(a);
 			String titulo = a.getTitulo();
 			String ruta=a.getRuta();
 			String apeAutor=a.getApeAutor();
@@ -43,8 +43,9 @@ public class modelArchivos extends AbstractListModel implements ListModel
 			int ultimaPagLeida = a.getUltimaPagLeida();
 			int tiempo= a.getTiempo();	
 
-			Object [] filas = {titulo, ruta, nomAutor, apeAutor, codArchivo, numPags, ultimaPagLeida, tiempo};
-			info[contador]=filas;
+			String algo = ""+titulo +", " + nomAutor +", "+ apeAutor +"páginas: " + numPags + " tiempo: " +tiempo;
+			System.out.println(algo);
+//			this.addElement(algo);
 			contador++;
 		}
 	}
@@ -57,11 +58,11 @@ public class modelArchivos extends AbstractListModel implements ListModel
 	}
 
 	@Override
-	public Object getElementAt(int index) 
+	public clsArchivo getElementAt(int index) 
 	{
 		// TODO Auto-generated method stub
 		Object[] a= ArchivosModel.toArray();
-		return a[index];
+		return (clsArchivo) a[index];
 	}
 
 	@Override
@@ -76,5 +77,12 @@ public class modelArchivos extends AbstractListModel implements ListModel
 		// TODO Auto-generated method stub
 		
 	}
+//	@Override
+//	public void addElement(Object element) 
+//	{
+//		// TODO Auto-generated method stub
+//		super.addElement(element);
+//	}
+	
 
 }

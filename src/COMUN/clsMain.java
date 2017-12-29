@@ -27,8 +27,8 @@ public class clsMain
 		    }
 		  });
 	        
-//        clsComun.siguienteArchivo();
-//        clsComun.siguienteComentario(); Da excepción
+        clsComun.siguienteArchivo();
+        clsComun.siguienteComentario(); //Da excepción
 
 	}
 
