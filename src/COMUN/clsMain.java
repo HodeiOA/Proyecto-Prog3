@@ -12,7 +12,7 @@ public class clsMain
 	public static void main(String[] args) 
 	{
 		clsBD.initBD("BD Pdf reader");
-		clsBD.crearTablaArcivo();
+		clsBD.crearTablaArchivo();
 		clsBD.crearTablaComentario();
 		clsBD.crearTablaUsuario();
 		

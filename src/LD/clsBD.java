@@ -81,7 +81,7 @@ public class clsBD
 	/** Crea una tabla de archivos en una base de datos, si no existía ya.
 	 * Debe haberse inicializado la conexión correctamente.
 	 */
-	public static void crearTablaArcivo() 
+	public static void crearTablaArchivo() 
 	{
 		if (statement==null) return;
 		try
