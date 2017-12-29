@@ -452,7 +452,7 @@ public class clsBD
 							 clsArchivo archivo = new clsArchivo(
 									 rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
 									 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
-									 rs.getBoolean("libroSi"), true, rs.getInt("codArchivo"));
+									 Boolean.parseBoolean(rs.getString("libroSi")), true, rs.getInt("codArchivo"));
 							retorno.add(archivo);
 						}
 						rs.close();	

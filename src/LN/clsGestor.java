@@ -51,12 +51,10 @@ public class clsGestor
 			{
 				if(a.getLibroSi())
 				{
-					System.out.println("es libro");
 					HashLibros.add(a);
 				}
 				else
 				{
-					System.out.println("es documento");
 					HashDocumentos.add(a);
 				}
 			}
