@@ -7,6 +7,8 @@ import javax.swing.JScrollPane;
 import org.jpedal.PdfDecoder;
 import org.jpedal.exception.PdfException;
 
+import LN.clsArchivo;
+
 public class clsPanelPDF extends JScrollPane
 {
 	private PdfDecoder PDFdecoder;
@@ -16,7 +18,7 @@ public class clsPanelPDF extends JScrollPane
 	
 	public clsPanelPDF()
 	{
-		PDFdecoder = new PdfDecoder(true);
+		PDFdecoder = new PdfDecoder();
 		
 		PDFdecoder.setBackground(Color.DARK_GRAY);
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -24,10 +26,10 @@ public class clsPanelPDF extends JScrollPane
 		this.setViewportView(PDFdecoder);
 	}
 	
-	public void abrirPDF(String Ruta)
+	public void abrirPDF(clsArchivo archivo)
 	{
 		PagActual = 1;
-		ruta = Ruta;
+		ruta = archivo.getRuta();
 		
 		try {
 			PDFdecoder.closePdfFile();
@@ -84,13 +86,8 @@ public class clsPanelPDF extends JScrollPane
 	{
 		return ruta;
 	}
-
-	public void setRuta(String ruta)
-	{
-		this.ruta = ruta;
-	}
 	
-	public int PaginasTotal ()
+	public int getPaginasTotal()
 	{
 		return PDFdecoder.getPageCount();
 	}

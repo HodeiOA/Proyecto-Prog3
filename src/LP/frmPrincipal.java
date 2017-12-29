@@ -239,7 +239,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		//Panel para manipular el PDF
 		getContentPane().add(Pinferior, BorderLayout.SOUTH);
 		//Preparar el textode los números de página
-		indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.PaginasTotal();
+		indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.getPaginasTotal();
 		numPag.setText(indicadorPaginas);
 		numPag.setEditable(false);
 		numPag.setBackground(SystemColor.inactiveCaption);
@@ -419,11 +419,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		if(response == JFileChooser.APPROVE_OPTION)
 		{
 			path = chooser.getSelectedFile().getPath();
-			PanelPDF.abrirPDF(path);
 			// aquí habrá que lanzar una pantalla para EL RESTO DE ATRIBUTOS además de la ruta
 			//Recoger el file
 			//Para probarlo, creación de un clsArchivo Falso
 			clsArchivo a = new clsArchivo ("Maider", "c", "Maider mola", "", 0, 0, 0, true, false, 0);
+			PanelPDF.abrirPDF(a);
 			HashArchivos.add(a);
 //			modelLibros.cargarInfo(HashArchivos);
 			CargarDatos();
