@@ -382,8 +382,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		clsProperties.CargarProps(misProps);	
 		HashArchivos = clsGestor.LeerArchivosBD();
 		clsGestor.llenarLibrosDocum (HashArchivos, HashLibros, HashDocumentos);
-		modelLibros= new modelArchivos(HashLibros);
-		modelDocumentos= new modelArchivos(HashDocumentos);
 
 		modelLibros = new modelArchivos(HashArchivos);
 		modelDocumentos = new modelArchivos(HashDocumentos);
