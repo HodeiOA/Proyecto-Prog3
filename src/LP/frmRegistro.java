@@ -152,7 +152,6 @@ public class frmRegistro extends JDialog implements ActionListener
 				}
 				catch (clsNickNoExiste e)
 				{
-					System.out.println("nick no repetido");
 					JOptionPane.showMessageDialog(this, e.getMessage(), "Registro", JOptionPane.ERROR_MESSAGE);
 				};
 			 } 
@@ -188,7 +187,7 @@ public class frmRegistro extends JDialog implements ActionListener
 				{
 					//En este caso, aunque sea una excepción porque en otro caso es un error, que dé esta excepción es que todo va bien
 					JOptionPane.showMessageDialog(this,"¡Registro exitoso!");
-					clsGestor.guardarUsuario(pass, nick);
+					clsGestor.guardarUsuario(nick, pass);
 				};
 			 } 
 			 else 

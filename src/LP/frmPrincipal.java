@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractButton;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -117,8 +118,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	static modelArchivos modelDocumentos;
 	
 	//Listas para libros/documentos
-	static JList ListLibros=new JList(modelLibros);
-	static JList ListDoc=new JList(modelDocumentos);
+	static JList ListLibros;
+	static JList ListDoc;
 	
 	//JFileChooser:
 	private JFileChooser chooser;
@@ -191,16 +192,18 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ListLibros=new JList(modelLibros);
 		ListDoc=new JList (modelDocumentos);
 		
+		
+		
 		//Panel Para libros/Documentos
 	
 		ImageIcon icon = null;
 		getContentPane().add(panelListas, BorderLayout.WEST);
 		
-	
-		PLibros.add(ListLibros);
+		PLibros.setLayout(new BoxLayout(PLibros, BoxLayout.PAGE_AXIS));
 		PLibros.add(AddLibro); 
+		PLibros.add(ListLibros);
+		PDocum.add(AddDoc);	
 		PDocum.add(ListDoc);
-		PDocum.add(AddDoc);		
 
 		//Le añadimos el Listener a AddLibros
 		AddLibro.addActionListener(new ActionListener()
@@ -382,8 +385,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		modelLibros= new modelArchivos(HashLibros);
 		modelDocumentos= new modelArchivos(HashDocumentos);
 
-		modelLibros.setLista(HashArchivos);
-		modelDocumentos.setLista(HashDocumentos);
+		modelLibros = new modelArchivos(HashArchivos);
+		modelDocumentos = new modelArchivos(HashDocumentos);
 	}
 	
 	
