@@ -9,6 +9,10 @@ import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
@@ -423,8 +427,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			//Recoger el file
 			//Para probarlo, creación de un clsArchivo Falso
 			clsArchivo a = new clsArchivo ("Maider", "c", "Maider mola", "", 0, 0, 0, true, false, 0);
-			PanelPDF.abrirPDF(a);
 			HashArchivos.add(a);
+			ComprobarCarpeta();
+			CopiarArchivo(path, a);
+			PanelPDF.abrirPDF(a);
 //			modelLibros.cargarInfo(HashArchivos);
 			CargarDatos();
 			clsGestor.guardarArchivo(a.getNomAutor(), a.getApeAutor(), a.getCodArchivo(), a.getTitulo(), a.getRuta(), a.getNumPags(), a.getUltimaPagLeida(), a.getTiempo(), a.getLibroSi());
@@ -459,6 +465,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		{
 			//cambiamos el valor de ultimaCarpeta
 			ultimaCarpeta=chooser.getSelectedFile().getPath();
+			ComprobarCarpeta();
 			RecursividadCarpeta(ultimaCarpeta);
 			//Creamos un nuevo archivo por cada pdf que haya en el directorio
 			//Para ello, primero vemos si estamos en una carpeta, por lo que la primera vez siempre entrará			
@@ -486,12 +493,49 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			{
 				// Si cumple el patrón, se añade
 				path = fic.getPath();
+				// Llamar a método de CopiarArchivo()
 				// aquí habrá que lanzar una pantalla para EL RESTO DE ATRIBUTOS además de la ruta
 				//Recoger el file
 				//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nokmbre (1)" o el número que sea
 				//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
 			} 
 		}
+	}
+	
+	public static void ComprobarCarpeta()
+	{
+		File Data = new File(".\\Data");
+		File Libros = new File(".\\Data\\Libros");
+		File Documentos = new File(".\\Data\\Documentos");
+		
+		Data.mkdir();
+		Libros.mkdir();
+		Documentos.mkdir();
+	}
+	
+	public static void CopiarArchivo(String DireccionOrigen, clsArchivo DireccionDestino)
+	{
+		String NombreArchivo;
+		Path FROM;
+		Path TO;
+		
+		NombreArchivo = DireccionDestino.getTitulo() + ".pdf";
+		
+		FROM = Paths.get(DireccionOrigen);
+		if(DireccionDestino.getLibroSi())
+		{
+			TO = Paths.get(".\\Data\\Libros");
+		} else
+		{
+			TO = Paths.get(".\\Data\\Documentos");
+		}
+		
+		DireccionDestino.setRuta(TO + "\\" + NombreArchivo);
+		
+		try {
+			Files.copy(FROM, TO.resolve(NombreArchivo));
+		} catch (IOException e) {}
+		
 	}
 
 	@Override

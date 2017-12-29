@@ -158,7 +158,7 @@ public class clsArchivo implements Comparable
 	@Override
 	public String toString() 
 	{
-		return ("Archivo");
+		return (getTitulo());
 	}
 	
 	
