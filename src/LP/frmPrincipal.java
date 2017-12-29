@@ -97,12 +97,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	JButton Bsiguiente= new JButton(">>"); 
 	
 	//Marcador de página, cambiante según los botones de arriba y/o el slider
-	JTextArea numPag = new JTextArea ();
-	String indicadorPaginas; //Cada vez que cambiemos la página, cambiaremos el String
+	static JTextArea numPag = new JTextArea ();
+	static String indicadorPaginas; //Cada vez que cambiemos la página, cambiaremos el String
 	
 	//Otros compontentes
 	JProgressBar progreso=new JProgressBar();
-	JSlider slider=new JSlider ();
+	static JSlider slider=new JSlider ();
 	JButton AddLibro = new JButton("Importar libro");
 	JButton AddDoc = new JButton ("Importar documento");
 	
@@ -242,11 +242,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 		//Panel para manipular el PDF
 		getContentPane().add(Pinferior, BorderLayout.SOUTH);
-		//Preparar el textode los números de página
-		indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.getPaginasTotal();
-		numPag.setText(indicadorPaginas);
-		numPag.setEditable(false);
-		numPag.setBackground(SystemColor.inactiveCaption);
+		
 		//prepara el texto del slider
 		//slider= new JSlider(JSlider.HORIZONTAL, 1, PanelPDF.PaginasTotal(), PanelPDF.getPagActual() );
 		slider= new JSlider(JSlider.HORIZONTAL, 1, 3, 2 );
@@ -368,6 +364,23 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				
 			});
 	}
+	public static void ActualizarSliderYTexto()
+	{
+		//prepara el texto del slider
+				slider= new JSlider(JSlider.HORIZONTAL, 1, PanelPDF.getPaginasTotal(), PanelPDF.getPagActual() );
+				slider= new JSlider(JSlider.HORIZONTAL, 1, 3, 2 );
+				slider.setPaintTicks(true);//las rayitas que marcan los números
+				slider.setMajorTickSpacing(5); // de cuanto en cuanto los números en el slider
+				slider.setMinorTickSpacing(1); //las rayitas de cuanto en cuanto
+				slider.setPaintLabels(true); //si se ve los números del slider
+				slider.setBackground(SystemColor.inactiveCaption);
+				
+				//Preparar el textode los números de página
+				indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.getPaginasTotal();
+				numPag.setText(indicadorPaginas);
+				numPag.setEditable(false);
+				numPag.setBackground(SystemColor.inactiveCaption);
+	}
 	/**
 	 * 
 	 * @param a archivo del que vamos a mostrar sus comentrios
@@ -435,6 +448,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			ComprobarCarpeta();
 			CopiarArchivo(path, a);
 			PanelPDF.abrirPDF(a);
+			ActualizarSliderYTexto();
 //			modelLibros.cargarInfo(HashArchivos);
 			CargarDatos();
 			clsGestor.guardarArchivo(a.getNomAutor(), a.getApeAutor(), a.getCodArchivo(), a.getTitulo(), a.getRuta(), a.getNumPags(), a.getUltimaPagLeida(), a.getTiempo(), a.getLibroSi());
