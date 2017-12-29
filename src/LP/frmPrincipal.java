@@ -89,7 +89,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
 	private static JPanel PLibros=new JPanel(); //Panel dentro de la pestaña libros
 	private JPanel PDocum=new JPanel(); //Panel dentro de la pestaña documentos
-	private clsPanelPDF PanelPDF = new clsPanelPDF();
+	static clsPanelPDF PanelPDF = new clsPanelPDF();
 	private JPanel Pinferior= new JPanel();
 	
 	//Botones
@@ -368,12 +368,16 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				
 			});
 	}
-	
-	public void CrearComentarios()
+	/**
+	 * 
+	 * @param a archivo del que vamos a mostrar sus comentrios
+	 */
+	public void MostrarComentarios(clsArchivo a)
 	{
 		HashSet <clsComentario> comentarios = clsGestor.LeerComentariosBD();
 		for (clsComentario c: comentarios)
 		{
+			if(a.getCodArchivo()==c.getCodArchivo() && PanelPDF.getPagActual()==c.getNumPagina()) 
 			Pcomentarios.add(new JTextArea (c.getTexto()));
 		}
 	}
