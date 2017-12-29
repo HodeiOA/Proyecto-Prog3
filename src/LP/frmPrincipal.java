@@ -244,11 +244,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		getContentPane().add(Pinferior, BorderLayout.SOUTH);
 		
 		//prepara el texto del slider
-		//slider= new JSlider(JSlider.HORIZONTAL, 1, PanelPDF.PaginasTotal(), PanelPDF.getPagActual() );
-		slider= new JSlider(JSlider.HORIZONTAL, 1, 3, 2 );
-		slider.setPaintTicks(true);//las rayitas que marcan los números
-		slider.setMajorTickSpacing(5); // de cuanto en cuanto los números en el slider
-		slider.setMinorTickSpacing(1); //las rayitas de cuanto en cuanto
+		slider= new JSlider(JSlider.HORIZONTAL );
+//		slider.setPaintTicks(true);//las rayitas que marcan los números
+//		slider.setMajorTickSpacing(5); // de cuanto en cuanto los números en el slider
+//		slider.setMinorTickSpacing(1); //las rayitas de cuanto en cuanto
 		slider.setPaintLabels(true); //si se ve los números del slider
 		slider.setBackground(SystemColor.inactiveCaption);
 		
@@ -367,12 +366,13 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	public static void ActualizarSliderYTexto()
 	{
 		//prepara el texto del slider
-				slider= new JSlider(JSlider.HORIZONTAL, 1, PanelPDF.getPaginasTotal(), PanelPDF.getPagActual() );
-				slider= new JSlider(JSlider.HORIZONTAL, 1, 3, 2 );
+				slider.setMinimum(1);
+				slider.setMaximum( PanelPDF.getPaginasTotal());
+				slider.setValue( PanelPDF.getPagActual());
 				slider.setPaintTicks(true);//las rayitas que marcan los números
-				slider.setMajorTickSpacing(5); // de cuanto en cuanto los números en el slider
-				slider.setMinorTickSpacing(1); //las rayitas de cuanto en cuanto
-				slider.setPaintLabels(true); //si se ve los números del slider
+				slider.setMajorTickSpacing(PanelPDF.getPaginasTotal()-1); // de cuanto en cuanto los números en el slider
+				slider.setMinorTickSpacing(PanelPDF.getPaginasTotal()/3); //las rayitas de cuanto en cuanto
+				slider.setPaintLabels(true); //si se ven los números del slider o no
 				slider.setBackground(SystemColor.inactiveCaption);
 				
 				//Preparar el textode los números de página

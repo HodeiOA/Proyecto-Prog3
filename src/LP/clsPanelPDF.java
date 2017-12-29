@@ -77,9 +77,14 @@ public class clsPanelPDF extends JScrollPane
 		return PagActual;
 	}
 
-	public void setPagActual(int pagActual) 
+	public void irAPag(int nuevaPag) 
 	{
-		PagActual = pagActual;
+		PagActual = nuevaPag;
+		try {
+			PDFdecoder.decodePage(PagActual);
+			PDFdecoder.invalidate();
+			repaint();
+		} catch (PdfException e) {}
 	}
 
 	public String getRuta()
