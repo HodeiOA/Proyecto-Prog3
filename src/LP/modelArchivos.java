@@ -1,5 +1,6 @@
 package LP;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import javax.swing.DefaultListModel;
@@ -17,9 +18,14 @@ public class modelArchivos extends DefaultListModel<clsArchivo>
 	
 	public clsArchivo getElementAt(int index)
 	{
-		clsArchivo[] arrayArchivos = (clsArchivo[]) ArchivosModel.toArray();
+		ArrayList<clsArchivo> arrayArchivos = new ArrayList<clsArchivo>();;
 		
-		return arrayArchivos[index];
+		for(clsArchivo aux: ArchivosModel)
+		{
+			arrayArchivos.add(aux);
+		}
+		
+		return arrayArchivos.get(index);
 	}
 	
 	public int getSize()

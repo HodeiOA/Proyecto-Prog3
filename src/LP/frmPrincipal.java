@@ -117,8 +117,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	static modelArchivos modelDocumentos;
 	
 	//Listas para libros/documentos
-	static JList ListLibros=new JList();
-	static JList ListDoc=new JList();
+	static JList ListLibros=new JList(modelLibros);
+	static JList ListDoc=new JList(modelDocumentos);
 	
 	//JFileChooser:
 	private JFileChooser chooser;
@@ -382,8 +382,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		modelLibros= new modelArchivos(HashLibros);
 		modelDocumentos= new modelArchivos(HashDocumentos);
 
-		ListLibros.setModel(modelLibros);
-		ListDoc.setModel(modelDocumentos);
+		modelLibros.setLista(HashArchivos);
+		modelDocumentos.setLista(HashDocumentos);
 	}
 	
 	
