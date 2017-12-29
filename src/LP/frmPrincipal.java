@@ -118,7 +118,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	
 	//Listas para libros/documentos
 	static JList ListLibros=new JList();
-	static JList ListDoc;
+	static JList ListDoc=new JList();
 	
 	//JFileChooser:
 	private JFileChooser chooser;
