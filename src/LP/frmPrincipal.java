@@ -276,7 +276,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			
 			// Construccion del JPopupMenu para el click derecho
 			popup = new JPopupMenu();
-			popup.add(new JMenuItem("Detalles"));
+			popup.add(new JMenuItem("Infomación del archivor"));
 			popup.add(new JMenuItem("Eliminar archivo"));
 
 			
@@ -365,6 +365,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	}
 	public static void ActualizarSliderYTexto()
 	{
+		//INFO: Actualizando Slider y Texto
 		//prepara el texto del slider
 				slider.setMinimum(1);
 				slider.setMaximum( PanelPDF.getPaginasTotal());
@@ -387,12 +388,18 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	 */
 	public void MostrarComentarios(clsArchivo a)
 	{
+		int cont=0;
 		HashSet <clsComentario> comentarios = clsGestor.LeerComentariosBD();
 		for (clsComentario c: comentarios)
 		{
 			if(a.getCodArchivo()==c.getCodArchivo() && PanelPDF.getPagActual()==c.getNumPagina()) 
-			Pcomentarios.add(new JTextArea (c.getTexto()));
+			{
+				cont++;
+				Pcomentarios.add(new JTextArea (c.getTexto()));
+				//Comentario cont <ñadido
+			}
 		}
+		//Comentarios añadidos: cont
 	}
 	
 	/**
@@ -517,6 +524,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nokmbre (1)" o el número que sea
 				//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
 			} 
+
 		}
 	}
 	
@@ -526,34 +534,37 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		File Libros = new File(".\\Data\\Libros");
 		File Documentos = new File(".\\Data\\Documentos");
 		
-		Data.mkdir();
+		boolean data = Data.mkdir(); //Poner booleans a cada método para poner: ha creado la carpeta o no la ha creado
 		Libros.mkdir();
 		Documentos.mkdir();
 	}
 	
-	public static void CopiarArchivo(String DireccionOrigen, clsArchivo DireccionDestino)
+	public static void CopiarArchivo(String DireccionOrigen, clsArchivo ArchivoDireccionDestino)
 	{
 		String NombreArchivo;
 		Path FROM;
 		Path TO;
 		
-		NombreArchivo = DireccionDestino.getTitulo() + ".pdf";
+		NombreArchivo = ArchivoDireccionDestino.getTitulo() + ".pdf";
 		
 		FROM = Paths.get(DireccionOrigen);
-		if(DireccionDestino.getLibroSi())
+		if(ArchivoDireccionDestino.getLibroSi()) //librosi
 		{
-			TO = Paths.get(".\\Data\\Libros");
+			TO = Paths.get(".\\Data\\Libros");  //va a libros
 		} else
 		{
-			TO = Paths.get(".\\Data\\Documentos");
+			TO = Paths.get(".\\Data\\Documentos"); //va a documentos
 		}
 		
-		DireccionDestino.setRuta(TO + "\\" + NombreArchivo);
+		ArchivoDireccionDestino.setRuta(TO + "\\" + NombreArchivo); //ruta final= esta
 		
 		try {
 			Files.copy(FROM, TO.resolve(NombreArchivo));
-		} catch (IOException e) {}
-		
+		} catch (IOException e) 
+		{
+			//No copiado
+		}
+		//archivo copiado
 	}
 
 	@Override

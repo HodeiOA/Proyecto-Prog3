@@ -37,6 +37,7 @@ public class clsBD
 		} 
 		catch (ClassNotFoundException | SQLException e) 
 		{
+			//SEVERE: e.getMessage()
 			JOptionPane.showMessageDialog( null, "Error de conexión!! No se ha podido conectar con " + nombreBD , "ERROR", JOptionPane.ERROR_MESSAGE );
 			System.out.println( "Error de conexión!! No se ha podido conectar con " + nombreBD );
 			return null;
@@ -54,6 +55,7 @@ public class clsBD
 		} 
 		catch (SQLException e)
 		{
+			//SEVERE: e.getMessage()
 			e.printStackTrace();
 		}
 	}
@@ -86,6 +88,7 @@ public class clsBD
 		if (statement==null) return;
 		try
 		{ 
+			//INFO: Creando tabla
 			statement.executeUpdate("create table fichero_archivo " +
 					"("
 					+ " nomAutor string,"
@@ -100,9 +103,11 @@ public class clsBD
 					//+ "foreign key(nick) references fichero_usuario(nick),"
 					+ " primary key(codArchivo)"
 					+ ")");
+			//Tabla creada
 
 		} catch (SQLException e) 
 		{
+			//SEVERE: e.getMessahge()
 			// Si hay excepción es que la tabla ya existía (lo cual es correcto). No la creamos y listo
 			// e.printStackTrace();  
 		}
@@ -164,6 +169,7 @@ public class clsBD
 	public static boolean InsertArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
 				try {
+					//Insertando
 					String sentSQL = "insert into fichero_archivo values(" +
 							"'" + nomAutor + "', " +
 							"'" + apeAutor + "', " +
@@ -174,8 +180,9 @@ public class clsBD
 							"'" + ultimaPagLeida + "', " +
 							"'" + tiempo + "', " +
 							"'" + libroSi + "')";
+					//insertando
 					int val = statement.executeUpdate( sentSQL );
-					if (val!=1) return false; 
+					if (val!=1) return false; //Error, no se ha insertado
 					return true;
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -242,20 +249,22 @@ public class clsBD
 	 */
 	public static boolean BorrarFila (Object ident, String tabla)
 	{
-		
+		//INFO: tabla
 		switch(tabla)
 		{
 			case "ARCHIVO":
 				try 
 				{
+					//Borrando
 					int codArchivo=(Integer)ident;
 					String sentSQL = "DELETE FROM fichero_archivo WHERE codArchivo = "+codArchivo;
 					int val = statement.executeUpdate( sentSQL );
-					if (val!=1) return false;  
-					return true;
+					if (val!=1) return false;   //Error de borrado
+					return true;//Borrado correctamente
 				}
 				catch (SQLException e) 
 				{
+					//e.getMessage()
 					e.printStackTrace();
 					return false;
 				}
@@ -311,6 +320,7 @@ public class clsBD
 	public static boolean UpdateArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
 				try {
+					//Modificando
 					String sentSQL = "update fichero_archivo set "+
 							"'" + "nomAutor =" + nomAutor + "', " +
 							"'" + "apeAutor =" + apeAutor + "', " +
@@ -323,10 +333,12 @@ public class clsBD
 							"where codArchivo = "+ codArchivo + "')";
 					System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
 					int val = statement.executeUpdate( sentSQL );
-					if (val!=1) return false;  // Se tiene que añadir 1 - error si no
-					return true;
+					if (val!=1) return false; //fallo
+					// Se tiene que añadir 1 - error si no
+					return true; //bien
 				} catch (SQLException e) 
 				{
+					//e.getMessage
 					e.printStackTrace();
 					return false;
 				}
@@ -389,6 +401,7 @@ public class clsBD
 	 */
 	public static boolean DropTable(String tabla)
 	{
+		//info: tabla
 		switch (tabla)
 		{
 			case "ARCHIVO":
@@ -449,6 +462,7 @@ public class clsBD
 					{
 						while (rs.next())
 						{ 
+							//clsArchivo.ToString()
 							 clsArchivo archivo = new clsArchivo(
 									 rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
 									 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),

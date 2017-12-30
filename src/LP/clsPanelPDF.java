@@ -37,13 +37,17 @@ public class clsPanelPDF extends JScrollPane
 			PDFdecoder.decodePage(PagActual);
 			PDFdecoder.setPageParameters(2.8f, PagActual);
 			PDFdecoder.invalidate();
-		} catch (PdfException e) {}
+		} catch (PdfException e) 
+		{
+			//e.getMessage()
+		}
 		
 		repaint();
 	}
 	
 	public void SigPag()
 	{
+		//INFO: PagActual
 		if(ruta != null && PagActual < PDFdecoder.getPageCount())
 		{
 			PagActual++;
@@ -51,8 +55,12 @@ public class clsPanelPDF extends JScrollPane
 				PDFdecoder.decodePage(PagActual);
 				PDFdecoder.invalidate();
 				repaint();
-			} catch (PdfException e) {}
+			} catch (PdfException e) 
+			{
+				//e.getMessage()
+			}
 		}
+		//INFO: PagActual
 		// Si ponemos indicador de página, cambiar el número de la variable
 	}
 	
@@ -66,7 +74,10 @@ public class clsPanelPDF extends JScrollPane
 				PDFdecoder.decodePage(PagActual);
 				PDFdecoder.invalidate();
 				repaint();
-			} catch (PdfException e) {}
+			} catch (PdfException e) 
+			{
+				//e.getMessage()
+			}
 		
 		}
 		// Si ponemos indicador de página, cambiar el número de la variable
@@ -79,12 +90,18 @@ public class clsPanelPDF extends JScrollPane
 
 	public void irAPag(int nuevaPag) 
 	{
+		//PagActual
+		//nuevaPag
 		PagActual = nuevaPag;
 		try {
 			PDFdecoder.decodePage(PagActual);
 			PDFdecoder.invalidate();
 			repaint();
-		} catch (PdfException e) {}
+		} catch (PdfException e)
+		{
+			//e.getMessage()
+		}
+		//PagActual
 	}
 
 	public String getRuta()

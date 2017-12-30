@@ -18,16 +18,19 @@ public class clsComun
 		HashSet <clsArchivo> listaArchivos = new HashSet();
 		int codArchivo=0;
 		
-		listaArchivos = clsGestor.LeerArchivosBD();	//aquí se le llama a la función  
-		
+		listaArchivos = clsGestor.LeerArchivosBD();	
+		// Logger de info: empieza a leer los códigos
 		for(clsArchivo aux: listaArchivos)
 		{
+			// código leído = aux.getCodArchivo()
 			if (codArchivo<aux.getCodArchivo())		
 			{
+				//código más alto hasta el moemnto codArchivo
 				codArchivo=aux.getCodArchivo();
 			}
 		}
 		codArchivo++;
+		//Código asignado
 		clsArchivo.setSigCodArchivo(codArchivo);
 	}
 	
@@ -36,7 +39,7 @@ public class clsComun
 		HashSet <clsComentario> listaComentarios = new HashSet();
 		int codComentario=0;
 		
-		listaComentarios = clsGestor.LeerComentariosBD();	//aquí se le llama a la función  
+		listaComentarios = clsGestor.LeerComentariosBD();	
 		
 		for(clsComentario aux: listaComentarios)
 		{

@@ -44,6 +44,4 @@ public class modelArchivos extends DefaultListModel<clsArchivo>
 		ArchivosModel = lista;
 		fireContentsChanged(this, ArchivosModel.size(), ArchivosModel.size());
 	}
-	
-
 }

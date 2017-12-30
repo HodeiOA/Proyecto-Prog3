@@ -124,13 +124,16 @@ public class frmRegistro extends JDialog implements ActionListener
 				} 
 				catch (clsNickRepetido e)
 				{
+					//El nick está en la BD
 					//Comprobar que la contraseña es correcta
 					for(clsUsuario a: usuarios)
 					{ 
 						if(a.getNick().equals(nick))
 						{
+							//El nick existe
 							if(a.getContraseña().equals(pass))
 							{
+								// La contraseña es la correcta
 								JOptionPane.showMessageDialog(this,"Holi " + nick + ". Has entrado correctamente", "Usuario correcto", JOptionPane.INFORMATION_MESSAGE);
 								 dispose();
 							}
@@ -145,6 +148,7 @@ public class frmRegistro extends JDialog implements ActionListener
 						{
 							if(!(a.getContraseña().equals(pass)))
 							{
+								//la contraseña es incorrecta
 								JOptionPane.showMessageDialog(this,"La contraseña introducida no concuerda con la del nick "+ nick + ". Por favor, vuelve a intentarlo", "Contraseña incorrecta", JOptionPane.ERROR_MESSAGE);
 							}
 						}
@@ -152,6 +156,7 @@ public class frmRegistro extends JDialog implements ActionListener
 				}
 				catch (clsNickNoExiste e)
 				{
+					//El nick no coincide
 					JOptionPane.showMessageDialog(this, e.getMessage(), "Registro", JOptionPane.ERROR_MESSAGE);
 				};
 			 } 
@@ -163,7 +168,7 @@ public class frmRegistro extends JDialog implements ActionListener
 	           pfPassword.setText("");
 			 }
 	}
-	public void Registro()
+	public void Registro() //En cada option pane, poner loggers, info y warning
 	{
 		String nick;
 		String pass;

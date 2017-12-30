@@ -13,8 +13,8 @@ public class clsGestor
 	public static double porcentLeido(clsArchivo archi)
 	{
 		double retorno;
-		retorno=archi.getUltimaPagLeida()/archi.getNumPags() *100;
-		return retorno;
+		retorno=archi.getUltimaPagLeida()/archi.getNumPags() *100; //INFO: archi.getUltimaPagLeida(), archi.getNumPags()
+		return retorno; //retorno
 	}
 	
 	//métodos para login
@@ -33,14 +33,14 @@ public class clsGestor
 		{
 			clsNickRepetido repe=new clsNickRepetido(nick);
 			throw repe;
+			//WARNING: existe
 		}
 		else
 		{
 			clsNickNoExiste noExiste= new clsNickNoExiste(nick);
 			throw noExiste;
+			//WARNING: no existe
 		}
-		
-		//return existe;
     }
 	
 	public static void llenarLibrosDocum(HashSet <clsArchivo> HashArchivos, HashSet <clsArchivo> HashLibros, HashSet <clsArchivo> HashDocumentos)
@@ -49,13 +49,13 @@ public class clsGestor
 		{
 			for (clsArchivo a: HashArchivos )
 			{
-				if(a.getLibroSi())
+				if(a.getLibroSi())//INFO: libroSI
 				{
-					HashLibros.add(a);
+					HashLibros.add(a); //añadido a libros
 				}
 				else
 				{
-					HashDocumentos.add(a);
+					HashDocumentos.add(a); //añadido a documentos
 				}
 			}
 		}
@@ -89,7 +89,7 @@ public class clsGestor
 		exito=clsBD.InsertComentario(ID, texto, codArchivo, numPag);
 		if(!exito)
 		{
-			//no se ha podido guardar
+			//Poner Logger
 		}
 	}
 	

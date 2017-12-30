@@ -18,19 +18,19 @@ public class clsCronometro implements Runnable
 			} 
 			catch (InterruptedException e) 
 			{
-				
+				//interrumpido
 			}
 			
 			segundos++;
 			
 			if(segundos == 60)
 			{
-				minutos++;
+				minutos++; //+1 minuto
 				segundos = 00;
 				
 				if(minutos == 60)
 				{
-					horas++;
+					horas++; //+1 hora
 					minutos = 00;
 				}
 			}
@@ -49,22 +49,22 @@ public class clsCronometro implements Runnable
 	
 	public void Pause()
 	{
-		isRunning = false;
+		isRunning = false; //pausado
 	}
 	
 	public byte getSegundos()
 	{
-		return segundos;
+		return segundos; //segundos devueltos
 	}
 	
 	public byte getMinutos()
 	{
-		return minutos;
+		return minutos; //minutos devueltos
 	}
 	
 	public byte getHoras()
 	{
-		return horas;
+		return horas; //horas devueltas
 	}
 
 }
