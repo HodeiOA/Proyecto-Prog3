@@ -99,23 +99,23 @@ public class clsGestor
 	 * @param ident
 	 * @param tabla debe ser un valor de entre "ARCHIVO", "COMENTARIO" y "USUARIO". de lo contrario, no hará nada
 	 */
-	public void BorrarObjetoBD(Object ident, String tabla)
+	public static void BorrarObjetoBD(Object ident, String tabla)
 	{
 		clsBD.BorrarFila(ident, tabla);
 	}
 	
 	//UPDATES
-	public void ModificarArchivo()
+	public static void ModificarArchivo(clsArchivo nuevo)
+	{
+		clsBD.UpdateArchivo(nuevo.getNomAutor(), nuevo.getApeAutor(), nuevo.getCodArchivo(), nuevo.getTitulo(), nuevo.getRuta(), nuevo.getNumPags(), nuevo.getUltimaPagLeida(), nuevo.getTiempo(), nuevo.getLibroSi());
+	}
+	
+	public static void ModificarUsuario()
 	{
 		
 	}
 	
-	public void ModificarUsuario()
-	{
-		
-	}
-	
-	public void ModificarComentario()
+	public static void ModificarComentario()
 	{
 		
 	}
