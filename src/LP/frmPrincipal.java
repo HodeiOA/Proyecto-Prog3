@@ -308,6 +308,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		slider= new JSlider(JSlider.HORIZONTAL );
 		slider.setPaintLabels(true); //si se ve los números del slider
 		slider.setBackground(SystemColor.inactiveCaption);
+		slider.setMinimum(1);
 		//Añadirle al slider el listener
 		  slider.addChangeListener(new ChangeListener()
 		  {
@@ -504,9 +505,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			logger.log(Level.INFO, "Actualizando Slider y texto del panel inferior");
 			
 			//Prepara el texto del slider
-					slider.setMinimum(1);
-					slider.setMaximum( PanelPDF.getPaginasTotal());
-					slider.setValue( PanelPDF.getPagActual());
+			int max = PanelPDF.getPaginasTotal();
+			int PaginasActual = PanelPDF.getPagActual();
+					slider.setMaximum(max);
+					slider.setValue(PaginasActual);
 					slider.setPaintTicks(true);//las rayitas que marcan los números
 					slider.setMajorTickSpacing(PanelPDF.getPaginasTotal()-1); // de cuanto en cuanto los números en el slider
 					//slider.setMinorTickSpacing(PanelPDF.getPaginasTotal()/3); //las rayitas de cuanto en cuanto
