@@ -27,7 +27,7 @@ import LD.clsBD;
 import LN.clsGestor;
 import LN.clsUsuario;
 
-public class frmRegistro extends JDialog implements ActionListener, KeyListener
+public class frmRegistro extends JDialog implements KeyListener
 {
 	private JTextField tfUsername;
 	private JPasswordField pfPassword;
@@ -123,11 +123,6 @@ public class frmRegistro extends JDialog implements ActionListener, KeyListener
       	
 		this.getContentPane().add(panelBotonera, BorderLayout.PAGE_END);
       	panelBotonera.setLayout(new FlowLayout());
-        
-        btnLogin.addActionListener(this);
-        btnLogin.setActionCommand("REGISTRAR");
-        btnEntrar.addActionListener(this);
-        btnEntrar.setActionCommand("ENTRAR");
  	}
 	
 
@@ -230,21 +225,6 @@ public class frmRegistro extends JDialog implements ActionListener, KeyListener
 	           pfPassword.setText("");
 			 }	
 		
-	}
-	
-	public void actionPerformed(ActionEvent arg0)
-	{
-		String comando = arg0.getActionCommand(); 
-		
-		switch(comando)
-		{
-			case ("ENTRAR") :
-				Entrar();
-				break;	
-			case ("REGISTRAR") :
-				Registro();
-				break;	
-		}		
 	}
 
 	@Override
