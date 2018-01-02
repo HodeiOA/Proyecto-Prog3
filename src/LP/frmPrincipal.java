@@ -53,6 +53,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.jpedal.exception.PdfException;
 
 import LD.clsBD;
 import LD.clsProperties;
@@ -153,7 +154,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	String[] AnchuraAltura = new String[2];
 	String[] locationXY = new String[2];
 	
-	static 	int cont = 0;
 	
 	//Para saber si algo está siendo o no mostrado en el panel del PDF
 	static boolean PDFactivo=false;
@@ -580,6 +580,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	 */
 	public void SeleccionarArchivo(boolean esLibro)
 	{
+		String Titulo;
 		
 		chooser = new JFileChooser();
 
@@ -611,21 +612,20 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			//Recoger el file
 			//Para probarlo, creación de un clsArchivo Falso
 		
-			String [] titulos = {"1", "2", "3"};
-			clsArchivo a = new clsArchivo ("Maider", path, titulos [cont], "", 1, 1, 1, esLibro, false, 0);
-			cont ++;
-			HashArchivos.add(a);
-			ComprobarCarpeta();
-			CopiarArchivo(path, a);
-			PanelPDF.abrirPDF(a);
-			PDFactivo=true;
-			ActualizarComponentes();
-			MostrarComentarios(a);
-			CargarDatos();
-				
-			clsGestor.guardarArchivo(a.getNomAutor(), a.getApeAutor(), a.getCodArchivo(), a.getTitulo(), a.getRuta(), a.getNumPags(), a.getUltimaPagLeida(), a.getTiempo(), a.getLibroSi());
-			//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nombre (1)" o el número que sea
-			//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
+			Titulo = clsGestor.RecogerTitulo(path);
+			
+			clsArchivo nuevoArchivo;
+			try {
+				nuevoArchivo = new clsArchivo ("Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
+				HashArchivos.add(nuevoArchivo);
+				CopiarArchivo(path, nuevoArchivo);
+				PanelPDF.abrirPDF(nuevoArchivo);
+				PDFactivo=true;
+				ActualizarComponentes();
+				MostrarComentarios(nuevoArchivo);
+				clsGestor.guardarArchivo(nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
+				CargarDatos();
+			} catch (PdfException e) {}
 		}
 	}
 	
@@ -657,14 +657,13 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		{
 			//cambiamos el valor de ultimaCarpeta
 			ultimaCarpeta=chooser.getSelectedFile().getPath();
-			ComprobarCarpeta();
-			RecursividadCarpeta(ultimaCarpeta);
+			RecursividadCarpeta(ultimaCarpeta, esLibro);
 			//Creamos un nuevo archivo por cada pdf que haya en el directorio
 			//Para ello, primero vemos si estamos en una carpeta, por lo que la primera vez siempre entrará			
 		} 
 	}
 	
-	public static void RecursividadCarpeta(String path)
+	public static void RecursividadCarpeta(String path, boolean esLibro)
 	{
 		File fic = new File (path);
 		
@@ -675,7 +674,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				/*Por cada fichero en Fic, volveremos a llamar a este método hasta llegar al interior de una carpeta en la que no haya
 				*más, por lo que pasará por todos los ficheros en el interior de la carpeta
 				**/
-				RecursividadCarpeta(f.getPath());
+				RecursividadCarpeta(f.getPath(), esLibro);
 			}
 		} else
 		{ 
@@ -686,29 +685,16 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			{
 				// Si cumple el patrón, se añade
 				path = fic.getPath();
-				// Llamar a método de CopiarArchivo()
-				// aquí habrá que lanzar una pantalla para EL RESTO DE ATRIBUTOS además de la ruta
-				//Recoger el file
-				//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nokmbre (1)" o el número que sea
-				//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
+				String Titulo = clsGestor.RecogerTitulo(path);
+				try {
+					clsArchivo nuevoArchivo = new clsArchivo ("Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
+					HashArchivos.add(nuevoArchivo);
+					CopiarArchivo(path, nuevoArchivo);
+					clsGestor.guardarArchivo(nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
+					CargarDatos();
+				} catch (PdfException e) {}
 			} 
 		}
-	}
-	
-	public static void ComprobarCarpeta()
-	{
-		File Data = new File(".\\Data");
-		File Libros = new File(".\\Data\\Libros");
-		File Documentos = new File(".\\Data\\Documentos");
-		
-		boolean data = Data.mkdir(); 
-		boolean libros = Libros.mkdir();
-		boolean docum = Documentos.mkdir();
-		
-		if(data) logger.log(Level.INFO, "Se caba de crear la carpeta 'Data'");
-		if(libros) logger.log(Level.INFO, "Se caba de crear la carpeta 'Libros'");
-		if(docum) logger.log(Level.INFO, "Se caba de crear la carpeta 'Documentos'");
-		
 	}
 	
 	public static void CopiarArchivo(String DireccionOrigen, clsArchivo ArchivoDireccionDestino)

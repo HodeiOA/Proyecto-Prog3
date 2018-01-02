@@ -3,6 +3,7 @@ package COMUN;
 import javax.swing.SwingUtilities;
 
 import LD.clsBD;
+import LN.clsGestor;
 import LP.frmPrincipal;
 import LP.frmRegistro;
 
@@ -15,6 +16,8 @@ public class clsMain
 		clsBD.crearTablaArchivo();
 		clsBD.crearTablaComentario();
 		clsBD.crearTablaUsuario();
+		
+		clsGestor.ComprobarCarpeta();
 		
 		//Esto tiene que ir aquí porque, de ir antes, habrá problemas con la BD
 		SwingUtilities.invokeLater(new Runnable() {

@@ -1,5 +1,6 @@
 package LN;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
@@ -7,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.logging.Level;
 
 import org.jpedal.PdfDecoder;
 import org.jpedal.exception.PdfException;
@@ -26,15 +28,14 @@ public class clsGestor
 		return retorno; //retorno
 	}
 	
-	public static int conseguirNumPags (clsArchivo archi) throws PdfException
+	public static int conseguirNumPags (String Ruta) throws PdfException
 	{
 		int retorno;
 		PdfDecoder PDFdecoder;
-		String ruta;
+		String ruta = Ruta;
 		
 		PDFdecoder = new PdfDecoder();
 		
-		ruta = archi.getRuta();
 		PDFdecoder.openPdfFile(ruta);
 		
 		retorno = PDFdecoder.getPageCount();
@@ -222,5 +223,20 @@ public class clsGestor
 		
 		Archivo.setTitulo(Nombre);
 		ModificarRuta(Archivo);
+	}
+	
+	public static void ComprobarCarpeta()
+	{
+		File Data = new File(".\\Data");
+		File Libros = new File(".\\Data\\Libros");
+		File Documentos = new File(".\\Data\\Documentos");
+		
+		boolean data = Data.mkdir(); 
+		boolean libros = Libros.mkdir();
+		boolean docum = Documentos.mkdir();
+		
+//		if(data) logger.log(Level.INFO, "Se caba de crear la carpeta 'Data'");
+//		if(libros) logger.log(Level.INFO, "Se caba de crear la carpeta 'Libros'");
+//		if(docum) logger.log(Level.INFO, "Se caba de crear la carpeta 'Documentos'");
 	}
 }
