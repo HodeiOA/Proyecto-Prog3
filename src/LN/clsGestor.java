@@ -8,6 +8,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import org.jpedal.PdfDecoder;
+import org.jpedal.exception.PdfException;
+
 import COMUN.clsNickRepetido;
 import COMUN.clsNickNoExiste;
 import LD.clsBD;
@@ -19,6 +22,22 @@ public class clsGestor
 		double retorno;
 		retorno=archi.getUltimaPagLeida()/archi.getNumPags() *100; //INFO: archi.getUltimaPagLeida(), archi.getNumPags()
 		return retorno; //retorno
+	}
+	
+	public static int conseguirNumPags (clsArchivo archi) throws PdfException
+	{
+		int retorno;
+		PdfDecoder PDFdecoder;
+		String ruta;
+		
+		PDFdecoder = new PdfDecoder();
+		
+		ruta = archi.getRuta();
+		PDFdecoder.openPdfFile(ruta);
+		
+		retorno = PDFdecoder.getPageCount();
+		
+		return retorno;
 	}
 	
 	//métodos para login
