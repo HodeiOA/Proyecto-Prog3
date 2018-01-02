@@ -21,6 +21,7 @@ public class clsPanelPDF extends JScrollPane
 	int velocidadScroll = 15;
 	int nuevaRotacion = 90;
 	float escala = 2;
+	float escalaActual;
 	
 	static clsCronometro crono;
 	
@@ -162,22 +163,17 @@ public class clsPanelPDF extends JScrollPane
 		//PagActual
 	}
 	
-	/*
-     * Set the page's rotation
-     * A value of 90 will set the rotation to 90º
-     */
-	public void setDisplayRotation (int nuevaRotacion)
+	public void Rotar (int nuevaRotacion)
 	{
-//		rotate(Math.toRadians(nuevaRotacion));
+		PDFdecoder.setPageParameters(escalaActual, PagActual,nuevaRotacion);
+		PDFdecoder.invalidate();
 	}
 
-	/*
-     * Initialise panel and set size to fit PDF page with rotation set to the default
-     * To keep existing scaling setting set scaling value to -1
-     */
-	public void setPageParameters(float zoom, int pagActual)
+	public void zoom (float zoom, int pagActual)
 	{
-		PDFdecoder.setPageParameters(escala*zoom, pagActual);
+		escalaActual = escala*zoom;
+		
+		PDFdecoder.setPageParameters(escalaActual, pagActual);
 		PDFdecoder.invalidate();
 	}
 
