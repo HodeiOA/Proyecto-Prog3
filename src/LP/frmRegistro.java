@@ -155,7 +155,8 @@ public class frmRegistro extends JDialog implements KeyListener
 							{
 								// La contraseña es la correcta
 								JOptionPane.showMessageDialog(this,"Bienvenido " + nick + ".", "Usuario correcto", JOptionPane.INFORMATION_MESSAGE);
-								 dispose();
+								frmPrincipal.nickUsuarioSesion=nick;
+								dispose();
 							}
 						}
 					}

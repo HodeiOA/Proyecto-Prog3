@@ -94,10 +94,10 @@ public class clsGestor
 	//Solo hacemos llamadas a BD, pero hacemos métodods en Gestor para mantener la estructura del programa
 	
 	//INSERTS
-	public static void guardarArchivo(String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
+	public static void guardarArchivo(String nick, String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{ 
 		boolean exito;
-		exito=clsBD.InsertArchivo(nomAutor, apeAutor, codArchivo, titulo, ruta, numPags, ultimaPagLeida, tiempo, libroSi); //Cada vez que se cierre el pdf, cambiar ultimaPagleida y tiempo
+		exito=clsBD.InsertArchivo(nick, nomAutor, apeAutor, codArchivo, titulo, ruta, numPags, ultimaPagLeida, tiempo, libroSi); //Cada vez que se cierre el pdf, cambiar ultimaPagleida y tiempo
 		if(!exito)
 		{
 			//no se ha podido guardar
@@ -136,7 +136,7 @@ public class clsGestor
 	//UPDATES
 	public static void ModificarArchivo(clsArchivo nuevo)
 	{
-		clsBD.UpdateArchivo(nuevo.getNomAutor(), nuevo.getApeAutor(), nuevo.getCodArchivo(), nuevo.getTitulo(), nuevo.getRuta(), nuevo.getNumPags(), nuevo.getUltimaPagLeida(), nuevo.getTiempo(), nuevo.getLibroSi());
+		clsBD.UpdateArchivo(nuevo.getNick(), nuevo.getNomAutor(), nuevo.getApeAutor(), nuevo.getCodArchivo(), nuevo.getTitulo(), nuevo.getRuta(), nuevo.getNumPags(), nuevo.getUltimaPagLeida(), nuevo.getTiempo(), nuevo.getLibroSi());
 	}
 	
 	public static void ModificarUsuario()

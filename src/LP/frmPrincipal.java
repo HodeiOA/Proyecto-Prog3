@@ -83,6 +83,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private Dimension dim;
 	private Toolkit mipantalla;
 	
+	public static String nickUsuarioSesion;
+	
 	//MENÚ
 	private JMenuBar menuBar=new JMenuBar();
 	private JMenu archivo=new JMenu("Archivo");
@@ -358,33 +360,39 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		Pinferior.add(numPag);
 		Pinferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		//--------------------------------------Panel para comentarios--------------------------------------------//
+//--------------------------------------Panel para comentarios--------------------------------------------//
 		
 //		if(comentarios)
 //		{
-		//Aquí leeríamos los comentarios por página/Libro con un for y crearíamos tantos TextArea y ScrolPane como hicieran falta	
+		//Aquí leeríamos los comentarios por página/Libro con uun for y crearíamos tantos TextArea y ScrolPane como hicieran falta	
 		
 		btnAñadir = new JButton ("Añadir");
 		lbNuevoComent = new JLabel("Nuevo comentario");
 		lbComentariosAntiguo = new JLabel("Comentarios anteriores");
 		
-		Pcomentarios.setPreferredSize(new Dimension(225, 200));
-		PcomentarioNuevo.setBackground(Color.GREEN);
+		Pcomentarios.setPreferredSize(new Dimension(225, 50));
+		Pcomentarios.setBackground(Color.gray);
+			
+//		Pcomentarios.add(Scroll);
 		
-		PcomentarioNuevo.setPreferredSize(new Dimension(225,200));
+		PcomentarioNuevo.setPreferredSize(new Dimension(225, 300));
 		PcomentarioNuevo.setBackground(Color.LIGHT_GRAY);
 		
 		TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
 		TextPaneComentarioNuevo.setEditable(editable);
+
 		
-		PcomentariosViejos.setPreferredSize(new Dimension(225, Pcomentarios.getHeight()-PcomentarioNuevo.getHeight()));
+		PcomentariosViejos.setPreferredSize(new Dimension(225, Pcomentarios.getHeight() - PcomentarioNuevo.getHeight()));
+		System.out.println( Pcomentarios.getHeight() - PcomentarioNuevo.getHeight());
+		System.out.println(Pcomentarios.getHeight());
+		System.out.println(PcomentarioNuevo.getHeight());
 		PcomentariosViejos.setBackground(Color.CYAN);
 			
 		PcomentarioNuevo.add(lbNuevoComent);
 		PcomentarioNuevo.add(TextPaneComentarioNuevo);
 		PcomentarioNuevo.add(btnAñadir);
 		
-		PcomentariosViejos.add(Scroll);
+//		PcomentariosViejos.add(Scroll);
 		PcomentariosViejos.add(lbComentariosAntiguo);
 		
 		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);
@@ -437,14 +445,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				}
 			});
 			
-			Pcomentarios.setPreferredSize(new Dimension(225, 40));
-			TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
-			TextPaneComentarioNuevo.setEditable(editable);
-			Pcomentarios.setBackground(Color.gray);
-				
-			Pcomentarios.add(Scroll);
-			this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
-			Pcomentarios.add(EditC);
+//			Pcomentarios.setPreferredSize(new Dimension(225, 40));
+//			TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
+//			
+//			this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
+//			Pcomentarios.add(EditC);
 			
 			// Construccion del JPopupMenu para el click derecho
 			popup = new JPopupMenu();
@@ -690,14 +695,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			clsArchivo nuevoArchivo;
 			try 
 			{
-				nuevoArchivo = new clsArchivo ("Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
+				nuevoArchivo = new clsArchivo (nickUsuarioSesion, "Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
 				HashArchivos.add(nuevoArchivo);
 				CopiarArchivo(path, nuevoArchivo);
 				PanelPDF.abrirPDF(nuevoArchivo);
 				PDFactivo=true;
 				ActualizarComponentes();
 				MostrarComentarios(nuevoArchivo);
-				clsGestor.guardarArchivo(nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
+				clsGestor.guardarArchivo(nuevoArchivo.getNick(), nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
 				if(esLibro)
 				{
 					HashLibros.add(nuevoArchivo);
@@ -772,10 +777,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				String Titulo = clsGestor.RecogerTitulo(HashArchivos, path);
 				try 
 				{
-					clsArchivo nuevoArchivo = new clsArchivo ("Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
+					clsArchivo nuevoArchivo = new clsArchivo (nickUsuarioSesion, "Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
 					HashArchivos.add(nuevoArchivo);
 					CopiarArchivo(path, nuevoArchivo);
-					clsGestor.guardarArchivo(nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
+					clsGestor.guardarArchivo(nuevoArchivo.getNick(), nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
 					CargarDatos();
 				} 
 				catch (PdfException e) 

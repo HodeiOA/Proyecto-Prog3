@@ -113,6 +113,7 @@ public class clsBD
 			
 			statement.executeUpdate("create table fichero_archivo " +
 					"("
+					+ "foreign key(nick) references fichero_usuario(nick),"
 					+ " nomAutor string,"
 					+ " apeAutor string,"
 					+ " codArchivo int, "
@@ -122,7 +123,6 @@ public class clsBD
 					+ " ultimaPagLeida int,"
 					+ "tiempo int,"
 					+ "libroSi boolean, "
-					//+ "foreign key(nick) references fichero_usuario(nick),"
 					+ " primary key(codArchivo)"
 					+ ")");
 			
@@ -192,7 +192,7 @@ public class clsBD
 	 * @param libroSi
 	 * @return devolverá un boolean para indicar si el insert se ha podido o no hacer
 	 */
-	public static boolean InsertArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
+	public static boolean InsertArchivo (String nick, String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
 				try 
 				{
@@ -200,6 +200,7 @@ public class clsBD
 					logger.log( Level.INFO, "Insertando");
 					
 					String sentSQL = "insert into fichero_archivo values(" +
+							"'" + nick + "', " +
 							"'" + nomAutor + "', " +
 							"'" + apeAutor + "', " +
 							"'" + codArchivo + "', " +
@@ -359,13 +360,14 @@ public class clsBD
 	 * @param libroSi
 	 * @return indica si se ha realizado con éxito
 	 */ 
-	public static boolean UpdateArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
+	public static boolean UpdateArchivo (String nick, String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
 				try 
 				{
 	            	logger.log( Level.INFO, "Modificando");
 
 					String sentSQL = "update fichero_archivo set "+
+							"nick = '" + nick + "', " +
 							 "nomAutor = '" + nomAutor + "', " 
 							 + "apeAutor = '" + apeAutor + "', " +
 							 "titulo = '"+ titulo  + "', " +
@@ -523,7 +525,7 @@ public class clsBD
 					{ 
 						//clsArchivo.ToString()
 						 clsArchivo archivo = new clsArchivo(
-								 rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
+								 rs.getString("nick"), rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
 								 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
 								 Boolean.parseBoolean(rs.getString("libroSi")), true, rs.getInt("codArchivo"));
 						retorno.add(archivo);

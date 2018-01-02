@@ -14,11 +14,13 @@ public class clsArchivo implements Comparable
 	private int tiempo;	//tiempo de lectura en  segundos
 	private boolean libroSi;
 	private static int sigCodArchivo;
+	private String nick;
 
-	public clsArchivo(String nomAutor, String apeAutor, String titulo, String ruta, 
-			int numPags, int ultimaPagLeida, int tiempo, boolean libroSi, boolean leerBD, int IDBD ) 
+	public clsArchivo(String nick, String nomAutor, String apeAutor, String titulo, String ruta, 
+			int numPags, int ultimaPagLeida, int tiempo, boolean libroSi, boolean leerBD, int IDBD) 
 	{
 		super();
+		this.nick = nick;
 		this.nomAutor = nomAutor;
 		this.apeAutor = apeAutor;
 		this.titulo = titulo;
@@ -46,6 +48,14 @@ public class clsArchivo implements Comparable
 	
 	//Getters and Setters
 	
+	public String getNick() {
+		return nick;
+	}
+
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
+
 	public String getNomAutor() {
 		return nomAutor;
 	}
