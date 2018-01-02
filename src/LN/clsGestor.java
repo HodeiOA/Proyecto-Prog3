@@ -24,8 +24,8 @@ public class clsGestor
 		int retorno;
 		float aux;
 		
-		aux = 0;
-		
+		aux = (float) archi.getUltimaPagLeida()/archi.getNumPags();
+		aux = aux*100;
 		retorno = (int) aux; //INFO: archi.getUltimaPagLeida(), archi.getNumPags()
 		
 		return retorno; //retorno
@@ -240,5 +240,10 @@ public class clsGestor
 //		if(data) logger.log(Level.INFO, "Se caba de crear la carpeta 'Data'");
 //		if(libros) logger.log(Level.INFO, "Se caba de crear la carpeta 'Libros'");
 //		if(docum) logger.log(Level.INFO, "Se caba de crear la carpeta 'Documentos'");
+	}
+	
+	public static void EliminarRuta(String ruta) throws IOException
+	{
+		Files.delete(Paths.get(ruta));
 	}
 }

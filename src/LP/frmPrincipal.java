@@ -873,6 +873,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 					BorrarArchivo();
 					ActualizarListas();
 					
+					String ruta = PanelPDF.getPDFabierto().getRuta();
+					
 					if(panelListas.getSelectedIndex() == 0)
 					{
 						if(ListLibros.getSelectedValue().equals(PanelPDF.getPDFabierto()))
@@ -883,6 +885,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 						if(ListDoc.getSelectedValue().equals(PanelPDF.getPDFabierto()))
 							PanelPDF.CerrarPDF();
 					}
+					try {
+						clsGestor.EliminarRuta(ruta);
+					} catch (IOException e1) {}
 				}	
 				break;
 				
