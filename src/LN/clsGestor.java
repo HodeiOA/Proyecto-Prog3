@@ -1,6 +1,10 @@
 package LN;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -135,5 +139,71 @@ public class clsGestor
 	{
 		HashSet <clsComentario> retorno = clsBD.LeerComentarios();
 		return retorno;
+	}
+	
+	public static String RecogerTitulo(String Ruta) // Falta llamar desde los sitios que hace falta
+	{
+		String aux;
+		String[] CorteBarras;
+		String[] CortePunto;
+		
+		CorteBarras = Ruta.split("\\\\");
+		
+		aux = CorteBarras[CorteBarras.length-1];
+		
+		CortePunto = aux.split("\\.");
+		
+		aux = CortePunto[0];
+		
+		System.out.println(aux);
+		
+		return aux;
+	}
+	
+	public static void ModificarRuta(clsArchivo Archivo) // Falta llamar desde los sitios que hace falta
+	{
+		String NombreArchivo;
+		Path FROM;
+		Path TO;
+		
+		NombreArchivo = Archivo.getTitulo() + ".pdf";
+		
+		FROM = Paths.get(Archivo.getRuta());
+		if(Archivo.getRuta().contains("Libro"))
+		{
+			TO = Paths.get(".\\Data\\Libros");
+		} else
+		{
+			TO = Paths.get(".\\Data\\Documentos");
+		}
+		
+		Archivo.setRuta(TO + "\\" + NombreArchivo);
+		
+		try {
+			Files.move(FROM, TO.resolve(NombreArchivo));
+		} catch (IOException e) {}
+	}
+	
+	public static void ComprobarNombreRepetido(HashSet<clsArchivo> Lista, clsArchivo Archivo, int Contador)
+	{
+		String Nombre = Archivo.getTitulo();
+		
+		for(clsArchivo aux: Lista)
+		{
+			if(Contador == 0)
+			{
+				if(aux.getTitulo().contentEquals(Nombre))
+					ComprobarNombreRepetido(Lista, Archivo, Contador+1);
+			} else
+			{
+				Nombre = Nombre + " (" + Contador + ")";
+				
+				if(aux.getTitulo().contentEquals(Nombre))
+					ComprobarNombreRepetido(Lista, Archivo, Contador+1);
+			}
+		}
+		
+		Archivo.setTitulo(Nombre);
+		ModificarRuta(Archivo);
 	}
 }
