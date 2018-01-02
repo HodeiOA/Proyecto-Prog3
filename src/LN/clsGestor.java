@@ -190,17 +190,13 @@ public class clsGestor
 		
 		for(clsArchivo aux: Lista)
 		{
-			if(Contador == 0)
-			{
-				if(aux.getTitulo().contentEquals(Nombre))
-					ComprobarNombreRepetido(Lista, Archivo, Contador+1);
-			} else
+			if(Contador != 0)
 			{
 				Nombre = Nombre + " (" + Contador + ")";
-				
-				if(aux.getTitulo().contentEquals(Nombre))
-					ComprobarNombreRepetido(Lista, Archivo, Contador+1);
 			}
+			
+			if(aux.getTitulo().equals(Nombre))
+				ComprobarNombreRepetido(Lista, Archivo, Contador+1);
 		}
 		
 		Archivo.setTitulo(Nombre);
