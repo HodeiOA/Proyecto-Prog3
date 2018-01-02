@@ -383,7 +383,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		PcomentarioNuevo.add(TextPaneComentarioNuevo);
 		PcomentarioNuevo.add(btnAñadir);
 		
-//		PcomentariosViejos.add(Scroll);
+		PcomentariosViejos.add(Scroll);
 		PcomentariosViejos.add(lbComentariosAntiguo);
 		
 		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);

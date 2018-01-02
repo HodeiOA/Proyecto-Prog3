@@ -22,8 +22,11 @@ public class clsGestor
 	public static int porcentLeido(clsArchivo archi)
 	{
 		int retorno;
+		float aux;
 		
-		retorno = (archi.getUltimaPagLeida()/archi.getNumPags()) * 100; //INFO: archi.getUltimaPagLeida(), archi.getNumPags()
+		aux = 0;
+		
+		retorno = (int) aux; //INFO: archi.getUltimaPagLeida(), archi.getNumPags()
 		
 		return retorno; //retorno
 	}
