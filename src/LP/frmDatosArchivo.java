@@ -28,6 +28,7 @@ public class frmDatosArchivo extends JDialog
 	JTextField Truta;
 	JTextField TnumPags;
 	JTextField Tprogreso;
+	JTextField Ttiempo;
 	
 	JLabel Ltitulo;
 	JLabel Lnombre;
@@ -36,6 +37,7 @@ public class frmDatosArchivo extends JDialog
 	JLabel Lruta;
 	JLabel LnumPags;
 	JLabel Lprogreso;
+	JLabel Ltiempo;
 	
 	//Para el tipo de archivo, RadioButtons:
 	ButtonGroup radioLibroSi = new ButtonGroup();
@@ -46,6 +48,15 @@ public class frmDatosArchivo extends JDialog
 	//Posición
 	int x;
 	int y;
+	
+	//Tiempo
+	int horas;
+	int min;
+	int seg;
+	
+	String H;
+	String M;
+	String S;
 	
 	public frmDatosArchivo( clsArchivo archivo, JFrame frame)
 	{
@@ -70,6 +81,7 @@ public class frmDatosArchivo extends JDialog
 		Lruta = new JLabel("Ruta: ");
 		LnumPags = new JLabel ("Número de páginas: ");
 		Lprogreso = new JLabel("Progreso de lectura: ");
+		Ltiempo = new JLabel("Tiempo de lectura: ");
 		
 		//Dar texto a los TextFields
 		Ttitulo = new JTextField(archivo.getTitulo());
@@ -85,6 +97,36 @@ public class frmDatosArchivo extends JDialog
 		Truta = new JTextField(archivo.getRuta());
 		TnumPags = new JTextField(""+ archivo.getNumPags() + "");
 		Tprogreso = new JTextField("" + clsGestor.porcentLeido(archivo) + " %");
+			horas = archivo.getTiempo()/360;
+			min = (archivo.getTiempo() - horas * 360) / 60;
+			seg = (archivo.getTiempo() - min * 60);
+			if(horas < 10)
+			{
+				H = "0" + horas;
+			}
+			else
+			{
+				H = ""+horas;
+			}
+			
+			if(min < 10)
+			{
+				M = "0" + min;
+			}
+			else
+			{
+				M = "" + min;
+			}
+			
+			if(seg < 10)
+			{
+				S = "0" + seg;
+			}
+			else
+			{
+				S = "" + seg;
+			}
+		Ttiempo = new JTextField(H +" : "+ M +" : "+ S);
 		
 		//Solo cambiarán estos
 		Ttitulo.setEditable(false);
@@ -92,11 +134,12 @@ public class frmDatosArchivo extends JDialog
 		Tapellido.setEditable(false);
 		RadioLibro.setEnabled(false);
 		RadioDoc.setEnabled(false);
+		Ttiempo.setEditable(false);
 		//Estos siempres serán false
 		Truta.setEditable(false);
 		TnumPags.setEditable(false);
 		Tprogreso.setEditable(false);
-
+		
 		Pbotones.setBounds(10, 417, 379, 44);
 		Pbotones.add(ButEditar);
 	
@@ -117,6 +160,8 @@ public class frmDatosArchivo extends JDialog
 		this.getContentPane().add(TnumPags);
 		this.getContentPane().add(Lprogreso);
 		this.getContentPane().add(Tprogreso);
+		this.getContentPane().add(Ltiempo);
+		this.getContentPane().add(Ttiempo);
 		
 		//Decidir la posición de los Labels
 		int cont=1;
@@ -132,6 +177,8 @@ public class frmDatosArchivo extends JDialog
 		LnumPags.setBounds(15, Lapellido.getHeight()*cont+10, Ltitulo.getWidth(), Ltitulo.getHeight());
 		cont ++;
 		Lprogreso.setBounds(15, Lapellido.getHeight()*cont+10, Ltitulo.getWidth(), Ltitulo.getHeight());
+		cont ++;
+		Ltiempo.setBounds(15, Lapellido.getHeight()*cont+10, Ltitulo.getWidth(), Ltitulo.getHeight());
 		
 		//Decidir la posición de los TextFields
 		cont = 0;
@@ -149,6 +196,8 @@ public class frmDatosArchivo extends JDialog
 		TnumPags.setBounds(Ttitulo.getX(), Ttitulo.getHeight()*cont+10, Ttitulo.getWidth(), Ttitulo.getHeight());
 		cont++;
 		Tprogreso.setBounds(Ttitulo.getX(), Ttitulo.getHeight()*cont+10, Ttitulo.getWidth(), Ttitulo.getHeight());
+		cont ++;
+		Ttiempo.setBounds(Ttitulo.getX(), Ttitulo.getHeight()*cont+10, Ttitulo.getWidth(), Ttitulo.getHeight());
 		
 		//Funcionalidad del botón
 		ButEditar.addActionListener(new ActionListener()
@@ -178,8 +227,8 @@ public class frmDatosArchivo extends JDialog
 					archivo.setApeAutor(Tapellido.getText());
 					archivo.setLibroSi(RadioLibro.isSelected());//No nos hace falta mirar radioDoc porque al estar en el ButtonGroup si uno es cierto el otro es falso
 					//IMPORTANTE: Si cambia la selección de libroSi, habrá que cambria, además, su ruta, moviéndolo a la carpeta que le corresponda
-					
-					clsGestor.ModificarRuta(archivo);
+					frmPrincipal.ComprobarCarpeta();
+					frmPrincipal.CopiarArchivo(archivo.getRuta(), archivo);
 					clsGestor.ModificarArchivo(archivo);
 					Truta.setText(archivo.getRuta());
 					ButEditar.setText("Editar");
