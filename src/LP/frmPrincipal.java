@@ -34,7 +34,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -54,7 +53,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.jpedal.exception.PdfException;
 
 import LD.clsBD;
 import LD.clsProperties;
@@ -96,14 +94,15 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private JMenu Mcom =new JMenu("Comentarios");
 	private JMenuItem ExportarComentarios = new JMenuItem( "Exportar comentarios"); //Hacer que cuando se estén viendo los comentarios pase a poner ocultar comentarios
 	// JMenu de sesión: cerrar sesión
-		
+	//(??)Buscar
+	
 	//Para el menú que se despliega a al hacer click derecho sobre un elemento de la lista
 	JPopupMenu popup;
 	JMenuItem Mdetalles = new JMenuItem("Información del archivo");
 	JMenuItem Meliminar = new JMenuItem("Eliminar archivo");
 	
 	//Paneles
-	private static JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
+	private JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
 	private static JPanel PLibros=new JPanel(); //Panel dentro de la pestaña libros
 	private JPanel PDocum=new JPanel(); //Panel dentro de la pestaña documentos
 	static clsPanelPDF PanelPDF = new clsPanelPDF();
@@ -112,31 +111,25 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	//Botones
 	JButton Banterior= new JButton("<<"); //mirar taller bicis
 	JButton Bsiguiente= new JButton(">>"); 
-	JButton btnAñadir;
-
-	//Labels
-	JLabel lbNuevoComent;
-	JLabel lbComentariosAntiguo;
-
+	
 	//Marcador de página, cambiante según los botones de arriba y/o el slider
 	static JTextArea numPag = new JTextArea ();
 	static String indicadorPaginas; //Cada vez que cambiemos la página, cambiaremos el String
 	
 	//Otros compontentes
-	static JProgressBar progreso=new JProgressBar();
+	JProgressBar progreso=new JProgressBar();
 	static JSlider slider=new JSlider ();
 	JButton AddLibro = new JButton("Importar libro");
 	JButton AddDoc = new JButton ("Importar documento");
 	
 	//Comentarios
 	private boolean comentarios = true;
-	private JTextPane TextPaneComentarioNuevo = new JTextPane(); 
-	private JScrollPane Scroll = new JScrollPane(TextPaneComentarioNuevo);
-	private JPanel PcomentarioNuevo= new JPanel();
-	private JPanel PcomentariosViejos= new JPanel();
-	private JPanel Pcomentarios = new JPanel();
+	private JTextPane TextComent = new JTextPane(); 
+	private JScrollPane Scroll = new JScrollPane(TextComent);
+	private JPanel Pcomentarios= new JPanel();
 	private boolean editable = false;
 	
+
 	//Para el Listmodel
 	static HashSet <clsArchivo> HashArchivos = new HashSet();
 	static HashSet <clsArchivo> HashLibros = new HashSet();
@@ -160,6 +153,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	String[] AnchuraAltura = new String[2];
 	String[] locationXY = new String[2];
 	
+	static 	int cont = 0;
+	
 	//Para saber si algo está siendo o no mostrado en el panel del PDF
 	static boolean PDFactivo=false;
 	
@@ -178,7 +173,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		//Este if lo tendremos que hacer, pero lo comento hasta que podamos leer los valores
 //		anchura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(0)));
 //		altura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(1)));
-		
 		if(altura==0)
 		{
 			mipantalla=Toolkit.getDefaultToolkit();
@@ -186,7 +180,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			altura=dim.height;
 			anchura=dim.width;
 		}
-		
 		setSize(anchura, altura);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -195,6 +188,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		if(x!=0)
 		{
 			setLocation(x, y);		
+			
 		}
 		
 		//Menú
@@ -244,29 +238,29 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		    {
 		        if (e.getClickCount() == 2)
 		        {
-		          clsArchivo seleccion = (clsArchivo) ((JList)e.getSource()).getSelectedValue(); 
-			      logger.log(Level.INFO, "La ruta del archivo seleccionado: " + seleccion.getRuta());
+		          clsArchivo seleccion = (clsArchivo) ListLibros.getSelectedValue(); 
+			      System.out.println(seleccion.getRuta());
 		          SeleccionListas(seleccion);
 		        }
 		        BorrarArchivo.setEnabled(true);
 		    }
-		    
 		  //Para el PoupUp
 		    public void mousePressed(MouseEvent arg0)
 		    {
               if (arg0.getButton() == MouseEvent.BUTTON3) //Botón derecho
               {
                     popup.show((JList) arg0.getSource(),arg0.getX(), arg0.getY());
+                    MouseEvent e = new MouseEvent((JList) arg0.getSource(),MouseEvent.MOUSE_CLICKED, java.lang.System.currentTimeMillis(), 1,  arg0.getX(), arg0.getY(), MouseEvent.getMaskForButton( MouseEvent.BUTTON1_MASK), true);
                     int index = ((JList) arg0.getSource()).locationToIndex(arg0.getPoint());
                                           
                     ((JList) arg0.getSource()).setSelectedIndex(index);
               } 
             }
 		};
-		
 		ListLibros.addMouseListener(mouseListener);
 		ListDoc.addMouseListener(mouseListener);
 			
+		
 		//Panel Para libros/Documentos
 	
 		ImageIcon icon = null;
@@ -299,8 +293,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				});
 
 		panelListas.setPreferredSize(new Dimension(225, 40));
-		panelListas.addTab("Libros",icon,PLibros, "Lista de libros agregados");
-		panelListas.addTab("Documentos",icon,PDocum, "Lista de documentos agregados");
+		panelListas.addTab("Libros",icon,PLibros,
+                "Lista de libros agregados");
+		panelListas.addTab("Documentos",icon,PDocum,
+                "Lista de documentos agregados");
 	
 		//Panel para la visualización del PDF
 		getContentPane().add(PanelPDF, BorderLayout.CENTER);
@@ -313,8 +309,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		slider= new JSlider(JSlider.HORIZONTAL );
 		slider.setPaintLabels(true); //si se ve los números del slider
 		slider.setBackground(SystemColor.inactiveCaption);
-		slider.setMinimum(1);
-		
 		//Añadirle al slider el listener
 		  slider.addChangeListener(new ChangeListener()
 		  {
@@ -325,83 +319,46 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		        PanelPDF.irAPag(value);
 		      }
 		    });
-		  
 		Pinferior.add(progreso);
 		Pinferior.add(Banterior);
-		
 		Banterior.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
 				PanelPDF.PagAnt();	
-				ActualizarComponentes();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
+				ActualizarSliderYTexto();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
 			}
 			
 		});
-		
 		Pinferior.add(slider);
 		Pinferior.add(Bsiguiente);
-		
 		Bsiguiente.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
 			{
 				PanelPDF.SigPag();	
-				ActualizarComponentes();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
+				ActualizarSliderYTexto();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
 			}
 			
 		});
-		
 		Pinferior.add(numPag);
+		
 		Pinferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		//--------------------------------------Panel para comentarios--------------------------------------------//
-		
+		//Panel para comentarios
 //		if(comentarios)
 //		{
-		//Aquí leeríamos los comentarios por página/Libro con un for y crearíamos tantos TextArea y ScrolPane como hicieran falta	
-		
-		btnAñadir = new JButton ("Añadir");
-		lbNuevoComent = new JLabel("Nuevo comentario");
-		lbComentariosAntiguo = new JLabel("Comentarios anteriores");
-		
-		Pcomentarios.setPreferredSize(new Dimension(225, 200));
-		PcomentarioNuevo.setBackground(Color.GREEN);
-		
-		PcomentarioNuevo.setPreferredSize(new Dimension(225, 300));
-		PcomentarioNuevo.setBackground(Color.LIGHT_GRAY);
-		
-		TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
-		TextPaneComentarioNuevo.setEditable(editable);
-		
-		PcomentariosViejos.setPreferredSize(new Dimension(225, 400));
-		PcomentariosViejos.setBackground(Color.CYAN);
-			
-		PcomentarioNuevo.add(lbNuevoComent);
-		PcomentarioNuevo.add(TextPaneComentarioNuevo);
-		PcomentarioNuevo.add(btnAñadir);
-		
-//		PcomentariosViejos.add(Scroll);
-		PcomentariosViejos.add(lbComentariosAntiguo);
-		
-		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);
-		Pcomentarios.add(PcomentariosViejos, BorderLayout.SOUTH);
-		this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
-		
 		//Aquí leeríamos los comentarios por página/Libro con uun for y crearíamos tantos TextArea y ScrolPane como hicieran falta	
-			
 			JButton EditC = new JButton ("Editar"); //En su listerner, cambiar editable=true;
-			
 			EditC.addActionListener(new ActionListener()
 			{
 				@Override
 				public void actionPerformed(ActionEvent arg0) 
 				{
 					editable=!editable;
-					TextPaneComentarioNuevo.setEditable(editable);
-					
+					TextComent.setEditable(editable);
 					if(EditC.getText().equals("Editar"))
 					{
 						EditC.setText("Guardar");
@@ -416,11 +373,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 								String ruta = PanelPDF.getRuta();
 								if(ruta.equals(a.getRuta()))
 								{
-									if(!(TextPaneComentarioNuevo.getText().isEmpty()))
+									if(!(TextComent.getText().isEmpty()))
 									{	
 										//GuardarComentario
 										clsArchivo archivoComent = a;
-										clsComentario coment = new clsComentario(TextPaneComentarioNuevo.getText(),archivoComent.getCodArchivo(), PanelPDF.getPagActual(), false, 0);
+										clsComentario coment = new clsComentario(TextComent.getText(),archivoComent.getCodArchivo(), PanelPDF.getPagActual(), false, 0);
 																			
 										clsGestor.guardarComentario(coment.getID(), coment.getTexto(), coment.getCodArchivo(), coment.getNumPagina());
 	
@@ -429,16 +386,18 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 									}
 								}
 							}
-							TextPaneComentarioNuevo.setText("");
+
+							TextComent.setText("");
 						}
 						EditC.setText("Editar");
 					}
+					
 				}
+				
 			});
-			
 			Pcomentarios.setPreferredSize(new Dimension(225, 40));
-			TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
-			TextPaneComentarioNuevo.setEditable(editable);
+			TextComent.setPreferredSize(new Dimension(200, 200));
+			TextComent.setEditable(editable);
 			Pcomentarios.setBackground(Color.gray);
 				
 			Pcomentarios.add(Scroll);
@@ -453,92 +412,68 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			Mdetalles.addActionListener(this);
 			Meliminar.addActionListener(this);
 			Mdetalles.setActionCommand("DETALLES");
-			Meliminar.setActionCommand("ELIMINAR");					
+			Meliminar.setActionCommand("ELIMINAR");
+								
 //		}
 			
 		this.addComponentListener(new ComponentListener()
-		{
-			@Override
-			public void componentHidden(ComponentEvent arg0) 
 			{
-				
-			}
+				@Override
+				public void componentHidden(ComponentEvent arg0) {}
 
-			@Override
-			public void componentMoved(ComponentEvent arg0) 
-			{
-				
-			}
+				@Override
+				public void componentMoved(ComponentEvent arg0) {}
 
-			@Override
-			public void componentResized(ComponentEvent arg0)
-			{
-				AnchuraAltura[0]= Integer.toString(getHeight());
-				AnchuraAltura[1]= Integer.toString(getWidth());
-				clsProperties.CambiarPropiedades(misProps, AnchuraAltura, locationXY, ClavesPropiedades);
-			}
-			
-			@Override
-			public void componentShown(ComponentEvent arg0) 
-			{
-				
-			}
-		});
-		
+				@Override
+				public void componentResized(ComponentEvent arg0)
+				{
+					AnchuraAltura[0]= Integer.toString(getHeight());
+					AnchuraAltura[1]= Integer.toString(getWidth());
+					clsProperties.CambiarPropiedades(misProps, AnchuraAltura, locationXY, ClavesPropiedades);
+				}
+				@Override
+				public void componentShown(ComponentEvent arg0) {}
+			});
 		this.addWindowListener(new WindowListener()		
-		{
-
-			@Override
-			public void windowActivated(WindowEvent arg0) 
-			{	
-				
-			}
-
-			@Override
-			public void windowClosed(WindowEvent arg0) 
 			{
-				
-			}
-
-			@Override
-			public void windowClosing(WindowEvent arg0) 
-			{
-				if(PDFactivo) PanelPDF.GuardarDatosPDFAnterior();
-				clsBD.close();
+	
+				@Override
+				public void windowActivated(WindowEvent arg0) 
+				{	}
+	
+				@Override
+				public void windowClosed(WindowEvent arg0) 
+				{}
+	
+				@Override
+				public void windowClosing(WindowEvent arg0) 
+				{
+//					PanelPDF.GuardarDatosPDFAnterior(PanelPDF);
+					clsBD.close();
 //					locationXY[0]=
 //							x=Integer.parseInt((getLocation().getX()).round());
 //					locationXY[1]=Double.toString(getLocation().getY());
 //					clsProperties.CambiarPropiedades(misProps, AnchuraAltura, locationXY, ClavesPropiedades);
 //					clsProperties.Guardarpropiedad(misProps);
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent arg0)
-			{
-				
-			}
-
-			@Override
-			public void windowDeiconified(WindowEvent arg0) 
-			{
-				
-			}
-
-			@Override
-			public void windowIconified(WindowEvent arg0) 
-			{
-				
-			}
-
-			@Override
-			public void windowOpened(WindowEvent arg0) 
-			{
-				
-			}
-			
-		});
-	}
+				}
 	
+				@Override
+				public void windowDeactivated(WindowEvent arg0)
+				{}
+	
+				@Override
+				public void windowDeiconified(WindowEvent arg0) 
+				{}
+	
+				@Override
+				public void windowIconified(WindowEvent arg0) 
+				{}
+	
+				@Override
+				public void windowOpened(WindowEvent arg0) {}
+				
+			});
+	}
 	public static void InitLogs()
 	{
 		//---gestión de Loggs:---			
@@ -557,45 +492,31 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
     	{
     		logger.log(Level.SEVERE, e1.getMessage(), e1);
 			e1.printStackTrace();
-		} 
-    	catch (IOException e1)
+		} catch (IOException e1)
     	{
 			logger.log(Level.SEVERE, e1.getMessage(), e1);
 			e1.printStackTrace();
 		}
 	}
-	
-	public static void ActualizarComponentes()
+	public static void ActualizarSliderYTexto()
 	{
-		if(PDFactivo)
-		{
-			logger.log(Level.INFO, "Actualizando Slider y texto del panel inferior");
-			
-			//Prepara el texto del slider
-			int max = PanelPDF.getPaginasTotal();
-			int PaginasActual = PanelPDF.getPagActual();
-					slider.setMaximum(max);
-					slider.setValue(PaginasActual);
-					slider.setPaintTicks(true);//las rayitas que marcan los números
-					slider.setMajorTickSpacing(PanelPDF.getPaginasTotal()-1); // de cuanto en cuanto los números en el slider
-					//slider.setMinorTickSpacing(PanelPDF.getPaginasTotal()/3); //las rayitas de cuanto en cuanto
-					slider.setPaintLabels(true); //si se ven los números del slider o no
-					slider.setBackground(SystemColor.inactiveCaption);
-					
-			//Prepara el texto de los números de página
-					indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.getPaginasTotal();
-					numPag.setText(indicadorPaginas);
-					numPag.setEditable(false);
-					numPag.setBackground(SystemColor.inactiveCaption);
-					
-			//Prepara el progress bar
-					int intProgress = clsGestor.porcentLeido(PanelPDF.getPDFabierto());
-					progreso.setStringPainted(true);
-					progreso.setValue((intProgress));
-					progreso.setString(intProgress + "%");
-		}		
+		logger.log(Level.INFO, "Actualizando Slider y texto del panel inferior");
+		//prepara el texto del slider
+				slider.setMinimum(1);
+				slider.setMaximum( PanelPDF.getPaginasTotal());
+				slider.setValue( PanelPDF.getPagActual());
+				slider.setPaintTicks(true);//las rayitas que marcan los números
+				slider.setMajorTickSpacing(PanelPDF.getPaginasTotal()-1); // de cuanto en cuanto los números en el slider
+				//slider.setMinorTickSpacing(PanelPDF.getPaginasTotal()/3); //las rayitas de cuanto en cuanto
+				slider.setPaintLabels(true); //si se ven los números del slider o no
+				slider.setBackground(SystemColor.inactiveCaption);
+				
+				//Preparar el textode los números de página
+				indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.getPaginasTotal();
+				numPag.setText(indicadorPaginas);
+				numPag.setEditable(false);
+				numPag.setBackground(SystemColor.inactiveCaption);
 	}
-	
 	/**
 	 * Abre el archivo seleccionado en la lista
 	 * @param elegido
@@ -604,9 +525,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	{
 		PanelPDF.abrirPDF(elegido);
 		PDFactivo=true;
-		ActualizarComponentes();
+		ActualizarSliderYTexto();
 	}
-	
 	/**
 	 * 
 	 * @param a archivo del que vamos a mostrar sus comentrios
@@ -643,18 +563,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		modelDocumentos = new modelArchivos(HashDocumentos);
 	}
 	
-	public static void ActualizarListas()
-	{
-		modelLibros.setLista(HashLibros);
-		modelDocumentos.setLista(HashDocumentos);
-	}
 	
 	/**
 	 * Método para recoger/guardar un solo PDF con filtro de PDFs
 	 */
 	public void SeleccionarArchivo(boolean esLibro)
 	{
-		String Titulo;
 		
 		chooser = new JFileChooser();
 
@@ -665,7 +579,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			logger.log(Level.INFO, "Seleccionando libro");
 			chooser.setDialogTitle("Importar libro");
 		}
-		
 		else
 		{
 			logger.log(Level.INFO, "Seleccionando documento");
@@ -683,42 +596,36 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		if(response == JFileChooser.APPROVE_OPTION)
 		{
 			path = chooser.getSelectedFile().getPath();
-		
-			Titulo = clsGestor.RecogerTitulo(HashArchivos, path);
 			
-			clsArchivo nuevoArchivo;
-			try 
-			{
-				nuevoArchivo = new clsArchivo ("Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
-				HashArchivos.add(nuevoArchivo);
-				CopiarArchivo(path, nuevoArchivo);
-				PanelPDF.abrirPDF(nuevoArchivo);
-				PDFactivo=true;
-				ActualizarComponentes();
-				MostrarComentarios(nuevoArchivo);
-				clsGestor.guardarArchivo(nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
-				if(esLibro)
-				{
-					HashLibros.add(nuevoArchivo);
-				} else
-				{
-					HashDocumentos.add(nuevoArchivo);
-				}
-				ActualizarListas();
-			} catch (PdfException e) {}
+			//Recoger el file
+			//Para probarlo, creación de un clsArchivo Falso
+		
+			String [] titulos = {"1", "2", "3"};
+			clsArchivo a = new clsArchivo ("Maider", path, titulos [cont], "", 1, 1, 1, esLibro, false, 0);
+			cont ++;
+			HashArchivos.add(a);
+			ComprobarCarpeta();
+			CopiarArchivo(path, a);
+			PanelPDF.abrirPDF(a);
+			PDFactivo=true;
+			ActualizarSliderYTexto();
+			MostrarComentarios(a);
+			CargarDatos();
+				
+			clsGestor.guardarArchivo(a.getNomAutor(), a.getApeAutor(), a.getCodArchivo(), a.getTitulo(), a.getRuta(), a.getNumPags(), a.getUltimaPagLeida(), a.getTiempo(), a.getLibroSi());
+			//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nombre (1)" o el número que sea
+			//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
 		}
 	}
 	
 	public void SeleccionarArchivosDeCarpeta(boolean esLibro)
 	{
 		String carp = ultimaCarpeta;  
-		
 		//Elegimos dónde abrir el chooser
 		if (ultimaCarpeta==null) carp = System.getProperty("user.dir");
 		File dirActual = new File( carp );
 		chooser = new JFileChooser( dirActual );
 		chooser.setApproveButtonText("Importar");
-		
 		//Elegimos qué chooser abrir
 		if(esLibro)
 		{
@@ -739,13 +646,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		{
 			//cambiamos el valor de ultimaCarpeta
 			ultimaCarpeta=chooser.getSelectedFile().getPath();
-			RecursividadCarpeta(ultimaCarpeta, esLibro);
+			ComprobarCarpeta();
+			RecursividadCarpeta(ultimaCarpeta);
 			//Creamos un nuevo archivo por cada pdf que haya en el directorio
 			//Para ello, primero vemos si estamos en una carpeta, por lo que la primera vez siempre entrará			
 		} 
 	}
 	
-	public static void RecursividadCarpeta(String path, boolean esLibro)
+	public static void RecursividadCarpeta(String path)
 	{
 		File fic = new File (path);
 		
@@ -756,10 +664,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				/*Por cada fichero en Fic, volveremos a llamar a este método hasta llegar al interior de una carpeta en la que no haya
 				*más, por lo que pasará por todos los ficheros en el interior de la carpeta
 				**/
-				RecursividadCarpeta(f.getPath(), esLibro);
+				RecursividadCarpeta(f.getPath());
 			}
-		} 
-		else
+		} else
 		{ 
 			//En este caso recursivo, el caso en el que NO es una carpeta será el caso base
 			//Es decir, el algoritmo recursivo lleará hasta la carpeta del fin de la ruta de carpetas 
@@ -768,21 +675,29 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			{
 				// Si cumple el patrón, se añade
 				path = fic.getPath();
-				String Titulo = clsGestor.RecogerTitulo(HashArchivos, path);
-				try 
-				{
-					clsArchivo nuevoArchivo = new clsArchivo ("Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
-					HashArchivos.add(nuevoArchivo);
-					CopiarArchivo(path, nuevoArchivo);
-					clsGestor.guardarArchivo(nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
-					CargarDatos();
-				} 
-				catch (PdfException e) 
-				{
-					
-				}
+				// Llamar a método de CopiarArchivo()
+				// aquí habrá que lanzar una pantalla para EL RESTO DE ATRIBUTOS además de la ruta
+				//Recoger el file
+				//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nokmbre (1)" o el número que sea
+				//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
 			} 
 		}
+	}
+	
+	public static void ComprobarCarpeta()
+	{
+		File Data = new File(".\\Data");
+		File Libros = new File(".\\Data\\Libros");
+		File Documentos = new File(".\\Data\\Documentos");
+		
+		boolean data = Data.mkdir(); 
+		boolean libros = Libros.mkdir();
+		boolean docum = Documentos.mkdir();
+		
+		if(data) logger.log(Level.INFO, "Se caba de crear la carpeta 'Data'");
+		if(libros) logger.log(Level.INFO, "Se caba de crear la carpeta 'Libros'");
+		if(docum) logger.log(Level.INFO, "Se caba de crear la carpeta 'Documentos'");
+		
 	}
 	
 	public static void CopiarArchivo(String DireccionOrigen, clsArchivo ArchivoDireccionDestino)
@@ -798,8 +713,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		{
 			TO = Paths.get(".\\Data\\Libros");  
 			logger.log(Level.INFO, "Copiando archivo "+ NombreArchivo + " a la carpeta '.\\Data\\Libros'" );
-		} 
-		else
+		} else
 		{
 			TO = Paths.get(".\\Data\\Documentos");
 			logger.log(Level.INFO, "Copiando archivo "+ NombreArchivo + " a la carpeta '.\\Data\\Documentos'" );
@@ -816,7 +730,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		{
 			logger.log(Level.WARNING, "Error al copiar: " + e.getMessage() );
 		}
-			logger.log(Level.INFO, "Archivo copiado" );
+		logger.log(Level.INFO, "Archivo copiado" );
 	}
 
 	public static void BorrarArchivo()
@@ -825,16 +739,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 		//No nos hace falta controlar si está o no seleccionado alguno ya que si no es así la opción de menú está inactiva.
 		//Lo que necesitamos saber es de qué lista se ha seleccionado
-		if(panelListas.getSelectedIndex() == 1)
+		if(ListLibros.isSelectionEmpty())
 		{
 			borrar = (clsArchivo) ListDoc.getSelectedValue();
-			HashDocumentos.remove(borrar);
 			logger.log(Level.INFO, "Borrando documento" );
 		}
 		else
 		{
 			borrar = (clsArchivo) ListLibros.getSelectedValue();
-			HashLibros.remove(borrar);
 			logger.log(Level.INFO, "Borrando libro" );
 		}
 		clsGestor.BorrarObjetoBD(borrar.getCodArchivo(), "ARCHIVO");
@@ -867,25 +779,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				int option;
 				option = JOptionPane.showConfirmDialog(this, "¿Estás seguro de querer borrar este archivo de tu lista de archivos?", "Confirmar borrado",
 				        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				
 				if(option == JOptionPane.OK_OPTION)
 				{
 					BorrarArchivo();
-					ActualizarListas();
-					
-					if(panelListas.getSelectedIndex() == 0)
-					{
-						if(ListLibros.getSelectedValue().equals(PanelPDF.getPDFabierto()))
-							PanelPDF.CerrarPDF();
-					} 
-					else
-					{
-						if(ListDoc.getSelectedValue().equals(PanelPDF.getPDFabierto()))
-							PanelPDF.CerrarPDF();
-					}
+					CargarDatos();
 				}	
 				break;
-				
 			case "DETALLES":
 				clsArchivo archivoDatos;
 				if(panelListas.getSelectedIndex()==1)
@@ -901,15 +800,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		}
 	}
 
-	@Override
-	public void stateChanged(ChangeEvent arg0)
-	{
-		
-	}
 	
 	@Override
+	public void stateChanged(ChangeEvent arg0)
+	{}
+	@Override
 	public void valueChanged(ListSelectionEvent arg0)
-	{
-		
-	}
+	{}
 }
