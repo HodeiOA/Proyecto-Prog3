@@ -447,7 +447,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				@Override
 				public void windowClosing(WindowEvent arg0) 
 				{
-//					PanelPDF.GuardarDatosPDFAnterior(PanelPDF);
+					PanelPDF.GuardarDatosPDFAnterior();
 					clsBD.close();
 //					locationXY[0]=
 //							x=Integer.parseInt((getLocation().getX()).round());

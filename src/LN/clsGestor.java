@@ -21,7 +21,7 @@ public class clsGestor
 	{
 		int retorno;
 		
-		retorno = archi.getUltimaPagLeida()/archi.getNumPags(); //INFO: archi.getUltimaPagLeida(), archi.getNumPags()
+		retorno = (archi.getUltimaPagLeida()/archi.getNumPags()) * 100; //INFO: archi.getUltimaPagLeida(), archi.getNumPags()
 		
 		return retorno; //retorno
 	}
