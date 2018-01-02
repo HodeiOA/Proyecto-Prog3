@@ -20,6 +20,8 @@ public class clsPanelPDF extends JScrollPane
 	private int PagActual = 1;
 	private String ruta;
 	int velocidadScroll = 15;
+	int nuevaRotacion = 90;
+	float escala = 2;
 	
 	static clsCronometro crono;
 	
@@ -33,7 +35,6 @@ public class clsPanelPDF extends JScrollPane
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		this.setViewportView(PDFdecoder);
-		
 	}
 	
 	public void abrirPDF(clsArchivo archivo)
@@ -43,22 +44,25 @@ public class clsPanelPDF extends JScrollPane
 			this.GuardarDatosPDFAnterior(this);
 			ruta = archivo.getRuta();
 			this.irAPag(archivo.getUltimaPagLeida());
-			System.out.println();
 //			crono=new clsCronometro(); //Para asegurarnos de que vuelve a empezar desde cero
 //			crono.run();
+			
 			PDFdecoder.closePdfFile();
 			PDFdecoder.openPdfFile(ruta);
-			irAPag(archivo.getUltimaPagLeida());; //Le abrimos el archivo desde la última página que leyó
+			irAPag(archivo.getUltimaPagLeida()); //Le abrimos el archivo desde la última página que leyó
 			PDFdecoder.decodePage(PagActual);
-			PDFdecoder.setPageParameters(2.8f, PagActual);
+			PDFdecoder.setPageParameters(escala, PagActual);
 			PDFdecoder.invalidate();
-		} catch (PdfException e) 
+		} 
+		
+		catch (PdfException e) 
 		{
 			//e.getMessage()
 		}
 		
 		repaint();
 	}
+	
 	public static void GuardarDatosPDFAnterior(clsPanelPDF panelPDF)
 	{
 		String rutaAnterior = panelPDF.getRuta();
@@ -99,11 +103,13 @@ public class clsPanelPDF extends JScrollPane
 		if(ruta != null && PagActual < PDFdecoder.getPageCount())
 		{
 			PagActual++;
-			try {
+			try 
+			{
 				PDFdecoder.decodePage(PagActual);
 				PDFdecoder.invalidate();
 				repaint();
-			} catch (PdfException e) 
+			}
+			catch (PdfException e) 
 			{
 				//e.getMessage()
 			}
@@ -118,11 +124,13 @@ public class clsPanelPDF extends JScrollPane
 		{
 			PagActual--;
 			
-			try {
+			try 
+			{
 				PDFdecoder.decodePage(PagActual);
 				PDFdecoder.invalidate();
 				repaint();
-			} catch (PdfException e) 
+			} 
+			catch (PdfException e) 
 			{
 				//e.getMessage()
 			}
@@ -131,25 +139,41 @@ public class clsPanelPDF extends JScrollPane
 		// Si ponemos indicador de página, cambiar el número de la variable
 	}
 
-	public int getPagActual() 
-	{
-		return PagActual;
-	}
-
 	public void irAPag(int nuevaPag) 
 	{
 		//PagActual
 		//nuevaPag
 		PagActual = nuevaPag;
-		try {
+		try 
+		{
 			PDFdecoder.decodePage(PagActual);
 			PDFdecoder.invalidate();
 			repaint();
-		} catch (PdfException e)
+		} 
+		catch (PdfException e)
 		{
 			//e.getMessage()
 		}
 		//PagActual
+	}
+	
+	/*
+     * Set the page's rotation
+     * A value of 90 will set the rotation to 90º
+     */
+	public void setDisplayRotation (int nuevaRotacion)
+	{
+//		rotate(Math.toRadians(nuevaRotacion));
+	}
+
+	/*
+     * Initialise panel and set size to fit PDF page with rotation set to the default
+     * To keep existing scaling setting set scaling value to -1
+     */
+	public void setPageParameters(float zoom, int pagActual)
+	{
+		PDFdecoder.setPageParameters(escala*zoom, pagActual);
+		PDFdecoder.invalidate();
 	}
 
 	public String getRuta()
@@ -162,4 +186,8 @@ public class clsPanelPDF extends JScrollPane
 		return PDFdecoder.getPageCount();
 	}
 	
+	public int getPagActual() 
+	{
+		return PagActual;
+	}
 }
