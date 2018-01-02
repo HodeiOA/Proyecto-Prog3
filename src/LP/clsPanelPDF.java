@@ -44,9 +44,9 @@ public class clsPanelPDF extends JScrollPane
 			this.GuardarDatosPDFAnterior(this);
 			ruta = archivo.getRuta();
 			this.irAPag(archivo.getUltimaPagLeida());
-			crono=new clsCronometro(); //Para asegurarnos de que vuelve a empezar desde cero
-			crono.run();
-			crono.Play();
+//			crono=new clsCronometro(); //Para asegurarnos de que vuelve a empezar desde cero
+//			crono.run();
+//			crono.Play();
 			
 			PDFdecoder.closePdfFile();
 			PDFdecoder.openPdfFile(ruta);
@@ -87,7 +87,7 @@ public class clsPanelPDF extends JScrollPane
 					archivoAnterior = a; //Guardamos el archivo que estaba abierto en la variable auxiliar
 				}
 			}
-			crono.Pause();
+//			crono.Pause();
 //			tiempo = archivoAnterior.getTiempo() + crono.getSegundos() ;
 			ultimaPagLeida = panelPDF.getPagActual();
 			//Le pasamos a modificar el archivo con los nuevos atributos
