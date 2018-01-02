@@ -210,15 +210,15 @@ public class clsGestor
 	{
 		String Nombre = paramNombre;
 		
+		if(Contador != 0)
+		{
+			Nombre = Nombre + " (" + Contador + ")";
+		}
+		
 		for(clsArchivo aux: Lista)
 		{
-			if(Contador != 0)
-			{
-				Nombre = Nombre + " (" + Contador + ")";
-			}
-			
 			if(aux.getTitulo().equals(Nombre))
-				ComprobarNombreRepetido(Lista, paramNombre, Contador+1);
+				Nombre = ComprobarNombreRepetido(Lista, paramNombre, Contador+1);
 		}
 		
 		return Nombre;

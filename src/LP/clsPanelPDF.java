@@ -168,6 +168,10 @@ public class clsPanelPDF extends JScrollPane
 		PDFdecoder.setPageParameters(escalaActual, PagActual,nuevaRotacion);
 		PDFdecoder.invalidate();
 	}
+	public void CerrarPDF()
+	{
+		PDFdecoder.closePdfFile();
+	}
 
 	public void zoom (float zoom, int pagActual)
 	{

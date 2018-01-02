@@ -103,7 +103,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	JMenuItem Meliminar = new JMenuItem("Eliminar archivo");
 	
 	//Paneles
-	private JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
+	private static JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
 	private static JPanel PLibros=new JPanel(); //Panel dentro de la pestaña libros
 	private JPanel PDocum=new JPanel(); //Panel dentro de la pestaña documentos
 	static clsPanelPDF PanelPDF = new clsPanelPDF();
@@ -749,7 +749,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 		//No nos hace falta controlar si está o no seleccionado alguno ya que si no es así la opción de menú está inactiva.
 		//Lo que necesitamos saber es de qué lista se ha seleccionado
-		if(ListLibros.isSelectionEmpty())
+		if(panelListas.getSelectedIndex() == 1)
 		{
 			borrar = (clsArchivo) ListDoc.getSelectedValue();
 			HashDocumentos.remove(borrar);
@@ -795,6 +795,16 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				{
 					BorrarArchivo();
 					ActualizarListas();
+					
+					if(panelListas.getSelectedIndex() == 0)
+					{
+						if(ListLibros.getSelectedValue().equals(PanelPDF.getPDFabierto()))
+							PanelPDF.CerrarPDF();
+					} else
+					{
+						if(ListDoc.getSelectedValue().equals(PanelPDF.getPDFabierto()))
+							PanelPDF.CerrarPDF();
+					}
 				}	
 				break;
 			case "DETALLES":
