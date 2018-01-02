@@ -238,7 +238,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		    {
 		        if (e.getClickCount() == 2)
 		        {
-		          clsArchivo seleccion = (clsArchivo) ListLibros.getSelectedValue(); 
+		          clsArchivo seleccion = (clsArchivo) ((JList)e.getSource()).getSelectedValue(); 
 			      System.out.println(seleccion.getRuta());
 		          SeleccionListas(seleccion);
 		        }
