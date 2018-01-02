@@ -163,23 +163,23 @@ public class clsGestor
 		return retorno;
 	}
 	
-	public static String RecogerTitulo(String Ruta) // Falta llamar desde los sitios que hace falta
+	public static String RecogerTitulo(HashSet<clsArchivo> Lista, String Ruta) // Falta llamar desde los sitios que hace falta
 	{
-		String aux;
+		String Nombre;
 		String[] CorteBarras;
 		String[] CortePunto;
 		
 		CorteBarras = Ruta.split("\\\\");
 		
-		aux = CorteBarras[CorteBarras.length-1];
+		Nombre = CorteBarras[CorteBarras.length-1];
 		
-		CortePunto = aux.split("\\.");
+		CortePunto = Nombre.split("\\.");
 		
-		aux = CortePunto[0];
+		Nombre = CortePunto[0];
 		
-		System.out.println(aux);
+		Nombre = ComprobarNombreRepetido(Lista, Nombre, 0);
 		
-		return aux;
+		return Nombre;
 	}
 	
 	public static void ModificarRuta(clsArchivo Archivo) // Falta llamar desde los sitios que hace falta
@@ -206,9 +206,9 @@ public class clsGestor
 		} catch (IOException e) {}
 	}
 	
-	public static void ComprobarNombreRepetido(HashSet<clsArchivo> Lista, clsArchivo Archivo, int Contador)
+	public static String ComprobarNombreRepetido(HashSet<clsArchivo> Lista, String paramNombre, int Contador)
 	{
-		String Nombre = Archivo.getTitulo();
+		String Nombre = paramNombre;
 		
 		for(clsArchivo aux: Lista)
 		{
@@ -218,11 +218,10 @@ public class clsGestor
 			}
 			
 			if(aux.getTitulo().equals(Nombre))
-				ComprobarNombreRepetido(Lista, Archivo, Contador+1);
+				ComprobarNombreRepetido(Lista, paramNombre, Contador+1);
 		}
 		
-		Archivo.setTitulo(Nombre);
-		ModificarRuta(Archivo);
+		return Nombre;
 	}
 	
 	public static void ComprobarCarpeta()

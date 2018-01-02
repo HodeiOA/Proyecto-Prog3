@@ -239,7 +239,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		        if (e.getClickCount() == 2)
 		        {
 		          clsArchivo seleccion = (clsArchivo) ((JList)e.getSource()).getSelectedValue(); 
-			      System.out.println(seleccion.getRuta());
+			      logger.log(Level.INFO, "La ruta del archivo seleccionado: " + seleccion.getRuta());
 		          SeleccionListas(seleccion);
 		        }
 		        BorrarArchivo.setEnabled(true);
@@ -574,6 +574,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		modelDocumentos = new modelArchivos(HashDocumentos);
 	}
 	
+	public static void ActualizarListas()
+	{
+		modelLibros.setLista(HashLibros);
+		modelDocumentos.setLista(HashDocumentos);
+	}
+	
 	
 	/**
 	 * Método para recoger/guardar un solo PDF con filtro de PDFs
@@ -608,14 +614,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		if(response == JFileChooser.APPROVE_OPTION)
 		{
 			path = chooser.getSelectedFile().getPath();
-			
-			//Recoger el file
-			//Para probarlo, creación de un clsArchivo Falso
 		
-			Titulo = clsGestor.RecogerTitulo(path);
+			Titulo = clsGestor.RecogerTitulo(HashArchivos, path);
 			
 			clsArchivo nuevoArchivo;
-			try {
+			try 
+			{
 				nuevoArchivo = new clsArchivo ("Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
 				HashArchivos.add(nuevoArchivo);
 				CopiarArchivo(path, nuevoArchivo);
@@ -624,7 +628,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				ActualizarComponentes();
 				MostrarComentarios(nuevoArchivo);
 				clsGestor.guardarArchivo(nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
-				CargarDatos();
+				if(esLibro)
+				{
+					HashLibros.add(nuevoArchivo);
+				} else
+				{
+					HashDocumentos.add(nuevoArchivo);
+				}
+				ActualizarListas();
 			} catch (PdfException e) {}
 		}
 	}
@@ -685,7 +696,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			{
 				// Si cumple el patrón, se añade
 				path = fic.getPath();
-				String Titulo = clsGestor.RecogerTitulo(path);
+				String Titulo = clsGestor.RecogerTitulo(HashArchivos, path);
 				try {
 					clsArchivo nuevoArchivo = new clsArchivo ("Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
 					HashArchivos.add(nuevoArchivo);
