@@ -7,8 +7,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
+//import java.util.logging.FileHandler;
+//import java.util.logging.Handler;
+//import java.util.logging.Level;
+//import java.util.logging.SimpleFormatter;
+//import java.util.logging.StreamHandler;
+import java.util.logging.*;
+
 
 import javax.swing.JOptionPane;
+
+import com.sun.istack.internal.logging.Logger;
 
 import LN.clsArchivo;
 import LN.clsComentario;
@@ -16,9 +25,15 @@ import LN.clsUsuario;
 
 public class clsBD
 {
+	private static Logger logger = Logger.getLogger(clsBD.class);
+	
 	private static Connection connection = null;
 	private static Statement statement = null;
 	private static ResultSet rs=null;
+	
+	
+//	static Handler h = new StreamHandler(System.out, new SimpleFormatter());
+
 
 	/** Inicializa una BD SQLITE y devuelve una conexión con ella. Debe llamarse a este 
 	 * método antes que ningún otro, y debe devolver no null para poder seguir trabajando con la BD.
@@ -26,7 +41,7 @@ public class clsBD
 	 * @return	Conexión con la base de datos indicada. Si hay algún error, se devuelve null
 	 */
 	public static Connection initBD ( String nombreBD ) 
-	{
+	{		
 		try
 		{
 		    Class.forName("org.sqlite.JDBC");
@@ -35,9 +50,12 @@ public class clsBD
 			statement.setQueryTimeout(30);  // poner timeout 30 msg
 		    return connection;
 		} 
+		
 		catch (ClassNotFoundException | SQLException e) 
 		{
 			//SEVERE: e.getMessage()
+			logger.log( Level.SEVERE, e.getMessage(), e );
+
 			JOptionPane.showMessageDialog( null, "Error de conexión!! No se ha podido conectar con " + nombreBD , "ERROR", JOptionPane.ERROR_MESSAGE );
 			System.out.println( "Error de conexión!! No se ha podido conectar con " + nombreBD );
 			return null;
@@ -56,6 +74,8 @@ public class clsBD
 		catch (SQLException e)
 		{
 			//SEVERE: e.getMessage()
+			logger.log( Level.SEVERE, e.getMessage(), e );
+
 			e.printStackTrace();
 		}
 	}
@@ -89,6 +109,8 @@ public class clsBD
 		try
 		{ 
 			//INFO: Creando tabla
+			logger.log( Level.INFO, "Creando tabla");
+			
 			statement.executeUpdate("create table fichero_archivo " +
 					"("
 					+ " nomAutor string,"
@@ -103,11 +125,18 @@ public class clsBD
 					//+ "foreign key(nick) references fichero_usuario(nick),"
 					+ " primary key(codArchivo)"
 					+ ")");
+			
 			//Tabla creada
+			logger.log( Level.INFO, "Tabla creada");
 
-		} catch (SQLException e) 
+		} 
+		
+		catch (SQLException e) 
 		{
 			//SEVERE: e.getMessahge()
+			
+			logger.log( Level.SEVERE, e.getMessage(), e );
+
 			// Si hay excepción es que la tabla ya existía (lo cual es correcto). No la creamos y listo
 			// e.printStackTrace();  
 		}
@@ -124,6 +153,7 @@ public class clsBD
 			statement.executeUpdate("create table fichero_usuario " +
 				"(nick string, contraseña string, primary key (nick))");
 		} 
+		
 		catch (SQLException e)
 		{
 			// Si hay excepción es que la tabla ya existía (lo cual es correcto)
@@ -144,7 +174,9 @@ public class clsBD
 				//+ ", foreign key (codArchivo) references fichero_archivo(codArchivo"
 				+ ")");
 
-		} catch (SQLException e) 
+		} 
+		
+		catch (SQLException e) 
 		{
 			// Si hay excepción es que la tabla ya existía (lo cual es correcto)
 			// e.printStackTrace();  
@@ -168,8 +200,11 @@ public class clsBD
 	 */
 	public static boolean InsertArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
-				try {
+				try 
+				{
 					//Insertando
+					logger.log( Level.INFO, "Insertando");
+					
 					String sentSQL = "insert into fichero_archivo values(" +
 							"'" + nomAutor + "', " +
 							"'" + apeAutor + "', " +
@@ -180,11 +215,16 @@ public class clsBD
 							"'" + ultimaPagLeida + "', " +
 							"'" + tiempo + "', " +
 							"'" + libroSi + "')";
-					//insertando
+					
+					//insertado
+	            	logger.log( Level.INFO, "insertado");
+	            	
 					int val = statement.executeUpdate( sentSQL );
 					if (val!=1) return false; //Error, no se ha insertado
 					return true;
-				} catch (SQLException e) {
+				} 
+				catch (SQLException e) 
+				{
 					e.printStackTrace();
 					return false;
 				}
@@ -200,14 +240,17 @@ public class clsBD
 	 */
 	public static boolean InsertUsuario (String contraseña, String nick)
 	{
-		try {
+		try 
+		{
 			String sentSQL = "insert into fichero_usuario values(" +
-					"'" + contraseña + "', " +
-					"'" + nick + "')";
+					"'" + nick + "', " +
+					"'" + contraseña + "')";
 			int val = statement.executeUpdate( sentSQL );
 			if (val!=1) return false; 
 			return true;
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e) 
+		{
 			e.printStackTrace();
 			return false;
 		}
@@ -224,7 +267,8 @@ public class clsBD
 	 */
 	public static boolean InsertComentario (int ID, String texto, int codArchivo, int numPag)
 	{
-		try {
+		try 
+		{
 			String sentSQL = "insert into fichero_comentario values(" +
 					"'" + ID + "', " +
 					"'" + texto + "', " +
@@ -233,7 +277,10 @@ public class clsBD
 			int val = statement.executeUpdate( sentSQL );
 			if (val!=1) return false;  
 			return true;
-		} catch (SQLException e) {
+		} 
+		
+		catch (SQLException e) 
+		{
 			e.printStackTrace();
 			return false;
 		}
@@ -250,6 +297,9 @@ public class clsBD
 	public static boolean BorrarFila (Object ident, String tabla)
 	{
 		//INFO: tabla
+		
+    	logger.log( Level.INFO, tabla);
+
 		switch(tabla)
 		{
 			case "ARCHIVO":
@@ -302,6 +352,7 @@ public class clsBD
 				return false;
 		}
 	}
+	
 	//Update
 	/**
 	 * Modifica un archivo de la BD
@@ -319,24 +370,29 @@ public class clsBD
 	 */ 
 	public static boolean UpdateArchivo (String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
-				try {
+				try 
+				{
 					//Modificando
+					
+	            	logger.log( Level.INFO, "Modificando");
+
 					String sentSQL = "update fichero_archivo set "+
-							"'" + "nomAutor =" + nomAutor + "', " +
-							"'" + "apeAutor =" + apeAutor + "', " +
-							"'" + "titulo = "+ titulo  + "', " +
-							"'" + "ruta = "+ruta + "', " +
-							"'" + "numPags = "+ numPags + "', " +
-							"'" + "ultimaPagLeida =" + ultimaPagLeida + "', " +
-							"'" + "tiempo =" + tiempo + "', " +
-							"'" + "libroSi ="+libroSi +
-							"where codArchivo = "+ codArchivo + "')";
+							 "nomAutor = '" + nomAutor + "', " 
+							 + "apeAutor = '" + apeAutor + "', " +
+							 "titulo = '"+ titulo  + "', " +
+							"ruta = '"+ruta + "', " +
+						    "numPags = "+ numPags + ", " +
+							"ultimaPagLeida = " + ultimaPagLeida + ", " +
+							"tiempo = " + tiempo + ", " +
+							"libroSi = '"+libroSi +
+							"' where codArchivo = "+ codArchivo + "";
 					System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
 					int val = statement.executeUpdate( sentSQL );
 					if (val!=1) return false; //fallo
 					// Se tiene que añadir 1 - error si no
 					return true; //bien
-				} catch (SQLException e) 
+				} 
+				catch (SQLException e) 
 				{
 					//e.getMessage
 					e.printStackTrace();
@@ -344,6 +400,7 @@ public class clsBD
 				}
 
 	}
+	
 	/**
 	 * Modificar un usuario de la BD
 	 *  Para ello, le pasamos todos los atributos (los que cambian y los que no) para que el método sirva para todos los casos
@@ -353,19 +410,24 @@ public class clsBD
 	 */
 	public static boolean UpdateUsuario (String contraseña, String nick)
 	{
-		try {
-			String sentSQL = "update fichero_usuario set" +
-					"'" + "contraseña ="+ contraseña + 
-					"where nick=" + nick + "')";
+		try 
+		{
+			String sentSQL = "update fichero_usuario set " +
+					 "contraseña = '"+ contraseña + "'" +
+					"where nick= '" + nick + "'";
 			System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
 			int val = statement.executeUpdate( sentSQL );
 			if (val!=1) return false;  // Se tiene que añadir 1 - error si no
 			return true;
-		} catch (SQLException e) {
+		} 
+		
+		catch (SQLException e) 
+		{
 			e.printStackTrace();
 			return false;
 		}
 	}
+	
 	/**
 	 * Modificar un comentario de la BD
 	 *  Para ello, le pasamos todos los atributos (los que cambian y los que no) para que el método sirva para todos los casos
@@ -377,16 +439,19 @@ public class clsBD
 	 */
 	public static boolean UpdateComentario (int ID, String texto, int codArchivo, int numPag)
 	{
-		try {
-			String sentSQL = "update fichero_comentario set" +
-					"'" + "ID=" + ID + "', " +
-					"'" + "texto=" + texto + "', " +
-					"'" + "codArchivo =" + codArchivo + "', " +
-					"'" + "numPag" + numPag + 
-					"where ID = "+ ID +"')";
+		try 
+		{
+			String sentSQL = "update fichero_comentario set " +
+					"ID=" + ID + ", " +
+					 "texto= '" + texto + "', " +
+					 "codArchivo =" + codArchivo + ", " +
+					 "numPag = " + numPag + 
+					 " where ID = "+ ID +"";
 			int val = statement.executeUpdate( sentSQL );
 			return true;
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e) 
+		{
 			e.printStackTrace();
 			return false;
 		}
@@ -402,12 +467,16 @@ public class clsBD
 	public static boolean DropTable(String tabla)
 	{
 		//info: tabla
+    	logger.log( Level.INFO, tabla);
+
 		switch (tabla)
 		{
 			case "ARCHIVO":
 				try
 				{
+//					System.out.println("borrar tabla archivo");
 					String sentSQL = "drop table fichero_archivo";
+//					System.out.println(sentSQL);
 					int val = statement.executeUpdate( sentSQL );
 					return true;
 				} 
@@ -442,11 +511,13 @@ public class clsBD
 					e.printStackTrace();
 					return false;
 				}
+				
 			default: 
 				return false;
 				
 		}
 	}
+	
 	/**
 	 * Lectura de archivos de la BD
 	 * @return Devuelve la lista de archivos guardados en la BD hasta ahora
@@ -454,32 +525,32 @@ public class clsBD
 	public static HashSet <clsArchivo> LeerArchivos()
 	{		
 		 HashSet <clsArchivo> retorno=new  HashSet <clsArchivo>();
-				try 
+			try 
+			{
+				String sentSQL = "SELECT * FROM fichero_archivo";
+				rs=statement.executeQuery( sentSQL );
+				if(rs!=null)
 				{
-					String sentSQL = "SELECT * FROM fichero_archivo";
-					rs=statement.executeQuery( sentSQL );
-					if(rs!=null)
-					{
-						while (rs.next())
-						{ 
-							//clsArchivo.ToString()
-							 clsArchivo archivo = new clsArchivo(
-									 rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
-									 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
-									 Boolean.parseBoolean(rs.getString("libroSi")), true, rs.getInt("codArchivo"));
-							retorno.add(archivo);
-						}
-						rs.close();	
+					while (rs.next())
+					{ 
+						//clsArchivo.ToString()
+						 clsArchivo archivo = new clsArchivo(
+								 rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
+								 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
+								 Boolean.parseBoolean(rs.getString("libroSi")), true, rs.getInt("codArchivo"));
+						retorno.add(archivo);
 					}
-						
-					return retorno;
+					rs.close();	
 				}
-				catch (SQLException e) 
-				{
-					//e.printStackTrace();
-					retorno= new HashSet <clsArchivo>();
-					return null;
-				}	
+					
+				return retorno;
+			}
+			catch (SQLException e) 
+			{
+				//e.printStackTrace();
+				retorno= new HashSet <clsArchivo>();
+				return null;
+			}	
 	}
 	
 	/**
@@ -489,29 +560,30 @@ public class clsBD
 	public static HashSet <clsUsuario> LeerUsuarios()
 	{		
 		 HashSet <clsUsuario> retorno=new  HashSet <clsUsuario>();
-				try 
+				
+		 	try 
+			{
+				String sentSQL = "select * from fichero_usuario";
+				rs=statement.executeQuery( sentSQL );
+				if(rs!=null)
 				{
-					String sentSQL = "select * from fichero_usuario";
-					rs=statement.executeQuery( sentSQL );
-					if(rs!=null)
-					{
-						while (rs.next())
-						{ 
-							 clsUsuario usuario = new clsUsuario(
-									 rs.getString("nick"), rs.getString("contraseña"));				
-							
-							retorno.add(usuario);
-						}
-						rs.close();
+					while (rs.next())
+					{ 
+						 clsUsuario usuario = new clsUsuario(
+								 rs.getString("nick"), rs.getString("contraseña"));				
+						
+						retorno.add(usuario);
 					}
-
-					return retorno;
+					rs.close();
 				}
-				catch (SQLException e) 
-				{
-					e.printStackTrace();
-					return null;
-				}	
+	
+				return retorno;
+			}
+			catch (SQLException e) 
+			{
+				e.printStackTrace();
+				return null;
+			}	
 	}
 	
 	/**
@@ -531,7 +603,7 @@ public class clsBD
 						{ 
 							//String texto, int codArchivo, int numPagina
 							clsComentario comentario = new clsComentario(
-									 rs.getString("texto"), rs.getInt("codArchivo"), rs.getInt("numPagina"), true, rs.getInt("ID"));				
+									 rs.getString("texto"), rs.getInt("codArchivo"), rs.getInt("numPag"), true, rs.getInt("ID"));				
 							retorno.add(comentario);
 						}
 						rs.close();
