@@ -250,7 +250,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
               if (arg0.getButton() == MouseEvent.BUTTON3) //Botón derecho
               {
                     popup.show((JList) arg0.getSource(),arg0.getX(), arg0.getY());
-                    MouseEvent e = new MouseEvent((JList) arg0.getSource(),MouseEvent.MOUSE_CLICKED, java.lang.System.currentTimeMillis(), 1,  arg0.getX(), arg0.getY(), MouseEvent.getMaskForButton( MouseEvent.BUTTON1_MASK), true);
                     int index = ((JList) arg0.getSource()).locationToIndex(arg0.getPoint());
                                           
                     ((JList) arg0.getSource()).setSelectedIndex(index);
