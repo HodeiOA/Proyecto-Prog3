@@ -21,7 +21,7 @@ public class clsCronometro implements Runnable
 				//interrumpido
 			}
 			
-			segundos++;
+			segundos++; System.out.println(segundos);
 			
 			if(segundos == 60)
 			{
