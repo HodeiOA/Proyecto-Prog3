@@ -117,7 +117,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	static String indicadorPaginas; //Cada vez que cambiemos la página, cambiaremos el String
 	
 	//Otros compontentes
-	JProgressBar progreso=new JProgressBar();
+	static JProgressBar progreso=new JProgressBar();
 	static JSlider slider=new JSlider ();
 	JButton AddLibro = new JButton("Importar libro");
 	JButton AddDoc = new JButton ("Importar documento");
@@ -326,7 +326,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			public void actionPerformed(ActionEvent arg0) 
 			{
 				PanelPDF.PagAnt();	
-				ActualizarSliderYTexto();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
+				ActualizarComponentes();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
 			}
 			
 		});
@@ -338,7 +338,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			public void actionPerformed(ActionEvent arg0) 
 			{
 				PanelPDF.SigPag();	
-				ActualizarSliderYTexto();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
+				ActualizarComponentes();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
 			}
 			
 		});
@@ -497,24 +497,36 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			e1.printStackTrace();
 		}
 	}
-	public static void ActualizarSliderYTexto()
+	public static void ActualizarComponentes()
 	{
-		logger.log(Level.INFO, "Actualizando Slider y texto del panel inferior");
-		//prepara el texto del slider
-				slider.setMinimum(1);
-				slider.setMaximum( PanelPDF.getPaginasTotal());
-				slider.setValue( PanelPDF.getPagActual());
-				slider.setPaintTicks(true);//las rayitas que marcan los números
-				slider.setMajorTickSpacing(PanelPDF.getPaginasTotal()-1); // de cuanto en cuanto los números en el slider
-				//slider.setMinorTickSpacing(PanelPDF.getPaginasTotal()/3); //las rayitas de cuanto en cuanto
-				slider.setPaintLabels(true); //si se ven los números del slider o no
-				slider.setBackground(SystemColor.inactiveCaption);
+		if(PDFactivo)
+		{
+			logger.log(Level.INFO, "Actualizando Slider y texto del panel inferior");
+			
+			//Prepara el texto del slider
+					slider.setMinimum(1);
+					slider.setMaximum( PanelPDF.getPaginasTotal());
+					slider.setValue( PanelPDF.getPagActual());
+					slider.setPaintTicks(true);//las rayitas que marcan los números
+					slider.setMajorTickSpacing(PanelPDF.getPaginasTotal()-1); // de cuanto en cuanto los números en el slider
+					//slider.setMinorTickSpacing(PanelPDF.getPaginasTotal()/3); //las rayitas de cuanto en cuanto
+					slider.setPaintLabels(true); //si se ven los números del slider o no
+					slider.setBackground(SystemColor.inactiveCaption);
+					
+			//Prepara el texto de los números de página
+					indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.getPaginasTotal();
+					numPag.setText(indicadorPaginas);
+					numPag.setEditable(false);
+					numPag.setBackground(SystemColor.inactiveCaption);
+					
+			//Prepara el progress bar
+					int intProgress = clsGestor.porcentLeido(PanelPDF.getPDFabierto());
+					progreso.setStringPainted(true);
+					progreso.setValue((intProgress));
+					progreso.setString(intProgress + "%");
+		}
 				
-				//Preparar el textode los números de página
-				indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.getPaginasTotal();
-				numPag.setText(indicadorPaginas);
-				numPag.setEditable(false);
-				numPag.setBackground(SystemColor.inactiveCaption);
+				
 	}
 	/**
 	 * Abre el archivo seleccionado en la lista
@@ -524,7 +536,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	{
 		PanelPDF.abrirPDF(elegido);
 		PDFactivo=true;
-		ActualizarSliderYTexto();
+		ActualizarComponentes();
 	}
 	/**
 	 * 
@@ -607,7 +619,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			CopiarArchivo(path, a);
 			PanelPDF.abrirPDF(a);
 			PDFactivo=true;
-			ActualizarSliderYTexto();
+			ActualizarComponentes();
 			MostrarComentarios(a);
 			CargarDatos();
 				

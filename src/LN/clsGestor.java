@@ -17,10 +17,12 @@ import LD.clsBD;
 
 public class clsGestor
 {
-	public static double porcentLeido(clsArchivo archi)
+	public static int porcentLeido(clsArchivo archi)
 	{
-		double retorno;
-		retorno=archi.getUltimaPagLeida()/archi.getNumPags() *100; //INFO: archi.getUltimaPagLeida(), archi.getNumPags()
+		int retorno;
+		
+		retorno = archi.getUltimaPagLeida()/archi.getNumPags(); //INFO: archi.getUltimaPagLeida(), archi.getNumPags()
+		
 		return retorno; //retorno
 	}
 	

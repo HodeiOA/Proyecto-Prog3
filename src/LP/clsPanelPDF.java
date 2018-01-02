@@ -16,9 +16,8 @@ import LN.clsGestor;
 public class clsPanelPDF extends JScrollPane
 {
 	private PdfDecoder PDFdecoder;
-	
+	private static clsArchivo PDFabierto;
 	private int PagActual = 1;
-	private String ruta;
 	int velocidadScroll = 15;
 	int nuevaRotacion = 90;
 	float escala = 2;
@@ -41,15 +40,17 @@ public class clsPanelPDF extends JScrollPane
 	{		
 		try 
 		{
-			this.GuardarDatosPDFAnterior(this);
-			ruta = archivo.getRuta();
+			if(PDFabierto !=null)
+			GuardarDatosPDFAnterior();
+			
+			PDFabierto = archivo;
 			this.irAPag(archivo.getUltimaPagLeida());
 //			crono=new clsCronometro(); //Para asegurarnos de que vuelve a empezar desde cero
 //			crono.run();
 //			crono.Play();
 			
 			PDFdecoder.closePdfFile();
-			PDFdecoder.openPdfFile(ruta);
+			PDFdecoder.openPdfFile(PDFabierto.getRuta());
 			irAPag(archivo.getUltimaPagLeida()); //Le abrimos el archivo desde la última página que leyó
 			PDFdecoder.decodePage(PagActual);
 			PDFdecoder.setPageParameters(escala, PagActual);
@@ -64,12 +65,9 @@ public class clsPanelPDF extends JScrollPane
 		repaint();
 	}
 	
-	public static void GuardarDatosPDFAnterior(clsPanelPDF panelPDF)
+	public void GuardarDatosPDFAnterior()
 	{
-		String rutaAnterior = panelPDF.getRuta();
-		int horas;
-		int miin;
-		int seg;
+		String rutaAnterior = PDFabierto.getRuta();
 		
 		HashSet <clsArchivo> archivosEnBD = clsGestor.LeerArchivosBD();
 		clsArchivo archivoAnterior = null;
@@ -89,7 +87,7 @@ public class clsPanelPDF extends JScrollPane
 			}
 //			crono.Pause();
 //			tiempo = archivoAnterior.getTiempo() + crono.getSegundos() ;
-			ultimaPagLeida = panelPDF.getPagActual();
+			ultimaPagLeida = getPagActual();
 			//Le pasamos a modificar el archivo con los nuevos atributos
 			archivoAnterior.setTiempo(tiempo);
 			archivoAnterior.setUltimaPagLeida(ultimaPagLeida);
@@ -101,7 +99,7 @@ public class clsPanelPDF extends JScrollPane
 	public void SigPag()
 	{
 		//INFO: PagActual
-		if(ruta != null && PagActual < PDFdecoder.getPageCount())
+		if(PDFabierto.getRuta() != null && PagActual < PDFdecoder.getPageCount())
 		{
 			PagActual++;
 			try 
@@ -109,6 +107,8 @@ public class clsPanelPDF extends JScrollPane
 				PDFdecoder.decodePage(PagActual);
 				PDFdecoder.invalidate();
 				repaint();
+				
+				PDFabierto.setUltimaPagLeida(PagActual);
 			}
 			catch (PdfException e) 
 			{
@@ -121,7 +121,7 @@ public class clsPanelPDF extends JScrollPane
 	
 	public void PagAnt() 
 	{
-		if(ruta != null && PagActual > 1)
+		if(PDFabierto.getRuta() != null && PagActual > 1)
 		{
 			PagActual--;
 			
@@ -130,6 +130,8 @@ public class clsPanelPDF extends JScrollPane
 				PDFdecoder.decodePage(PagActual);
 				PDFdecoder.invalidate();
 				repaint();
+				
+				PDFabierto.setUltimaPagLeida(PagActual);
 			} 
 			catch (PdfException e) 
 			{
@@ -150,6 +152,8 @@ public class clsPanelPDF extends JScrollPane
 			PDFdecoder.decodePage(PagActual);
 			PDFdecoder.invalidate();
 			repaint();
+			
+			PDFabierto.setUltimaPagLeida(PagActual);
 		} 
 		catch (PdfException e)
 		{
@@ -179,7 +183,7 @@ public class clsPanelPDF extends JScrollPane
 
 	public String getRuta()
 	{
-		return ruta;
+		return PDFabierto.getRuta();
 	}
 	
 	public int getPaginasTotal()
@@ -190,5 +194,10 @@ public class clsPanelPDF extends JScrollPane
 	public int getPagActual() 
 	{
 		return PagActual;
+	}
+	
+	public clsArchivo getPDFabierto()
+	{
+		return PDFabierto;
 	}
 }
