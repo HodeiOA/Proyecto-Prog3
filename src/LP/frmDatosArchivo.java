@@ -178,8 +178,8 @@ public class frmDatosArchivo extends JDialog
 					archivo.setApeAutor(Tapellido.getText());
 					archivo.setLibroSi(RadioLibro.isSelected());//No nos hace falta mirar radioDoc porque al estar en el ButtonGroup si uno es cierto el otro es falso
 					//IMPORTANTE: Si cambia la selección de libroSi, habrá que cambria, además, su ruta, moviéndolo a la carpeta que le corresponda
-					frmPrincipal.ComprobarCarpeta();
-					frmPrincipal.CopiarArchivo(archivo.getRuta(), archivo);
+					
+					clsGestor.ModificarRuta(archivo);
 					clsGestor.ModificarArchivo(archivo);
 					Truta.setText(archivo.getRuta());
 					ButEditar.setText("Editar");
