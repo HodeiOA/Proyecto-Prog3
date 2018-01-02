@@ -448,7 +448,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				@Override
 				public void windowClosing(WindowEvent arg0) 
 				{
-					PanelPDF.GuardarDatosPDFAnterior();
+					if(PDFactivo) PanelPDF.GuardarDatosPDFAnterior();
 					clsBD.close();
 //					locationXY[0]=
 //							x=Integer.parseInt((getLocation().getX()).round());
@@ -752,11 +752,13 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		if(ListLibros.isSelectionEmpty())
 		{
 			borrar = (clsArchivo) ListDoc.getSelectedValue();
+			HashDocumentos.remove(borrar);
 			logger.log(Level.INFO, "Borrando documento" );
 		}
 		else
 		{
 			borrar = (clsArchivo) ListLibros.getSelectedValue();
+			HashLibros.remove(borrar);
 			logger.log(Level.INFO, "Borrando libro" );
 		}
 		clsGestor.BorrarObjetoBD(borrar.getCodArchivo(), "ARCHIVO");
@@ -792,7 +794,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				if(option == JOptionPane.OK_OPTION)
 				{
 					BorrarArchivo();
-					CargarDatos();
+					ActualizarListas();
 				}	
 				break;
 			case "DETALLES":
