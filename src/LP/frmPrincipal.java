@@ -19,7 +19,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractButton;
@@ -33,6 +38,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
@@ -63,7 +69,11 @@ import java.awt.Font;
 
 public class frmPrincipal extends JFrame implements ActionListener, ChangeListener, ListSelectionListener
 {
-	private static final AbstractButton AddDocumento = null;
+	//Logger
+	private static Logger logger = Logger.getLogger( frmPrincipal.class.getName() );
+	static Handler handlerPantalla;
+	static Handler handlerArchivo;
+	
 	private int altura=0;
 	private int anchura=0;
 	private int x=0;
@@ -82,12 +92,15 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private JMenuItem documentoC=new JMenuItem("Documento");
 	private JMenuItem BorrarArchivo= new JMenuItem ("Eliminar archivo");
 	private JMenu Mcom =new JMenu("Comentarios");
-	private JMenuItem VerComentarios = new JMenuItem( "Exportar comentarios"); //Hacer que cuando se estén viendo los comentarios pase a poner ocultar comentarios
+	private JMenuItem ExportarComentarios = new JMenuItem( "Exportar comentarios"); //Hacer que cuando se estén viendo los comentarios pase a poner ocultar comentarios
 	// JMenu de sesión: cerrar sesión
 	//(??)Buscar
 	
 	//Para el menú que se despliega a al hacer click derecho sobre un elemento de la lista
 	JPopupMenu popup;
+	JMenuItem Mdetalles = new JMenuItem("Información del archivo");
+	JMenuItem Meliminar = new JMenuItem("Eliminar archivo");
+	
 	//Paneles
 	private JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
 	private static JPanel PLibros=new JPanel(); //Panel dentro de la pestaña libros
@@ -142,8 +155,13 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	
 	static 	int cont = 0;
 	
+	//Para saber si algo está siendo o no mostrado en el panel del PDF
+	static boolean PDFactivo=false;
+	
 	public frmPrincipal (String titulo)
 	{
+		InitLogs();
+		
 		ClavesPropiedades.add("anchura");
 		ClavesPropiedades.add("altura");
 		ClavesPropiedades.add("X");
@@ -190,7 +208,21 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		BorrarArchivo.setEnabled(false); //Esto lo cambiaremos cuando tenga algo seleccionado en la lista. Mientras tanto, false
 		
 		menuBar.add(Mcom);
-		Mcom.add(VerComentarios);
+		Mcom.add(ExportarComentarios);
+		
+		//Como son varios y son parecidos, los listeners del menú se harán con Action Commands
+		libro.setActionCommand("IMPORTAR_LIBRO");
+		libro.addActionListener(this);
+		documento.setActionCommand("IMPORTAR_DOCUMENTO");
+		documento.addActionListener(this);
+		libroC.setActionCommand("CARPETA_LIBRO");
+		libroC.addActionListener(this);
+		documentoC.setActionCommand("CARPETA_DOCUMENTO");
+		documento.addActionListener(this);
+		BorrarArchivo.setActionCommand("BORRAR");
+		BorrarArchivo.addActionListener(this);
+		ExportarComentarios.setActionCommand("EXPORTAR");
+		ExportarComentarios.addActionListener(this);
 		
 		//Layout para el panel
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -210,6 +242,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			      System.out.println(seleccion.getRuta());
 		          SeleccionListas(seleccion);
 		        }
+		        BorrarArchivo.setEnabled(true);
 		    }
 		  //Para el PoupUp
 		    public void mousePressed(MouseEvent arg0)
@@ -221,13 +254,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
                     int index = ((JList) arg0.getSource()).locationToIndex(arg0.getPoint());
                                           
                     ((JList) arg0.getSource()).setSelectedIndex(index);
-                    
-//                    dispatchEvent( e);
-////                    for(MouseListener ml: ((JList) arg0.getSource()).getMouseListeners())
-////                    {
-////                    	ml.mouseClicked(e);
-////                    }
-//                   mouseClicked(e);
               } 
             }
 		};
@@ -289,14 +315,34 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		      public void stateChanged(ChangeEvent event)
 		      {
 		        int value = slider.getValue();
-		       
+		        //Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
 		        PanelPDF.irAPag(value);
 		      }
 		    });
 		Pinferior.add(progreso);
 		Pinferior.add(Banterior);
+		Banterior.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				PanelPDF.PagAnt();	
+				ActualizarSliderYTexto();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
+			}
+			
+		});
 		Pinferior.add(slider);
 		Pinferior.add(Bsiguiente);
+		Bsiguiente.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				PanelPDF.SigPag();	
+				ActualizarSliderYTexto();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
+			}
+			
+		});
 		Pinferior.add(numPag);
 		
 		Pinferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -305,8 +351,50 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 //		if(comentarios)
 //		{
 		//Aquí leeríamos los comentarios por página/Libro con uun for y crearíamos tantos TextArea y ScrolPane como hicieran falta	
-			JButton EditC = new JButton ("editar"); //En su listerner, cambiar editable=true;
-			
+			JButton EditC = new JButton ("Editar"); //En su listerner, cambiar editable=true;
+			EditC.addActionListener(new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent arg0) 
+				{
+					editable=!editable;
+					TextComent.setEditable(editable);
+					if(EditC.getText().equals("Editar"))
+					{
+						EditC.setText("Guardar");
+					}
+					else
+					{
+						//Identificar cuál es el archivo en curso del que se ha hecho el comentario
+						for(clsArchivo a: HashArchivos)
+						{
+							if(PDFactivo)
+							{
+								String ruta = PanelPDF.getRuta();
+								if(ruta.equals(a.getRuta()))
+								{
+									if(!(TextComent.getText().isEmpty()))
+									{	
+										//GuardarComentario
+										clsArchivo archivoComent = a;
+										clsComentario coment = new clsComentario(TextComent.getText(),archivoComent.getCodArchivo(), PanelPDF.getPagActual(), false, 0);
+																			
+										clsGestor.guardarComentario(coment.getID(), coment.getTexto(), coment.getCodArchivo(), coment.getNumPagina());
+	
+										//Crear de nuevo los comentarios
+										MostrarComentarios(archivoComent);
+									}
+								}
+							}
+
+							TextComent.setText("");
+						}
+						EditC.setText("Editar");
+					}
+					
+				}
+				
+			});
 			Pcomentarios.setPreferredSize(new Dimension(225, 40));
 			TextComent.setPreferredSize(new Dimension(200, 200));
 			TextComent.setEditable(editable);
@@ -318,25 +406,23 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			
 			// Construccion del JPopupMenu para el click derecho
 			popup = new JPopupMenu();
-			popup.add(new JMenuItem("Infomación del archivor"));
-			popup.add(new JMenuItem("Eliminar archivo"));
-
+			popup.add(Mdetalles);
+			popup.add(Meliminar);
 			
+			Mdetalles.addActionListener(this);
+			Meliminar.addActionListener(this);
+			Mdetalles.setActionCommand("DETALLES");
+			Meliminar.setActionCommand("ELIMINAR");
+								
 //		}
 			
 		this.addComponentListener(new ComponentListener()
 			{
 				@Override
-				public void componentHidden(ComponentEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
+				public void componentHidden(ComponentEvent arg0) {}
 
 				@Override
-				public void componentMoved(ComponentEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
+				public void componentMoved(ComponentEvent arg0) {}
 
 				@Override
 				public void componentResized(ComponentEvent arg0)
@@ -345,28 +431,19 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 					AnchuraAltura[1]= Integer.toString(getWidth());
 					clsProperties.CambiarPropiedades(misProps, AnchuraAltura, locationXY, ClavesPropiedades);
 				}
-
 				@Override
-				public void componentShown(ComponentEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
+				public void componentShown(ComponentEvent arg0) {}
 			});
 		this.addWindowListener(new WindowListener()		
 			{
 	
 				@Override
 				public void windowActivated(WindowEvent arg0) 
-				{					
-					
-				}
+				{	}
 	
 				@Override
 				public void windowClosed(WindowEvent arg0) 
-				{
-					// TODO Auto-generated method stub
-					
-				}
+				{}
 	
 				@Override
 				public void windowClosing(WindowEvent arg0) 
@@ -382,33 +459,48 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	
 				@Override
 				public void windowDeactivated(WindowEvent arg0)
-				{
-					// TODO Auto-generated method stub					
-				}
+				{}
 	
 				@Override
 				public void windowDeiconified(WindowEvent arg0) 
-				{
-					// TODO Auto-generated method stub
-				}
+				{}
 	
 				@Override
 				public void windowIconified(WindowEvent arg0) 
-				{
-					// TODO Auto-generated method stub
-				}
+				{}
 	
 				@Override
-				public void windowOpened(WindowEvent arg0) {
-					// TODO Auto-generated method stub
-					
-				}
+				public void windowOpened(WindowEvent arg0) {}
 				
 			});
 	}
+	public static void InitLogs()
+	{
+		//---gestión de Loggs:---			
+		//Por pantalla mostraremos todos los niveles. Al xml solo SEVERE y WARNING
+		handlerPantalla = new StreamHandler( System.out, new SimpleFormatter() );
+    	handlerPantalla.setLevel( Level.ALL );
+    	logger.addHandler( handlerPantalla );
+    	
+    	try 
+    	{
+			handlerArchivo = new FileHandler ( "frmPrincipal.log.xml");
+			handlerArchivo.setLevel(Level.WARNING);
+			logger.addHandler(handlerArchivo);
+		}
+    	catch (SecurityException e1) 
+    	{
+    		logger.log(Level.SEVERE, e1.getMessage(), e1);
+			e1.printStackTrace();
+		} catch (IOException e1)
+    	{
+			logger.log(Level.SEVERE, e1.getMessage(), e1);
+			e1.printStackTrace();
+		}
+	}
 	public static void ActualizarSliderYTexto()
 	{
-		//INFO: Actualizando Slider y Texto
+		logger.log(Level.INFO, "Actualizando Slider y texto del panel inferior");
 		//prepara el texto del slider
 				slider.setMinimum(1);
 				slider.setMaximum( PanelPDF.getPaginasTotal());
@@ -425,18 +517,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				numPag.setEditable(false);
 				numPag.setBackground(SystemColor.inactiveCaption);
 	}
-	
-	public static void SeleccionListas(clsArchivo a)
+	/**
+	 * Abre el archivo seleccionado en la lista
+	 * @param elegido
+	 */
+	public static void SeleccionListas(clsArchivo elegido)
 	{
-		clsArchivo elegido = null;
-		for(clsArchivo archivo: HashArchivos)
-		{
-			if(archivo.getCodArchivo()==a.getCodArchivo())
-			{
-				elegido = a;
-			}
-		}
 		PanelPDF.abrirPDF(elegido);
+		PDFactivo=true;
 		ActualizarSliderYTexto();
 	}
 	/**
@@ -447,16 +535,19 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	{
 		int cont=0;
 		HashSet <clsComentario> comentarios = clsGestor.LeerComentariosBD();
+		
+		logger.log(Level.INFO, "Añadiendo comentarios al panel de comentraios");
 		for (clsComentario c: comentarios)
 		{
 			if(a.getCodArchivo()==c.getCodArchivo() && PanelPDF.getPagActual()==c.getNumPagina()) 
 			{
 				cont++;
+				
 				Pcomentarios.add(new JTextArea (c.getTexto()));
-				//Comentario cont <ñadido
+				logger.log(Level.INFO, "Comentario "+ c.getID() + " añadido");
 			}
 		}
-		//Comentarios añadidos: cont
+		logger.log(Level.INFO,"Comentarios añadidos: "+cont);
 	}
 	
 	/**
@@ -478,16 +569,19 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	 */
 	public void SeleccionarArchivo(boolean esLibro)
 	{
+		
 		chooser = new JFileChooser();
 
 		chooser.setApproveButtonText("Importar");
+		
 		if(esLibro)
 		{
+			logger.log(Level.INFO, "Seleccionando libro");
 			chooser.setDialogTitle("Importar libro");
 		}
 		else
 		{
-
+			logger.log(Level.INFO, "Seleccionando documento");
 			chooser.setDialogTitle("Importar documento");
 		}
 		
@@ -502,7 +596,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		if(response == JFileChooser.APPROVE_OPTION)
 		{
 			path = chooser.getSelectedFile().getPath();
-			// aquí habrá que lanzar una pantalla para EL RESTO DE ATRIBUTOS además de la ruta
+			
 			//Recoger el file
 			//Para probarlo, creación de un clsArchivo Falso
 		
@@ -513,9 +607,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			ComprobarCarpeta();
 			CopiarArchivo(path, a);
 			PanelPDF.abrirPDF(a);
+			PDFactivo=true;
 			ActualizarSliderYTexto();
-			
+			MostrarComentarios(a);
 			CargarDatos();
+				
 			clsGestor.guardarArchivo(a.getNomAutor(), a.getApeAutor(), a.getCodArchivo(), a.getTitulo(), a.getRuta(), a.getNumPags(), a.getUltimaPagLeida(), a.getTiempo(), a.getLibroSi());
 			//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nombre (1)" o el número que sea
 			//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
@@ -533,10 +629,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		//Elegimos qué chooser abrir
 		if(esLibro)
 		{
+			logger.log(Level.INFO, "Seleccionando carpeta de libros");
 			chooser.setDialogTitle("Importar carpeta libros");
 		}
 		else
 		{
+			logger.log(Level.INFO, "Seleccionando carpeta de documentos");
 			chooser.setDialogTitle("Importar carpeta documentos");
 		}
 		//Hacemos que solo pueda seleccionar carpetas
@@ -558,6 +656,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	public static void RecursividadCarpeta(String path)
 	{
 		File fic = new File (path);
+		
 		if (fic.isDirectory()) 
 		{
 			for( File f : fic.listFiles() ) 
@@ -582,7 +681,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				//IMPORTANTE: si ya hay un file con el mismo nombre, le cambiamos el normbre a este último a "nokmbre (1)" o el número que sea
 				//TODO: Recoger la carpeta hasta la que ha llegado -->¿Cómo?
 			} 
-
 		}
 	}
 	
@@ -592,9 +690,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		File Libros = new File(".\\Data\\Libros");
 		File Documentos = new File(".\\Data\\Documentos");
 		
-		boolean data = Data.mkdir(); //Poner booleans a cada método para poner: ha creado la carpeta o no la ha creado
-		Libros.mkdir();
-		Documentos.mkdir();
+		boolean data = Data.mkdir(); 
+		boolean libros = Libros.mkdir();
+		boolean docum = Documentos.mkdir();
+		
+		if(data) logger.log(Level.INFO, "Se caba de crear la carpeta 'Data'");
+		if(libros) logger.log(Level.INFO, "Se caba de crear la carpeta 'Libros'");
+		if(docum) logger.log(Level.INFO, "Se caba de crear la carpeta 'Documentos'");
+		
 	}
 	
 	public static void CopiarArchivo(String DireccionOrigen, clsArchivo ArchivoDireccionDestino)
@@ -606,41 +709,102 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		NombreArchivo = ArchivoDireccionDestino.getTitulo() + ".pdf";
 		
 		FROM = Paths.get(DireccionOrigen);
-		if(ArchivoDireccionDestino.getLibroSi()) //librosi
+		if(ArchivoDireccionDestino.getLibroSi())
 		{
-			TO = Paths.get(".\\Data\\Libros");  //va a libros
+			TO = Paths.get(".\\Data\\Libros");  
+			logger.log(Level.INFO, "Copiando archivo "+ NombreArchivo + " a la carpeta '.\\Data\\Libros'" );
 		} else
 		{
-			TO = Paths.get(".\\Data\\Documentos"); //va a documentos
+			TO = Paths.get(".\\Data\\Documentos");
+			logger.log(Level.INFO, "Copiando archivo "+ NombreArchivo + " a la carpeta '.\\Data\\Documentos'" );
 		}
 		
-		ArchivoDireccionDestino.setRuta(TO + "\\" + NombreArchivo); //ruta final= esta
+		ArchivoDireccionDestino.setRuta(TO + "\\" + NombreArchivo);
+		logger.log(Level.INFO, "Ruta final del archivo  "+ NombreArchivo + " = " +  ArchivoDireccionDestino.getRuta());
 		
-		try {
-			Files.copy(FROM, TO.resolve(NombreArchivo));
-		} catch (IOException e) 
+		try 
 		{
-			//No copiado
+			Files.copy(FROM, TO.resolve(NombreArchivo));
+		} 
+		catch (IOException e) 
+		{
+			logger.log(Level.WARNING, "Error al copiar: " + e.getMessage() );
 		}
-		//archivo copiado
+		logger.log(Level.INFO, "Archivo copiado" );
 	}
 
+	public static void BorrarArchivo()
+	{
+		clsArchivo borrar;
+		
+		//No nos hace falta controlar si está o no seleccionado alguno ya que si no es así la opción de menú está inactiva.
+		//Lo que necesitamos saber es de qué lista se ha seleccionado
+		if(ListLibros.isSelectionEmpty())
+		{
+			borrar = (clsArchivo) ListDoc.getSelectedValue();
+			logger.log(Level.INFO, "Borrando documento" );
+		}
+		else
+		{
+			borrar = (clsArchivo) ListLibros.getSelectedValue();
+			logger.log(Level.INFO, "Borrando libro" );
+		}
+		clsGestor.BorrarObjetoBD(borrar.getCodArchivo(), "ARCHIVO");
+		logger.log(Level.INFO, "Archivo nº "+  borrar.getCodArchivo() + " borrado");
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		// TODO Auto-generated method stub
-		
+		switch(e.getActionCommand())
+		{
+			case "IMPORTAR_LIBRO":
+				SeleccionarArchivo(true);
+				break;
+				
+			case "IMPORTAR_DOCUMENTO":
+				SeleccionarArchivo(false);
+				break;
+				
+			case "CARPETA_LIBRO":
+				SeleccionarArchivosDeCarpeta(true);
+				break;
+				
+			case "CARPETA_DOCUMENTO":
+				SeleccionarArchivosDeCarpeta(false);
+				break;
+				
+			case "BORRAR":
+			case "ELIMINAR":
+				int option;
+				option = JOptionPane.showConfirmDialog(this, "¿Estás seguro de querer borrar este archivo de tu lista de archivos?", "Confirmar borrado",
+				        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if(option == JOptionPane.OK_OPTION)
+				{
+					BorrarArchivo();
+					CargarDatos();
+				}	
+				break;
+			case "DETALLES":
+				clsArchivo archivoDatos;
+				if(panelListas.getSelectedIndex()==1)
+				{
+					archivoDatos = (clsArchivo)ListDoc.getSelectedValue();
+				}
+				else
+				{
+					archivoDatos = (clsArchivo)ListLibros.getSelectedValue();
+				}
+				frmDatosArchivo datos = new frmDatosArchivo ( archivoDatos, this);
+				datos.setVisible(true);
+		}
 	}
 
 	
 	@Override
-	public void stateChanged(ChangeEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void stateChanged(ChangeEvent arg0)
+	{}
 	@Override
-	public void valueChanged(ListSelectionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void valueChanged(ListSelectionEvent arg0)
+	{}
 }
