@@ -87,7 +87,7 @@ public class clsPanelPDF extends JScrollPane
 				}
 			}
 //			crono.Pause();
-//			tiempo = archivoAnterior.getTiempo() + crono.getHoras() * 60 * 60 + crono.getMinutos() * 60 + crono.getSegundos() ;
+//			tiempo = archivoAnterior.getTiempo() + crono.getSegundos() ;
 			ultimaPagLeida = panelPDF.getPagActual();
 			//Le pasamos a modificar el archivo con los nuevos atributos
 			archivoAnterior.setTiempo(tiempo);
