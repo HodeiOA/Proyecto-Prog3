@@ -323,6 +323,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		        int value = slider.getValue();
 		        //Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
 		        PanelPDF.irAPag(value);
+		        ActualizarComponentes();
 		      }
 		    });
 		  
