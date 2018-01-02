@@ -133,12 +133,8 @@ public class clsBD
 		
 		catch (SQLException e) 
 		{
-			//SEVERE: e.getMessahge()
-			
-			logger.log( Level.SEVERE, e.getMessage(), e );
-
-			// Si hay excepción es que la tabla ya existía (lo cual es correcto). No la creamos y listo
-			// e.printStackTrace();  
+			logger.log( Level.INFO, "La tabla ya estaba creada"+e.getMessage(), e );
+			// Si hay excepción es que la tabla ya existía (lo cual es correcto). No la creamos y listo  
 		}
 	}
 	
@@ -156,8 +152,7 @@ public class clsBD
 		
 		catch (SQLException e)
 		{
-			// Si hay excepción es que la tabla ya existía (lo cual es correcto)
-			// e.printStackTrace();  
+			logger.log( Level.INFO, "La tabla ya estaba creada"+e.getMessage(), e );
 		}
 	}
 
@@ -178,8 +173,7 @@ public class clsBD
 		
 		catch (SQLException e) 
 		{
-			// Si hay excepción es que la tabla ya existía (lo cual es correcto)
-			// e.printStackTrace();  
+			logger.log( Level.INFO, "La tabla ya estaba creada"+e.getMessage(), e );  
 		}
 	}
 	
@@ -225,7 +219,7 @@ public class clsBD
 				} 
 				catch (SQLException e) 
 				{
-					e.printStackTrace();
+					logger.log( Level.WARNING, e.getMessage(), e );
 					return false;
 				}
 
@@ -251,7 +245,7 @@ public class clsBD
 		} 
 		catch (SQLException e) 
 		{
-			e.printStackTrace();
+			logger.log( Level.WARNING, e.getMessage(), e );
 			return false;
 		}
 	}
@@ -281,7 +275,7 @@ public class clsBD
 		
 		catch (SQLException e) 
 		{
-			e.printStackTrace();
+			logger.log( Level.WARNING, e.getMessage(), e );
 			return false;
 		}
 
@@ -295,9 +289,7 @@ public class clsBD
 	 * @return devuelve un boolean indicando si la operación se ha podido hacer o no
 	 */
 	public static boolean BorrarFila (Object ident, String tabla)
-	{
-		//INFO: tabla
-		
+	{	
     	logger.log( Level.INFO, tabla);
 
 		switch(tabla)
@@ -314,8 +306,7 @@ public class clsBD
 				}
 				catch (SQLException e) 
 				{
-					//e.getMessage()
-					e.printStackTrace();
+					logger.log( Level.WARNING, e.getMessage(), e );
 					return false;
 				}
 				
@@ -329,7 +320,7 @@ public class clsBD
 				}
 				catch (SQLException e) 
 				{
-					e.printStackTrace();
+					logger.log( Level.WARNING, e.getMessage(), e );
 					return false;
 				}
 				
@@ -344,7 +335,7 @@ public class clsBD
 				}
 				catch (SQLException e) 
 				{
-					e.printStackTrace();
+					logger.log( Level.WARNING, e.getMessage(), e );
 					return false;
 				}
 				
@@ -372,8 +363,6 @@ public class clsBD
 	{
 				try 
 				{
-					//Modificando
-					
 	            	logger.log( Level.INFO, "Modificando");
 
 					String sentSQL = "update fichero_archivo set "+
@@ -394,8 +383,7 @@ public class clsBD
 				} 
 				catch (SQLException e) 
 				{
-					//e.getMessage
-					e.printStackTrace();
+					logger.log( Level.WARNING, e.getMessage(), e );
 					return false;
 				}
 
@@ -423,7 +411,7 @@ public class clsBD
 		
 		catch (SQLException e) 
 		{
-			e.printStackTrace();
+			logger.log( Level.WARNING, e.getMessage(), e );
 			return false;
 		}
 	}
@@ -452,7 +440,7 @@ public class clsBD
 		} 
 		catch (SQLException e) 
 		{
-			e.printStackTrace();
+			logger.log( Level.WARNING, e.getMessage(), e );
 			return false;
 		}
 
@@ -482,7 +470,7 @@ public class clsBD
 				} 
 				catch (SQLException e) 
 				{
-					e.printStackTrace();
+					logger.log( Level.WARNING, e.getMessage(), e );
 					return false;
 				}
 			
@@ -495,7 +483,7 @@ public class clsBD
 				} 
 				catch (SQLException e) 
 				{
-					e.printStackTrace();
+					logger.log( Level.WARNING, e.getMessage(), e );
 					return false;
 				}
 				
@@ -508,7 +496,7 @@ public class clsBD
 				} 
 				catch (SQLException e) 
 				{
-					e.printStackTrace();
+					logger.log( Level.WARNING, e.getMessage(), e );
 					return false;
 				}
 				
@@ -547,7 +535,7 @@ public class clsBD
 			}
 			catch (SQLException e) 
 			{
-				//e.printStackTrace();
+				logger.log( Level.WARNING, e.getMessage(), e );
 				retorno= new HashSet <clsArchivo>();
 				return null;
 			}	
@@ -581,7 +569,7 @@ public class clsBD
 			}
 			catch (SQLException e) 
 			{
-				e.printStackTrace();
+				logger.log( Level.WARNING, e.getMessage(), e );
 				return null;
 			}	
 	}
@@ -612,7 +600,7 @@ public class clsBD
 				}
 				catch (SQLException e) 
 				{
-					e.printStackTrace();
+					logger.log( Level.WARNING, e.getMessage(), e );
 					return null;
 				}	
 	}
