@@ -5,6 +5,9 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import java.util.HashSet;
 
 import javax.swing.JButton;
@@ -24,7 +27,7 @@ import LD.clsBD;
 import LN.clsGestor;
 import LN.clsUsuario;
 
-public class frmRegistro extends JDialog implements ActionListener
+public class frmRegistro extends JDialog implements ActionListener, KeyListener
 {
 	private JTextField tfUsername;
 	private JPasswordField pfPassword;
@@ -32,9 +35,9 @@ public class frmRegistro extends JDialog implements ActionListener
 	private JLabel lbPassword;
     private JButton btnLogin;
     private JButton btnEntrar;
-    private JPanel panelUsu;
-    private JPanel panelCont;
-    private JPanel panelBot;
+    private JPanel panelUsuario;
+    private JPanel panelContraseña;
+    private JPanel panelBotonera;
 
 	private int x;
 	private int y;
@@ -58,44 +61,68 @@ public class frmRegistro extends JDialog implements ActionListener
         this.setLocation(x, y);
         setResizable(false);
         
-        //panelUsu
-        panelUsu= new JPanel();
+        //panelUsuario
+        panelUsuario= new JPanel();
         lbUsername = new JLabel("Nombre Usuario:");
-        panelUsu.add(lbUsername);
+        panelUsuario.add(lbUsername);
         
 		tfUsername = new JTextField ();
 		tfUsername.setSize(20, 10);
-        panelUsu.add(tfUsername);
+        panelUsuario.add(tfUsername);
         tfUsername.setColumns(10);
         
+        tfUsername.addKeyListener(this);
+        
         //panel contraseña
-        panelCont= new JPanel();
+        panelContraseña= new JPanel();
         lbPassword = new JLabel("Contraseña:");
-        panelCont.add(lbPassword);
+        panelContraseña.add(lbPassword);
         
 		pfPassword = new JPasswordField ();
 		pfPassword.setSize(20, 10);
-        panelCont.add(pfPassword);
+        panelContraseña.add(pfPassword);
         pfPassword.setColumns(10);
         
+        pfPassword.addKeyListener(this);
+        
         //Botones
-        panelBot= new JPanel();
+        panelBotonera= new JPanel();
+        
       	btnLogin= new JButton("Registrar"); 
-      	panelBot.add(btnLogin);
+      	panelBotonera.add(btnLogin);
+      	
+      	btnLogin.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				Registro();
+			}
+		});
+      	
       	btnEntrar = new JButton("Entrar"); 
-      	panelBot.add(btnEntrar);
+      	panelBotonera.add(btnEntrar);
+      	
+      	btnEntrar.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				Entrar();
+			}
+		});
 
       	//layout
       	this.getContentPane().setLayout(new BorderLayout());  
       	
-      	this.getContentPane().add(panelUsu,BorderLayout.PAGE_START);	//añadir el panel al otro panel de la ventana que la trae predeter.
-      	panelUsu.setLayout(new FlowLayout());
+      	this.getContentPane().add(panelUsuario,BorderLayout.PAGE_START);	//añadir el panel al otro panel de la ventana que la trae predeter.
+      	panelUsuario.setLayout(new FlowLayout());
       	
-		this.getContentPane().add(panelCont,BorderLayout.CENTER);
-      	panelCont.setLayout(new FlowLayout());
+		this.getContentPane().add(panelContraseña,BorderLayout.CENTER);
+      	panelContraseña.setLayout(new FlowLayout());
       	
-		this.getContentPane().add(panelBot, BorderLayout.PAGE_END);
-      	panelBot.setLayout(new FlowLayout());
+		this.getContentPane().add(panelBotonera, BorderLayout.PAGE_END);
+      	panelBotonera.setLayout(new FlowLayout());
         
         btnLogin.addActionListener(this);
         btnLogin.setActionCommand("REGISTRAR");
@@ -132,7 +159,7 @@ public class frmRegistro extends JDialog implements ActionListener
 							if(a.getContraseña().equals(pass))
 							{
 								// La contraseña es la correcta
-								JOptionPane.showMessageDialog(this,"Holi " + nick + ". Has entrado correctamente", "Usuario correcto", JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.showMessageDialog(this,"Bienvenido " + nick + ".", "Usuario correcto", JOptionPane.INFORMATION_MESSAGE);
 								 dispose();
 							}
 						}
@@ -166,6 +193,7 @@ public class frmRegistro extends JDialog implements ActionListener
 	           pfPassword.setText("");
 			 }
 	}
+	
 	public void Registro() //En cada option pane, poner loggers, info y warning
 	{
 		String nick;
@@ -193,6 +221,7 @@ public class frmRegistro extends JDialog implements ActionListener
 					clsGestor.guardarUsuario(pass, nick);
 				};
 			 } 
+			
 			 else 
 			 {
 				 JOptionPane.showMessageDialog(this, "Usuario o contraseña no introducidos", "Registro", JOptionPane.ERROR_MESSAGE);
@@ -202,7 +231,6 @@ public class frmRegistro extends JDialog implements ActionListener
 			 }	
 		
 	}
-	
 	
 	public void actionPerformed(ActionEvent arg0)
 	{
@@ -217,6 +245,40 @@ public class frmRegistro extends JDialog implements ActionListener
 				Registro();
 				break;	
 		}		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) 
+	{
+		 int key = e.getKeyCode();
+		 
+		  if (key == KeyEvent.VK_ENTER) 
+		  {
+			  //lo hace sólo si he pulsado enter en los textfields
+			  if (e.getSource()==tfUsername||e.getSource()==pfPassword)
+			  {
+				  Entrar();
+			  }
+		  }	
+		  if(e.getKeyCode()==KeyEvent.VK_ESCAPE)
+		  {
+			  //se hará siempre que le de a escape
+             System.exit(0);
+         }
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) 
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }
 
