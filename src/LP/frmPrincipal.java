@@ -370,13 +370,13 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		Pcomentarios.setPreferredSize(new Dimension(225, 200));
 		PcomentarioNuevo.setBackground(Color.GREEN);
 		
-		PcomentarioNuevo.setPreferredSize(new Dimension(225, 300));
+		PcomentarioNuevo.setPreferredSize(new Dimension(225,200));
 		PcomentarioNuevo.setBackground(Color.LIGHT_GRAY);
 		
 		TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
 		TextPaneComentarioNuevo.setEditable(editable);
 		
-		PcomentariosViejos.setPreferredSize(new Dimension(225, 400));
+		PcomentariosViejos.setPreferredSize(new Dimension(225, Pcomentarios.getHeight()-PcomentarioNuevo.getHeight()));
 		PcomentariosViejos.setBackground(Color.CYAN);
 			
 		PcomentarioNuevo.add(lbNuevoComent);
