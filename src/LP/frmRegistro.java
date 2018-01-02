@@ -23,7 +23,6 @@ import COMUN.clsNickRepetido;
 import LD.clsBD;
 import LN.clsGestor;
 import LN.clsUsuario;
-import oracle.jrockit.jfr.events.DynamicValueDescriptor;
 
 public class frmRegistro extends JDialog implements ActionListener
 {
@@ -87,7 +86,6 @@ public class frmRegistro extends JDialog implements ActionListener
       	panelBot.add(btnEntrar);
 
       	//layout
-      	
       	this.getContentPane().setLayout(new BorderLayout());  
       	
       	this.getContentPane().add(panelUsu,BorderLayout.PAGE_START);	//añadir el panel al otro panel de la ventana que la trae predeter.
@@ -192,7 +190,7 @@ public class frmRegistro extends JDialog implements ActionListener
 				{
 					//En este caso, aunque sea una excepción porque en otro caso es un error, que dé esta excepción es que todo va bien
 					JOptionPane.showMessageDialog(this,"¡Registro exitoso!");
-					clsGestor.guardarUsuario(nick, pass);
+					clsGestor.guardarUsuario(pass, nick);
 				};
 			 } 
 			 else 
