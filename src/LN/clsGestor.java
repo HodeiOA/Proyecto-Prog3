@@ -138,15 +138,15 @@ public class clsGestor
 	{
 		clsBD.UpdateArchivo(nuevo.getNick(), nuevo.getNomAutor(), nuevo.getApeAutor(), nuevo.getCodArchivo(), nuevo.getTitulo(), nuevo.getRuta(), nuevo.getNumPags(), nuevo.getUltimaPagLeida(), nuevo.getTiempo(), nuevo.getLibroSi());
 	}
-	
-	public static void ModificarUsuario()
+			
+	public static void ModificarUsuario(String contraseña, String nick)
 	{
-		
+		clsBD.UpdateUsuario(contraseña, nick);
 	}
-	
-	public static void ModificarComentario()
-	{
 		
+	public static void ModificarComentario(int ID, int codArchivo, String texto, int numPag)
+	{
+		clsBD.UpdateComentario(ID, texto, codArchivo, numPag);
 	}
 	
 	//Lecturas
