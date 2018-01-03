@@ -113,7 +113,8 @@ public class clsBD
 			
 			statement.executeUpdate("create table fichero_archivo " +
 					"("
-					+ "foreign key(nick) references fichero_usuario(nick),"
+					//+ "foreign key(nick) references fichero_usuario(nick),"
+					+ " nick string,"
 					+ " nomAutor string,"
 					+ " apeAutor string,"
 					+ " codArchivo int, "
