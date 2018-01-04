@@ -207,7 +207,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		CargarDatos();
 		//Leer el xml que guarda el tamaño de la ventana y meter los datos en altura y anchura
 		//Este if lo tendremos que hacer, pero lo comento hasta que podamos leer los valores
-		clsProperties.CargarProps(misProps,ClavesPropiedades);
 		anchura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(0)));
 		altura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(1)));
 
