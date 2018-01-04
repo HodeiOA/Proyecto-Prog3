@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -50,6 +52,7 @@ import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -146,11 +149,15 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private JPanel Pcomentarios = new JPanel();
 	private JScrollPane ScrollCViejos = new JScrollPane ();
 	private boolean editable = false;
+	HashSet<clsComentario> HashComentarios = new HashSet<clsComentario>();
+	private ArrayList<JTextPane> listTextPanes = new ArrayList<JTextPane>();
+	private ArrayList<clsComentario> listComentariosVisibles = new ArrayList<clsComentario>();
+	private ArrayList<JLabel> listLabeles = new ArrayList<JLabel>();
 	
 	//Para el Listmodel
-	static HashSet <clsArchivo> HashArchivos = new HashSet();
-	static HashSet <clsArchivo> HashLibros = new HashSet();
-	static HashSet <clsArchivo> HashDocumentos = new HashSet();
+	static HashSet <clsArchivo> HashArchivos = new HashSet<clsArchivo>();
+	static HashSet <clsArchivo> HashLibros = new HashSet<clsArchivo>();
+	static HashSet <clsArchivo> HashDocumentos = new HashSet<clsArchivo>();
 	static modelArchivos modelLibros;
 	static modelArchivos modelDocumentos;
 	
@@ -414,7 +421,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		lbComentariosAntiguo = new JLabel("Comentarios anteriores");
 		
 		Pcomentarios.setPreferredSize(new Dimension(225,screenSize.height));
-		Pcomentarios.setBackground(Color.gray);	
+		Pcomentarios.setBackground(Color.WHITE);	
 		
 		PcomentarioNuevo.setPreferredSize(new Dimension(225,(int)tamañoPanelC));
 		PcomentarioNuevo.setBackground(Color.lightGray);
@@ -431,12 +438,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		PcomentarioNuevo.add(TextPaneComentarioNuevo);
 		PcomentarioNuevo.add(btnAñadir);
 		
-		PcomentariosViejos.add(lbComentariosAntiguo);
-		
 		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.2)));
 		
 		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);
-		Pcomentarios.add(ScrollCViejos, BorderLayout.SOUTH);
+		Pcomentarios.add(lbComentariosAntiguo);
+		Pcomentarios.add(ScrollCViejos, BorderLayout.CENTER);
 		
 		this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
 		
@@ -474,7 +480,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 										clsGestor.guardarComentario(coment.getID(), coment.getTexto(), coment.getCodArchivo(), coment.getNumPagina());
 	
 										//Crear de nuevo los comentarios
-										MostrarComentarios(archivoComent);
+										MostrarComentarios();
 									}
 								}
 							}
@@ -766,27 +772,110 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ActualizarComponentes();
 	}
 	
-	/**
-	 * 
-	 * @param a archivo del que vamos a mostrar sus comentrios
-	 */
-	public void MostrarComentarios(clsArchivo a)
+	public void MostrarComentarios()
 	{
-		int cont=0;
-		HashSet <clsComentario> comentarios = clsGestor.LeerComentariosBD();
+		int cont = 0;
 		
-		logger.log(Level.INFO, "Añadiendo comentarios al panel de comentraios");
-		for (clsComentario c: comentarios)
+		HashComentarios = clsGestor.LeerComentariosBD();
+		listComentariosVisibles.clear();
+		
+		for(JTextPane auxPane: listTextPanes)
 		{
-			if(a.getCodArchivo()==c.getCodArchivo() && PanelPDF.getPagActual()==c.getNumPagina()) 
+			PcomentariosViejos.remove(auxPane);
+		}
+		for(JLabel auxLabel: listLabeles)
+		{
+			PcomentariosViejos.remove(auxLabel);
+		}
+		
+		PcomentariosViejos.repaint();
+		listTextPanes.clear();
+		listLabeles.clear();
+		
+		ImageIcon iconoBorrar = new ImageIcon(getClass().getResource("../images/Borrar.png"));
+//		Image auxScale = iconoBorrar.getImage().getScaledInstance(10, 10, Image.SCALE_DEFAULT);
+		
+		logger.log(Level.INFO, "Añadiendo comentarios al panel de comentarios");
+		
+		for(clsComentario c: HashComentarios)
+		{
+			if(c.getCodArchivo() == PanelPDF.getPDFabierto().getCodArchivo())
 			{
-				cont++;
-				
-				Pcomentarios.add(new JTextArea (c.getTexto()));
-				logger.log(Level.INFO, "Comentario "+ c.getID() + " añadido");
+				if(c.getNumPagina() == PanelPDF.getPagActual())
+				{
+					cont++;
+					
+					JLabel label = new JLabel(iconoBorrar);
+					label.setBorder(new EmptyBorder(20,1,1,160));
+					label.addMouseListener(new MouseListener()
+							{
+
+								@Override
+								public void mouseClicked(MouseEvent e) 
+								{
+									int index = listLabeles.indexOf(e.getSource());
+									
+									PcomentariosViejos.remove(listTextPanes.get(index));
+									PcomentariosViejos.remove(listLabeles.get(index));
+									PcomentariosViejos.repaint();
+									
+									clsGestor.BorrarObjetoBD(listComentariosVisibles.get(index).getID(), "COMENTARIO");
+									
+									listTextPanes.remove(index);
+									listLabeles.remove(index);
+									listComentariosVisibles.remove(index);
+								}
+
+								@Override
+								public void mousePressed(MouseEvent e) {}
+
+								@Override
+								public void mouseReleased(MouseEvent e) {}
+
+								@Override
+								public void mouseEntered(MouseEvent e) {}
+
+								@Override
+								public void mouseExited(MouseEvent e) {}
+						
+							});
+					
+					JTextPane pane = new JTextPane();
+					pane.setPreferredSize(new Dimension(200, 200));
+					pane.setEditable(true);
+					pane.addFocusListener(new FocusListener()
+							{
+								@Override
+								public void focusGained(FocusEvent e) {}
+		
+								@Override
+								public void focusLost(FocusEvent e) 
+								{
+									JTextPane txtPane = (JTextPane) e.getComponent();
+									String texto = txtPane.getText();
+									int index = listTextPanes.indexOf(txtPane);
+									
+									clsComentario coment = listComentariosVisibles.get(index);
+									coment.setTexto(texto);
+									clsGestor.ModificarComentario(coment.getID(), coment.getCodArchivo(), coment.getTexto(), coment.getNumPagina());
+								}
+							});
+					
+					listLabeles.add(label);
+					listTextPanes.add(pane);		
+					listComentariosVisibles.add(c);
+					
+					pane.setText(c.getTexto());
+					
+					PcomentariosViejos.add(label);
+					PcomentariosViejos.add(pane);
+					
+					logger.log(Level.INFO, "Comentario " + c.getID() + " añadido");
+				}
 			}
 		}
-		logger.log(Level.INFO,"Comentarios añadidos: "+cont);
+		PcomentariosViejos.repaint();
+		logger.log(Level.INFO,"Comentarios añadidos: " + cont);
 	}
 	
 	/**
@@ -859,7 +948,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				PDFactivo=true;
 				
 				ActualizarComponentes();
-				MostrarComentarios(nuevoArchivo);
+				MostrarComentarios();
 				clsGestor.guardarArchivo(nuevoArchivo.getNick(), nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
 				
 				if(esLibro)
@@ -935,6 +1024,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			//En este caso recursivo, el caso en el que NO es una carpeta será el caso base
 			//Es decir, el algoritmo recursivo lleará hasta la carpeta del fin de la ruta de carpetas 
 			//En ese momento, añadirá todos los PDFs en su interior
+			filtro = Pattern.compile(".*\\.pdf");
 			if (filtro.matcher(fic.getName()).matches() )
 			{
 				// Si cumple el patrón, se añade

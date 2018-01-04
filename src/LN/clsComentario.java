@@ -82,5 +82,9 @@ public class clsComentario implements Comparable
 		return a.compareTo(((clsComentario) o).getID());
 	}
 	
-	
+	@Override
+	public int hashCode() 
+	{
+		return ID;
+	}
 }

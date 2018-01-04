@@ -171,6 +171,7 @@ public class clsPanelPDF extends JScrollPane
 	
 	public void CerrarPDF()
 	{
+		PDFabierto = null;
 		PDFdecoder.closePdfFile();
 	}
 

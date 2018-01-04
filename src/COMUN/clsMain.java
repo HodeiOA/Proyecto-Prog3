@@ -19,7 +19,7 @@ public class clsMain
 		clsGestor.ComprobarCarpeta();
 		
 		//Esto tiene que ir aquí porque, de ir antes, habrá problemas con la BD
-		SwingUtilities.invokeLater(new Runnable() 
+		SwingUtilities.invokeLater(new Runnable()
 		{
 		    public void run() 
 		    {
