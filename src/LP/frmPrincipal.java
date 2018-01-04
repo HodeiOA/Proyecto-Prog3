@@ -44,6 +44,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
@@ -84,7 +85,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private int anchura=0;
 	private int x=0;
 	private int y=0;
-	private Dimension dim;
+	private Dimension screenSize;
 	private Toolkit mipantalla;
 	
 	public static String nickUsuarioSesion="";
@@ -117,6 +118,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	static clsPanelPDF PanelPDF = new clsPanelPDF();
 	private JPanel Pinferior= new JPanel();
 	
+	
 	//Botones
 	JButton Banterior= new JButton("<<"); //mirar taller bicis
 	JButton Bsiguiente= new JButton(">>"); 
@@ -135,17 +137,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	static JSlider slider=new JSlider ();
 	JButton AddLibro = new JButton("Importar libro");
 	JButton AddDoc = new JButton ("Importar documento");
-	JScrollPane scrollPaneList = new JScrollPane();
-
 	
 	//Comentarios
 	private boolean comentarios = true;
 	private JTextPane TextPaneComentarioNuevo = new JTextPane(); 
-	private JScrollPane ScrollNuevo = new JScrollPane(TextPaneComentarioNuevo);
-	private JScrollPane ScrollViejo;
 	private JPanel PcomentarioNuevo= new JPanel();
 	private JPanel PcomentariosViejos= new JPanel();
 	private JPanel Pcomentarios = new JPanel();
+	private JScrollPane ScrollCViejos = new JScrollPane ();
 	private boolean editable = false;
 	
 	//Para el Listmodel
@@ -158,7 +157,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	//Listas para libros/documentos
 	static JList ListLibros;
 	static JList ListDoc;
-	
+	JScrollPane scrollListLibros = new JScrollPane();
+	JScrollPane scrollListDoc = new JScrollPane();
+
 	//JFileChooser:
 	private JFileChooser chooser;
 	private String path;
@@ -210,12 +211,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		anchura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(0)));
 		altura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(1)));
 
+		//tamaño pantalla
+		mipantalla=Toolkit.getDefaultToolkit();
+		screenSize=mipantalla.getScreenSize();
+		
 		if(altura==0 && anchura==0)
 		{
-			mipantalla=Toolkit.getDefaultToolkit();
-			dim=mipantalla.getScreenSize();
-			altura=dim.height;
-			anchura=dim.width;
+			altura=screenSize.height;
+			anchura=screenSize.width;
 		}
 		
 		setSize(anchura, altura);
@@ -271,6 +274,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ListLibros=new JList(modelLibros);
 		ListDoc=new JList (modelDocumentos);
 		
+		
 		//Añadir los Listeners a las listas para la selección del archivo
 		MouseListener mouseListener = new MouseAdapter() 
 		{
@@ -306,16 +310,21 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ImageIcon icon = null;
 		getContentPane().add(panelListas, BorderLayout.WEST);
 		
-		scrollPaneList.setViewportView(ListLibros);
-		scrollPaneList.setViewportView(ListDoc);
+		PLibros.setLayout(new BorderLayout(0, 0));
 		
-//		PLibros.setLayout(new BoxLayout(PLibros, BoxLayout.PAGE_AXIS));
-		PLibros.add(AddLibro); 
-		PLibros.add(ListLibros);
-		PDocum.add(AddDoc);	
-		PDocum.add(ListDoc);
+		PDocum.setLayout(new BorderLayout(0, 0));
 		
-				//Le añadimos el Listener a AddLibros
+		PLibros.add(AddLibro,BorderLayout.NORTH); 
+		PLibros.add(ListLibros,BorderLayout.CENTER);
+		
+		PDocum.add(AddDoc,BorderLayout.NORTH); 	
+		PDocum.add(ListDoc,BorderLayout.CENTER);
+		
+		scrollListLibros = new JScrollPane(PLibros);
+
+		scrollListDoc = new JScrollPane(PDocum);
+		
+		//Le añadimos el Listener a AddLibros
 		AddLibro.addActionListener(new ActionListener()
 		{
 			@Override
@@ -336,8 +345,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				});
 
 		panelListas.setPreferredSize(new Dimension(225, 40));	// esto a hodei le va?
-		panelListas.addTab("Libros",icon,PLibros, "Lista de libros agregados");
-		panelListas.addTab("Documentos",icon,PDocum, "Lista de documentos agregados");
+		panelListas.addTab("Libros",icon,scrollListLibros, "Lista de libros agregados");
+		panelListas.addTab("Documentos",icon,scrollListDoc, "Lista de documentos agregados");
 	
 		//Panel para la visualización del PDF
 		getContentPane().add(PanelPDF, BorderLayout.CENTER);
@@ -395,44 +404,42 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		Pinferior.add(numPag);
 		Pinferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-//--------------------------------------Panel para comentarios--------------------------------------------//
 		
-//		if(comentarios)
-//		{
-		//Aquí leeríamos los comentarios por página/Libro con uun for y crearíamos tantos TextArea y ScrolPane como hicieran falta	
+		//--------------Panel para comentarios-------------//
 		
-		Dimension screenSize =Toolkit.getDefaultToolkit().getScreenSize();
-		double tamañoVent = screenSize.height/2.7;
+		double tamañoPanelC = screenSize.height/2.7;
 		
 		btnAñadir = new JButton ("Añadir");
 		lbNuevoComent = new JLabel("Nuevo comentario");
 		lbComentariosAntiguo = new JLabel("Comentarios anteriores");
 		
-		Pcomentarios.setPreferredSize(new Dimension(225, 50));
+		Pcomentarios.setPreferredSize(new Dimension(225,screenSize.height));
 		Pcomentarios.setBackground(Color.gray);	
 		
-		PcomentarioNuevo.setPreferredSize(new Dimension(225,(int)tamañoVent));
-		PcomentarioNuevo.setBackground(Color.LIGHT_GRAY);
+		PcomentarioNuevo.setPreferredSize(new Dimension(225,(int)tamañoPanelC));
+		PcomentarioNuevo.setBackground(Color.lightGray);
 		
 		TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
 		TextPaneComentarioNuevo.setEditable(editable);
 		
 		PcomentariosViejos.setPreferredSize(new Dimension(225, screenSize.height));	
 		PcomentariosViejos.setBackground(Color.lightGray);
-		ScrollViejo = new JScrollPane(PcomentariosViejos);	//hasta que haya comentarios no puedo ver si funciona el scroll
-
+		
+		ScrollCViejos = new JScrollPane(PcomentariosViejos);
+		
 		PcomentarioNuevo.add(lbNuevoComent);
 		PcomentarioNuevo.add(TextPaneComentarioNuevo);
 		PcomentarioNuevo.add(btnAñadir);
 		
-		PcomentariosViejos.add(ScrollNuevo);
 		PcomentariosViejos.add(lbComentariosAntiguo);
 		
+		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.2)));
+		
 		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);
-		Pcomentarios.add(PcomentariosViejos, BorderLayout.SOUTH);
+		Pcomentarios.add(ScrollCViejos, BorderLayout.SOUTH);
+		
 		this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
 		
-		//Aquí leeríamos los comentarios por página/Libro con uun for y crearíamos tantos TextArea y ScrolPane como hicieran falta	
 			
 			JButton EditC = new JButton ("Editar"); //En su listerner, cambiar editable=true;
 			
@@ -478,12 +485,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				}
 			});
 			
-//			Pcomentarios.setPreferredSize(new Dimension(225, 40));
-//			TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
-//			
-//			this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
-//			Pcomentarios.add(EditC);
-			
 			// Construccion del JPopupMenu para el click derecho
 			popup = new JPopupMenu();
 			popup.add(Mdetalles);
@@ -493,10 +494,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			Meliminar.addActionListener(this);
 			Mdetalles.setActionCommand("DETALLES");
 			Meliminar.setActionCommand("ELIMINAR");					
-//		}
 				
 			//zoomBar construcción + rotación
-			
 			minus = new JButton("-");
 	        plus = new JButton("+");
 	        sliderZoom = new JSlider(MIN_ZOOM, MAX_ZOOM, DEFAULT_ZOOM);
@@ -560,8 +559,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				});	
 			
 	        //añadir icono al botón de girar
-	       
-
+	      
 			lRotacion.setBounds(20, 0, 100, 16);
 	        lRotacion.setBorder(BorderFactory.createEmptyBorder(0,0,0,(int) ((int)screenSize.width/3)));
 	        
