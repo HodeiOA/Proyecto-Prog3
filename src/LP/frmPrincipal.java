@@ -679,8 +679,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			{
 				
 			}
-			
 		});
+		hiloNick = new hiloNick();
+		hiloHabilitar = new hiloHabilitarBorrado();
+		
+		hiloNick.start();
+		hiloHabilitar.start();
 	}
 	
 	public static void InitLogs()
