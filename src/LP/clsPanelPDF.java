@@ -19,7 +19,7 @@ public class clsPanelPDF extends JScrollPane
 	private static clsArchivo PDFabierto;
 	private int PagActual = 1;
 	int velocidadScroll = 15;
-	int nuevaRotacion = 90;
+	int rotacion = 90;
 	float escala = 2;
 	float escalaActual;
 	
@@ -163,21 +163,23 @@ public class clsPanelPDF extends JScrollPane
 		//PagActual
 	}
 	
-	public void Rotar (int nuevaRotacion)
+	public void rotar (int rotacionValor, int pagActual)
 	{
-		PDFdecoder.setPageParameters(escalaActual, PagActual,nuevaRotacion);
+	
+		PDFdecoder.setPageParameters(escalaActual, PagActual, rotacionValor);
 		PDFdecoder.invalidate();
 	}
+	
 	public void CerrarPDF()
 	{
 		PDFdecoder.closePdfFile();
 	}
 
-	public void zoom (float zoom, int pagActual)
+	public void zoom (float zoom, int pagActual, int rotacionValor)
 	{
 		escalaActual = escala*zoom;
 		
-		PDFdecoder.setPageParameters(escalaActual, pagActual);
+		PDFdecoder.setPageParameters(escalaActual, pagActual,rotacionValor);
 		PDFdecoder.invalidate();
 	}
 

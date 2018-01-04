@@ -28,6 +28,7 @@ import java.util.logging.StreamHandler;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -68,6 +69,7 @@ import java.awt.Component;
 import java.awt.SystemColor;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Image;
 
 public class frmPrincipal extends JFrame implements ActionListener, ChangeListener, ListSelectionListener
 {
@@ -129,11 +131,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	static JSlider slider=new JSlider ();
 	JButton AddLibro = new JButton("Importar libro");
 	JButton AddDoc = new JButton ("Importar documento");
+	JScrollPane scrollPaneList = new JScrollPane();
+
 	
 	//Comentarios
 	private boolean comentarios = true;
 	private JTextPane TextPaneComentarioNuevo = new JTextPane(); 
-	private JScrollPane Scroll = new JScrollPane(TextPaneComentarioNuevo);
+	private JScrollPane ScrollNuevo = new JScrollPane(TextPaneComentarioNuevo);
+	private JScrollPane ScrollViejo;
 	private JPanel PcomentarioNuevo= new JPanel();
 	private JPanel PcomentariosViejos= new JPanel();
 	private JPanel Pcomentarios = new JPanel();
@@ -165,6 +170,26 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	//Para saber si algo está siendo o no mostrado en el panel del PDF
 	static boolean PDFactivo=false;
 	
+	//para el zoom
+	private JLabel cantidadDeZoom;
+    private JButton minus;
+    private JButton plus;
+    private JSlider sliderZoom;
+
+    private static final int MIN_ZOOM = 10;
+    private static final int MAX_ZOOM = 200;
+    private static final int DEFAULT_ZOOM = 100;
+
+    private static final int MAJOR_ZOOM_SPACING = 50;
+    private static final int MINOR_ZOOM_SPACING = 10;
+    
+    //para la rotación
+    private JLabel lRotacion;
+    private JButton btnRotar;
+    private ImageIcon iRotar;
+    private int rotacionValor;
+		
+    
 	public frmPrincipal (String titulo)
 	{
 		InitLogs();
@@ -221,14 +246,19 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		//Como son varios y son parecidos, los listeners del menú se harán con Action Commands
 		libro.setActionCommand("IMPORTAR_LIBRO");
 		libro.addActionListener(this);
+		
 		documento.setActionCommand("IMPORTAR_DOCUMENTO");
 		documento.addActionListener(this);
+		
 		libroC.setActionCommand("CARPETA_LIBRO");
 		libroC.addActionListener(this);
+		
 		documentoC.setActionCommand("CARPETA_DOCUMENTO");
 		documento.addActionListener(this);
+		
 		BorrarArchivo.setActionCommand("BORRAR");
 		BorrarArchivo.addActionListener(this);
+		
 		ExportarComentarios.setActionCommand("EXPORTAR");
 		ExportarComentarios.addActionListener(this);
 		
@@ -274,13 +304,16 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ImageIcon icon = null;
 		getContentPane().add(panelListas, BorderLayout.WEST);
 		
-		PLibros.setLayout(new BoxLayout(PLibros, BoxLayout.PAGE_AXIS));
+		scrollPaneList.setViewportView(ListLibros);
+		scrollPaneList.setViewportView(ListDoc);
+		
+//		PLibros.setLayout(new BoxLayout(PLibros, BoxLayout.PAGE_AXIS));
 		PLibros.add(AddLibro); 
 		PLibros.add(ListLibros);
 		PDocum.add(AddDoc);	
 		PDocum.add(ListDoc);
-
-		//Le añadimos el Listener a AddLibros
+		
+				//Le añadimos el Listener a AddLibros
 		AddLibro.addActionListener(new ActionListener()
 		{
 			@Override
@@ -300,7 +333,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 					}
 				});
 
-		panelListas.setPreferredSize(new Dimension(225, 40));
+		panelListas.setPreferredSize(new Dimension(225, 40));	// esto a hodei le va?
 		panelListas.addTab("Libros",icon,PLibros, "Lista de libros agregados");
 		panelListas.addTab("Documentos",icon,PDocum, "Lista de documentos agregados");
 	
@@ -354,7 +387,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				PanelPDF.SigPag();	
 				ActualizarComponentes();//Mirar cuál es la lista seleccionada y sacar el lemento seleccionado para MOSTRARCOMENTARIOS
 			}
-			
 		});
 		
 		Pinferior.add(numPag);
@@ -366,33 +398,31 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 //		{
 		//Aquí leeríamos los comentarios por página/Libro con uun for y crearíamos tantos TextArea y ScrolPane como hicieran falta	
 		
+		Dimension screenSize =Toolkit.getDefaultToolkit().getScreenSize();
+		double tamañoVent = screenSize.height/2.7;
+		
 		btnAñadir = new JButton ("Añadir");
 		lbNuevoComent = new JLabel("Nuevo comentario");
 		lbComentariosAntiguo = new JLabel("Comentarios anteriores");
 		
 		Pcomentarios.setPreferredSize(new Dimension(225, 50));
-		Pcomentarios.setBackground(Color.gray);
-			
-//		Pcomentarios.add(Scroll);
+		Pcomentarios.setBackground(Color.gray);	
 		
-		PcomentarioNuevo.setPreferredSize(new Dimension(225, 300));
+		PcomentarioNuevo.setPreferredSize(new Dimension(225,(int)tamañoVent));
 		PcomentarioNuevo.setBackground(Color.LIGHT_GRAY);
 		
 		TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
 		TextPaneComentarioNuevo.setEditable(editable);
-
 		
-		PcomentariosViejos.setPreferredSize(new Dimension(225, Pcomentarios.getHeight() - PcomentarioNuevo.getHeight()));
-		System.out.println( Pcomentarios.getHeight() - PcomentarioNuevo.getHeight());
-		System.out.println(Pcomentarios.getHeight());
-		System.out.println(PcomentarioNuevo.getHeight());
-		PcomentariosViejos.setBackground(Color.CYAN);
-			
+		PcomentariosViejos.setPreferredSize(new Dimension(225, screenSize.height));	
+		PcomentariosViejos.setBackground(Color.lightGray);
+		ScrollViejo = new JScrollPane(PcomentariosViejos);	//hasta que haya comentarios no puedo ver si funciona el scroll
+
 		PcomentarioNuevo.add(lbNuevoComent);
 		PcomentarioNuevo.add(TextPaneComentarioNuevo);
 		PcomentarioNuevo.add(btnAñadir);
 		
-//		PcomentariosViejos.add(Scroll);
+		PcomentariosViejos.add(ScrollNuevo);
 		PcomentariosViejos.add(lbComentariosAntiguo);
 		
 		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);
@@ -462,6 +492,109 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			Meliminar.setActionCommand("ELIMINAR");					
 //		}
 			
+			//zoomBar construcción + rotación
+			
+			minus = new JButton("-");
+	        plus = new JButton("+");
+	        sliderZoom = new JSlider(MIN_ZOOM, MAX_ZOOM, DEFAULT_ZOOM);
+	        
+	        btnRotar = new JButton();
+	        rotacionValor = 0;
+			lRotacion = new JLabel("Rotar:"+ rotacionValor +"°"); 
+
+	        sliderZoom.setMinorTickSpacing(MINOR_ZOOM_SPACING);
+	        sliderZoom.setMajorTickSpacing(MAJOR_ZOOM_SPACING);
+	        sliderZoom.setPaintTicks(true);
+	        sliderZoom.setSnapToTicks(true);
+	        
+	        cantidadDeZoom = new JLabel(sliderZoom.getValue() + "%");
+	        cantidadDeZoom.setBorder(BorderFactory.createEmptyBorder(0,(int) ((int)screenSize.width/4),0,0));
+			
+	        menuBar.add(cantidadDeZoom);
+	        menuBar.add(minus);
+	        menuBar.add(sliderZoom);
+	        menuBar.add(plus);
+	        
+	        //añado sus listeners al zoom
+	        
+	        plus.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					sliderZoom.setValue(sliderZoom.getValue()+MINOR_ZOOM_SPACING);
+					PanelPDF.zoom(sliderZoom.getValue()/100f, PanelPDF.getPagActual(),rotacionValor);
+					System.out.println("GET VALUE SLIDERZOOM:" + sliderZoom.getValue());
+				}   
+				});
+	        
+	        minus.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					sliderZoom.setValue(sliderZoom.getValue()-MINOR_ZOOM_SPACING);
+		            PanelPDF.zoom(sliderZoom.getValue()/100f, PanelPDF.getPagActual(),rotacionValor);
+					System.out.println("GET VALUE SLIDERZOOM:" + sliderZoom.getValue());
+				}   
+				});
+	        
+	        sliderZoom.addChangeListener(new ChangeListener()
+			{
+				public void stateChanged(ChangeEvent e) 
+				{
+					if (sliderZoom.getValueIsAdjusting()) 
+					{
+			            PanelPDF.zoom(sliderZoom.getValue()/100f, PanelPDF.getPagActual(),rotacionValor);
+						return;
+			        }
+			        cantidadDeZoom.setText(sliderZoom.getValue() + "%");			
+			    }   
+				});	
+			
+	        //añadir icono al botón de girar
+	       
+
+			lRotacion.setBounds(20, 0, 100, 16);
+	        lRotacion.setBorder(BorderFactory.createEmptyBorder(0,0,0,(int) ((int)screenSize.width/3)));
+	        
+	        try 
+			{
+				ImageIcon iconRotar = new ImageIcon(frmPrincipal.class.getResource ( "../images/rotar.png"));
+				Image scaleImage = iconRotar.getImage().getScaledInstance(15, 16,Image.SCALE_DEFAULT);
+				btnRotar.setIcon( new ImageIcon(scaleImage));
+			} 
+			catch (Exception e) 
+			{
+				System.err.println( "Error en carga de recurso: coche.png no encontrado" );
+				e.printStackTrace();
+			}
+	    	
+	        menuBar.add(btnRotar);
+	        menuBar.add(lRotacion);
+	        
+	        //listeners
+	        
+	        btnRotar.addActionListener(new ActionListener()
+	   			{
+	   				public void actionPerformed(ActionEvent e)
+	   				{
+	   					rotacionValor = rotacionValor + 90;
+	   						   					
+	   					if(rotacionValor==360)
+	   					{
+	   						rotacionValor = 0;
+	   						PanelPDF.rotar(rotacionValor, PanelPDF.getPagActual());
+	   						
+
+	   					}
+	   					else
+	   					{
+	   						PanelPDF.rotar(rotacionValor, PanelPDF.getPagActual());
+ 	   					}
+	   					
+	   					lRotacion.setText("Rotar:"+ rotacionValor +"°");	//si quito esto no funciona y no lo entiendo
+	   				}   
+	   				});
+	              
 		this.addComponentListener(new ComponentListener()
 		{
 			@Override
