@@ -30,6 +30,11 @@ public class clsMain
 		    }
 		  });
 	        
+		clsGestor.guardarComentario(1, "Heyyy, soy un comentariooo!!", 1, 1);
+		clsGestor.guardarComentario(2, "Yo tambiéeeeen :D", 1, 1);
+		clsGestor.guardarComentario(3, "Nah, yo paso :/", 1, 1);
+		clsGestor.guardarComentario(4, "Bórrame", 1, 1);
+		
         clsComun.siguienteArchivo();
         clsComun.siguienteComentario(); 
 	}
