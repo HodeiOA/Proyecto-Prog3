@@ -223,10 +223,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 		x=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(2)));
 		y=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(3)));
-		if(x!=0 && y!=0)
-		{
-			setLocation(x, y);		//Si no, pone la de por defecto, es decir, nunca se ha movido la ventana antes
-		}
+		
+		setLocation(x, y);		
 		
 		//Menú
 		//Construcción del menú
