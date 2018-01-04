@@ -87,7 +87,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private Dimension dim;
 	private Toolkit mipantalla;
 	
-	public static String nickUsuarioSesion;
+	public static String nickUsuarioSesion="";
 	private hiloNick hiloNick;
 	private hiloHabilitarBorrado hiloHabilitar;
 	
