@@ -438,7 +438,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		PcomentarioNuevo.add(TextPaneComentarioNuevo);
 		PcomentarioNuevo.add(btnAñadir);
 		
-		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC)));
+		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.1)));
 		
 		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);
 		Pcomentarios.add(lbComentariosAntiguo);
