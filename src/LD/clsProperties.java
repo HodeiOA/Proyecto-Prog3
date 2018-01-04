@@ -54,7 +54,7 @@ public class clsProperties
 	{
 			try
 			{
-				misProps.storeToXML( new PrintStream( "propiedades.xml" ), "Propiedades de Altura y anchura" );
+				misProps.storeToXML( new PrintStream( "propiedades.xml" ), "Propiedades de altura, anchura y localización" );
 			} catch (IOException e) 
 			{
 				
