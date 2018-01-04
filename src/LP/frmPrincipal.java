@@ -81,71 +81,71 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 {
 	//Logger
 	private static Logger logger = Logger.getLogger( frmPrincipal.class.getName() );
-	static Handler handlerPantalla;
-	static Handler handlerArchivo;
+	private static Handler handlerPantalla;
+	private static Handler handlerArchivo;
 	
-	private int altura=0;
-	private int anchura=0;
-	private int x=0;
-	private int y=0;
+	private int altura = 0;
+	private int anchura = 0;
+	private int x = 0;
+	private int y = 0;
 	private Dimension screenSize;
 	private Toolkit mipantalla;
 	
-	public static String nickUsuarioSesion="";
+	public static String nickUsuarioSesion = "";
 	private hiloNick hiloNick;
 	private hiloHabilitarBorrado hiloHabilitar;
 	
 	//MENÚ
-	private JMenuBar menuBar=new JMenuBar();
-	private JMenu archivo=new JMenu("Archivo");
-	private JMenu importarArchivo=new JMenu("Importar archivo");
-	private JMenu importaCarpeta=new JMenu("Importar carpeta");
-	private JMenuItem libro=new JMenuItem("Libro");
-	private JMenuItem documento=new JMenuItem("Documento");
-	private JMenuItem libroC=new JMenuItem("Libro");
-	private JMenuItem documentoC=new JMenuItem("Documento");
-	private JMenuItem BorrarArchivo= new JMenuItem ("Eliminar archivo");
-	private JMenu Mcom =new JMenu("Comentarios");
+	private JMenuBar menuBar = new JMenuBar();
+	private JMenu archivo = new JMenu("Archivo");
+	private JMenu importarArchivo = new JMenu("Importar archivo");
+	private JMenu importaCarpeta = new JMenu("Importar carpeta");
+	private JMenuItem libro = new JMenuItem("Libro");
+	private JMenuItem documento = new JMenuItem("Documento");
+	private JMenuItem libroC = new JMenuItem("Libro");
+	private JMenuItem documentoC = new JMenuItem("Documento");
+	private JMenuItem BorrarArchivo = new JMenuItem ("Eliminar archivo");
+	private JMenu Mcom = new JMenu("Comentarios");
 	private JMenuItem ExportarComentarios = new JMenuItem( "Exportar comentarios"); //Hacer que cuando se estén viendo los comentarios pase a poner ocultar comentarios
 	// JMenu de sesión: cerrar sesión
 		
 	//Para el menú que se despliega a al hacer click derecho sobre un elemento de la lista
-	JPopupMenu popup;
-	JMenuItem Mdetalles = new JMenuItem("Información del archivo");
-	JMenuItem Meliminar = new JMenuItem("Eliminar archivo");
+	private JPopupMenu popup;
+	private JMenuItem Mdetalles = new JMenuItem("Información del archivo");
+	private JMenuItem Meliminar = new JMenuItem("Eliminar archivo");
 	
 	//Paneles
-	private static JTabbedPane panelListas= new JTabbedPane(); //Panel de pestañas
-	private static JPanel PLibros=new JPanel(); //Panel dentro de la pestaña libros
-	private JPanel PDocum=new JPanel(); //Panel dentro de la pestaña documentos
-	static clsPanelPDF PanelPDF = new clsPanelPDF();
-	private JPanel Pinferior= new JPanel();
+	private static JTabbedPane panelListas = new JTabbedPane(); //Panel de pestañas
+	private static JPanel PLibros = new JPanel(); //Panel dentro de la pestaña libros
+	private JPanel PDocum = new JPanel(); //Panel dentro de la pestaña documentos
+	private static clsPanelPDF PanelPDF = new clsPanelPDF();
+	private JPanel Pinferior = new JPanel();
 	
 	
 	//Botones
-	JButton Banterior= new JButton("<<"); //mirar taller bicis
-	JButton Bsiguiente= new JButton(">>"); 
-	JButton btnAñadir;
+	private static JButton btnAnterior = new JButton("<<"); //mirar taller bicis
+	private static JButton btnSiguiente = new JButton(">>"); 
+	private static JButton btnAñadir;
 
 	//Labels
-	JLabel lbNuevoComent;
-	JLabel lbComentariosAntiguo;
+	private JLabel lbNuevoComent;
+	private JLabel lbComentariosAntiguo;
 
 	//Marcador de página, cambiante según los botones de arriba y/o el slider
-	static JTextArea numPag = new JTextArea ();
-	static String indicadorPaginas; //Cada vez que cambiemos la página, cambiaremos el String
+	private static JTextArea numPag = new JTextArea ();
+	private static String indicadorPaginas; //Cada vez que cambiemos la página, cambiaremos el String
 	
 	//Otros compontentes
-	static JProgressBar progreso=new JProgressBar();
-	static JSlider slider=new JSlider ();
-	JButton AddLibro = new JButton("Importar libro");
-	JButton AddDoc = new JButton ("Importar documento");
+	private static JProgressBar progreso = new JProgressBar();
+	private static JSlider slider = new JSlider ();
+	private JButton btnAddLibro = new JButton("Importar libro");
+	private JButton btnAddDoc = new JButton ("Importar documento");
 	
 	//Comentarios
 	private boolean comentarios = true;
 	private static JTextPane TextPaneComentarioNuevo = new JTextPane(); 
-	private static JPanel PcomentarioNuevo= new JPanel();
-	private static JPanel PcomentariosViejos= new JPanel();
+	private static JPanel PcomentarioNuevo = new JPanel();
+	private static JPanel PcomentariosViejos = new JPanel();
 	private JPanel Pcomentarios = new JPanel();
 	private JScrollPane ScrollCViejos = new JScrollPane ();
 	private static HashSet<clsComentario> HashComentarios = new HashSet<clsComentario>();
@@ -154,17 +154,17 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private static ArrayList<JLabel> listLabeles = new ArrayList<JLabel>();
 	
 	//Para el Listmodel
-	static HashSet <clsArchivo> HashArchivos = new HashSet<clsArchivo>();
-	static HashSet <clsArchivo> HashLibros = new HashSet<clsArchivo>();
-	static HashSet <clsArchivo> HashDocumentos = new HashSet<clsArchivo>();
-	static modelArchivos modelLibros;
-	static modelArchivos modelDocumentos;
+	private static HashSet <clsArchivo> HashArchivos = new HashSet<clsArchivo>();
+	private static HashSet <clsArchivo> HashLibros = new HashSet<clsArchivo>();
+	private static HashSet <clsArchivo> HashDocumentos = new HashSet<clsArchivo>();
+	private static modelArchivos modelLibros;
+	private static modelArchivos modelDocumentos;
 	
 	//Listas para libros/documentos
-	static JList ListLibros;
-	static JList ListDoc;
-	JScrollPane scrollListLibros = new JScrollPane();
-	JScrollPane scrollListDoc = new JScrollPane();
+	private static JList ListLibros;
+	private static JList ListDoc;
+	private JScrollPane scrollListLibros = new JScrollPane();
+	private JScrollPane scrollListDoc = new JScrollPane();
 
 	//JFileChooser:
 	private JFileChooser chooser;
@@ -174,17 +174,17 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	
 	//Para guardar propiedades
 	static Properties misProps=new Properties();
-	static ArrayList <String> ClavesPropiedades = new ArrayList();
-	int[] AnchuraAltura = new int[2];
-	int[] locationXY = new int[2];
+	static ArrayList<String> ClavesPropiedades = new ArrayList();
+	private int[] AnchuraAltura = new int[2];
+	private int[] locationXY = new int[2];
 	
 	//Para saber si algo está siendo o no mostrado en el panel del PDF
-	static boolean PDFactivo=false;
+	private static boolean PDFactivo = false;
 	
 	//para el zoom
 	private static JLabel cantidadDeZoom;
-    private static JButton minus;
-    private static JButton plus;
+    private static JButton btnMinus;
+    private static JButton btnPlus;
     private static JSlider sliderZoom;
 
     private static final int MIN_ZOOM = 10;
@@ -320,10 +320,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 		PDocum.setLayout(new BorderLayout(0, 0));
 		
-		PLibros.add(AddLibro,BorderLayout.NORTH); 
+		PLibros.add(btnAddLibro,BorderLayout.NORTH); 
 		PLibros.add(ListLibros,BorderLayout.CENTER);
 		
-		PDocum.add(AddDoc,BorderLayout.NORTH); 	
+		PDocum.add(btnAddDoc,BorderLayout.NORTH); 	
 		PDocum.add(ListDoc,BorderLayout.CENTER);
 		
 		scrollListLibros = new JScrollPane(PLibros);
@@ -331,7 +331,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		scrollListDoc = new JScrollPane(PDocum);
 		
 		//Le añadimos el Listener a AddLibros
-		AddLibro.addActionListener(new ActionListener()
+		btnAddLibro.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
@@ -341,7 +341,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		});
 		
 //		//Le añadimos el Listener a AddDocumento
-				AddDoc.addActionListener(new ActionListener()
+				btnAddDoc.addActionListener(new ActionListener()
 				{
 					@Override
 					public void actionPerformed(ActionEvent e)
@@ -350,7 +350,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 					}
 				});
 
-		panelListas.setPreferredSize(new Dimension(225, 40));	// esto a hodei le va?
+		panelListas.setPreferredSize(new Dimension(225, 40));
 		panelListas.addTab("Libros",icon,scrollListLibros, "Lista de libros agregados");
 		panelListas.addTab("Documentos",icon,scrollListDoc, "Lista de documentos agregados");
 	
@@ -381,9 +381,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		    });
 		  
 		Pinferior.add(progreso);
-		Pinferior.add(Banterior);
+		Pinferior.add(btnAnterior);
 		
-		Banterior.addActionListener(new ActionListener()
+		btnAnterior.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
@@ -395,9 +395,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		});
 		
 		Pinferior.add(slider);
-		Pinferior.add(Bsiguiente);
+		Pinferior.add(btnSiguiente);
 		
-		Bsiguiente.addActionListener(new ActionListener()
+		btnSiguiente.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0) 
@@ -486,8 +486,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			Meliminar.setActionCommand("ELIMINAR");					
 				
 			//zoomBar construcción + rotación
-			minus = new JButton("-");
-	        plus = new JButton("+");
+			btnMinus = new JButton("-");
+	        btnPlus = new JButton("+");
 	        sliderZoom = new JSlider(MIN_ZOOM, MAX_ZOOM, DEFAULT_ZOOM);
 	        
 	        btnRotar = new JButton();
@@ -503,19 +503,19 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	        cantidadDeZoom.setBorder(BorderFactory.createEmptyBorder(0,(int) ((int)screenSize.width/4),0,0));
 			
 	        menuBar.add(cantidadDeZoom);
-	        menuBar.add(minus);
+	        menuBar.add(btnMinus);
 	        menuBar.add(sliderZoom);
-	        menuBar.add(plus);
+	        menuBar.add(btnPlus);
 	        
 	    	//preparar el slider zoom y el botón de rotar
 			sliderZoom.setEnabled(PDFactivo); 	//false
-			plus.setEnabled(PDFactivo);
-			minus.setEnabled(PDFactivo);
+			btnPlus.setEnabled(PDFactivo);
+			btnMinus.setEnabled(PDFactivo);
 			btnRotar.setEnabled(PDFactivo);
 	        
 	        //añado sus listeners al zoom
 	        
-	        plus.addActionListener(new ActionListener()
+	        btnPlus.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
@@ -525,7 +525,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				}   
 				});
 	        
-	        minus.addActionListener(new ActionListener()
+	        btnMinus.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
@@ -706,7 +706,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		if(PDFactivo)
 		{
 			logger.log(Level.INFO, "Actualizando Slider y texto del panel inferior");
-			
+				
 			//Prepara el texto del slider
 			int max = PanelPDF.getPaginasTotal();
 			int PaginasActual = PanelPDF.getPagActual();
@@ -717,34 +717,38 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 					//slider.setMinorTickSpacing(PanelPDF.getPaginasTotal()/3); //las rayitas de cuanto en cuanto
 					slider.setPaintLabels(true); //si se ven los números del slider o no
 					slider.setBackground(SystemColor.inactiveCaption);
-					slider.setEnabled(PDFactivo);
 					
+						
 			//Prepara el texto de los números de página
 					indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.getPaginasTotal();
 					numPag.setText(indicadorPaginas);
 					numPag.setEditable(false);
 					numPag.setBackground(SystemColor.inactiveCaption);
-					
+						
 			//Prepara el progress bar
 					int intProgress = clsGestor.porcentLeido(PanelPDF.getPDFabierto());
 					progreso.setStringPainted(true);
 					progreso.setValue((intProgress));
 					progreso.setString(intProgress + "%");
-			
+				
 			//zoom
-					sliderZoom.setEnabled(PDFactivo);
-					plus.setEnabled(PDFactivo);
-					minus.setEnabled(PDFactivo);
 					cantidadDeZoom.setText(sliderZoom.getValue() + "%");
-					
+						
 			//rotación
-					btnRotar.setEnabled(PDFactivo);
 					lRotacion.setText("Rotar: "+ rotacionValor +"°");
-					
+						
 					MostrarComentarios();
+		}
 					
-					TextPaneComentarioNuevo.setEditable(PDFactivo);
-		}		
+				TextPaneComentarioNuevo.setEditable(PDFactivo);
+				slider.setEnabled(PDFactivo);
+				btnAnterior.setEnabled(PDFactivo);
+				btnSiguiente.setEnabled(PDFactivo);
+				btnAñadir.setEnabled(PDFactivo);
+				btnRotar.setEnabled(PDFactivo);
+				sliderZoom.setEnabled(PDFactivo);
+				btnPlus.setEnabled(PDFactivo);
+				btnMinus.setEnabled(PDFactivo);
 	}
 	
 	/**
@@ -1119,24 +1123,29 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				
 				if(option == JOptionPane.OK_OPTION)
 				{
-					BorrarArchivo();
-					ActualizarListas();
+					
 					
 					String ruta = PanelPDF.getPDFabierto().getRuta();
 					
 					if(panelListas.getSelectedIndex() == 0)
 					{
 						if(ListLibros.getSelectedValue().equals(PanelPDF.getPDFabierto()))
+							PDFactivo = false;
 							PanelPDF.CerrarPDF();
 					} 
 					else
 					{
 						if(ListDoc.getSelectedValue().equals(PanelPDF.getPDFabierto()))
+							PDFactivo = false;
 							PanelPDF.CerrarPDF();
 					}
 					try {
 						clsGestor.EliminarRuta(ruta);
 					} catch (IOException e1) {}
+					
+					ActualizarComponentes();
+					BorrarArchivo();
+					ActualizarListas();
 				}	
 				break;
 				

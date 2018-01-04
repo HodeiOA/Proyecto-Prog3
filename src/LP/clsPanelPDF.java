@@ -173,6 +173,7 @@ public class clsPanelPDF extends JScrollPane
 	{
 		PDFabierto = null;
 		PDFdecoder.closePdfFile();
+		PDFdecoder.repaint();
 	}
 
 	public void zoom (float zoom, int pagActual, int rotacionValor)
