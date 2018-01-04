@@ -591,17 +591,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	   						   					
 	   					if(rotacionValor==360)
 	   					{
-	   						rotacionValor = 0;
-	   						PanelPDF.rotar(rotacionValor, PanelPDF.getPagActual());
-	   						
-
+	   						rotacionValor = 0;					
 	   					}
-	   					else
-	   					{
-	   						PanelPDF.rotar(rotacionValor, PanelPDF.getPagActual());
- 	   					}
-	   					
-	   					lRotacion.setText("Rotar:"+ rotacionValor +"°");	//si quito esto no funciona y no lo entiendo
+
+	   					PanelPDF.rotar(rotacionValor, PanelPDF.getPagActual());
+ 	   					
+	   					lRotacion.setText("Rotar: "+ rotacionValor +"°");	//si quito esto no funciona y no lo entiendo
 	   				}   
 	   				});
 	              
@@ -756,7 +751,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 					
 			//rotación
 					btnRotar.setEnabled(PDFactivo);
-					lRotacion.setText("Rotar:"+ rotacionValor +"°");
+					lRotacion.setText("Rotar: "+ rotacionValor +"°");
 		}		
 	}
 	
