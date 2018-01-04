@@ -265,7 +265,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		libroC.addActionListener(this);
 		
 		documentoC.setActionCommand("CARPETA_DOCUMENTO");
-		documento.addActionListener(this);
+		documentoC.addActionListener(this);
 		
 		BorrarArchivo.setActionCommand("BORRAR");
 		BorrarArchivo.addActionListener(this);
@@ -973,6 +973,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		}
 		else
 		{
+			System.out.println("importar carpeta documento");
 			logger.log(Level.INFO, "Seleccionando carpeta de documentos");
 			chooser.setDialogTitle("Importar carpeta documentos");
 		}
