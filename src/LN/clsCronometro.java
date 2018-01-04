@@ -1,11 +1,9 @@
 package LN;
 
-public class clsCronometro implements Runnable
+public class clsCronometro extends Thread
 {
 	private boolean isRunning = true;
 	private byte segundos = 00;
-	private byte minutos = 00;
-	private byte horas = 00;
 	
 	@Override
 	public void run() 
@@ -20,20 +18,7 @@ public class clsCronometro implements Runnable
 			{
 				//interrumpido
 			}
-			
-			segundos++; System.out.println(segundos);
-			
-			if(segundos == 60)
-			{
-				minutos++; //+1 minuto
-				segundos = 00;
-				
-				if(minutos == 60)
-				{
-					horas++; //+1 hora
-					minutos = 00;
-				}
-			}
+			segundos++; //logger segundos
 		}
 	}
 	
@@ -56,15 +41,4 @@ public class clsCronometro implements Runnable
 	{
 		return segundos; //segundos devueltos
 	}
-	
-	public byte getMinutos()
-	{
-		return minutos; //minutos devueltos
-	}
-	
-	public byte getHoras()
-	{
-		return horas; //horas devueltas
-	}
-
 }

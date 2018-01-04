@@ -62,6 +62,8 @@ import LD.clsProperties;
 import LN.clsArchivo;
 import LN.clsComentario;
 import LN.clsGestor;
+import LP.frmPrincipal.hiloHabilitarBorrado;
+import LP.frmPrincipal.hiloNick;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -86,6 +88,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private Toolkit mipantalla;
 	
 	public static String nickUsuarioSesion;
+	private hiloNick hiloNick;
+	private hiloHabilitarBorrado hiloHabilitar;
 	
 	//MENÚ
 	private JMenuBar menuBar=new JMenuBar();
@@ -163,9 +167,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	
 	//Para guardar propiedades
 	static Properties misProps=new Properties();
-	ArrayList <String> ClavesPropiedades = new ArrayList();
-	String[] AnchuraAltura = new String[2];
-	String[] locationXY = new String[2];
+	static ArrayList <String> ClavesPropiedades = new ArrayList();
+	int[] AnchuraAltura = new int[2];
+	int[] locationXY = new int[2];
 	
 	//Para saber si algo está siendo o no mostrado en el panel del PDF
 	static boolean PDFactivo=false;
@@ -203,9 +207,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		CargarDatos();
 		//Leer el xml que guarda el tamaño de la ventana y meter los datos en altura y anchura
 		//Este if lo tendremos que hacer, pero lo comento hasta que podamos leer los valores
-//		anchura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(0)));
-//		altura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(1)));
-		
+		clsProperties.CargarProps(misProps,ClavesPropiedades);
+		anchura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(0)));
+		altura=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(1)));
+
 		if(altura==0)
 		{
 			mipantalla=Toolkit.getDefaultToolkit();
@@ -217,11 +222,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		setSize(anchura, altura);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-//		x=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(2)));
-//		y=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(3)));
+		x=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(2)));
+		y=Integer.parseInt(misProps.getProperty(ClavesPropiedades.get(3)));
 		if(x!=0)
 		{
-			setLocation(x, y);		
+			setLocation(x, y);		//Si no, pone la de por defecto, es decir, nunca se ha movido la ventana antes
 		}
 		
 		//Menú
@@ -612,8 +617,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			@Override
 			public void componentResized(ComponentEvent arg0)
 			{
-				AnchuraAltura[0]= Integer.toString(getHeight());
-				AnchuraAltura[1]= Integer.toString(getWidth());
+				AnchuraAltura[1]= (int)(getHeight());
+				AnchuraAltura[0]= (int)(getWidth());
 				clsProperties.CambiarPropiedades(misProps, AnchuraAltura, locationXY, ClavesPropiedades);
 			}
 			
@@ -644,11 +649,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			{
 				if(PDFactivo) PanelPDF.GuardarDatosPDFAnterior();
 				clsBD.close();
-//					locationXY[0]=
-//							x=Integer.parseInt((getLocation().getX()).round());
-//					locationXY[1]=Double.toString(getLocation().getY());
-//					clsProperties.CambiarPropiedades(misProps, AnchuraAltura, locationXY, ClavesPropiedades);
-//					clsProperties.Guardarpropiedad(misProps);
+					locationXY[0]=(int) (getLocation().getX());
+					locationXY[1]=(int)(getLocation().getY());
+
+					clsProperties.CambiarPropiedades(misProps, AnchuraAltura, locationXY, ClavesPropiedades);
+					clsProperties.Guardarpropiedades(misProps);
 			}
 
 			@Override
@@ -774,9 +779,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	 */
 	public static void CargarDatos()
 	{
-		clsProperties.CargarProps(misProps);	
+		clsProperties.CargarProps(misProps, ClavesPropiedades);	
 		HashArchivos = clsGestor.LeerArchivosBD();
-		clsGestor.llenarLibrosDocum (HashArchivos, HashLibros, HashDocumentos);
+		clsGestor.llenarLibrosDocum (nickUsuarioSesion, HashArchivos, HashLibros, HashDocumentos);
 
 		modelLibros = new modelArchivos(HashLibros);
 		modelDocumentos = new modelArchivos(HashDocumentos);
@@ -1055,5 +1060,65 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	public void valueChanged(ListSelectionEvent arg0)
 	{
 		
+	}
+	/**
+	 * Hilo para comprobar cuándo cambia el nick en frmRegistro y cargar las listas correspondientes a ese usuario
+	 * @author ALUMNO
+	 *
+	 */
+	public class hiloNick extends Thread 
+	{
+		@Override
+		public void run()
+		{
+			while(nickUsuarioSesion.isEmpty()) //arriba lo igualamos a "" para que no nos dé problemas de null
+			{
+				logger.log(Level.INFO, "No se ha iniciado sesión");
+				try
+				{
+					Thread.sleep(1000);
+					
+				} catch (InterruptedException e) 
+				{
+					
+				}
+			}
+			if(!(nickUsuarioSesion.isEmpty()))
+			{
+				logger.log(Level.INFO, "Se ha iniciado sesión " + nickUsuarioSesion);
+				clsGestor.llenarLibrosDocum(nickUsuarioSesion, HashArchivos, HashLibros, HashDocumentos);
+				frmPrincipal.ActualizarListas();
+				this.interrupt();
+			}
+		}
+	}
+	public class hiloHabilitarBorrado extends Thread 
+	{
+		@Override
+		public void run()
+		{
+			while(true)
+			{
+				if(panelListas.getSelectedIndex() == 0 && (!ListLibros.isSelectionEmpty())) //Si la pestaña es la de los libros y hay alguno seleccionado, habilitamos
+				{					
+					BorrarArchivo.setEnabled(true);
+				}
+				else if (panelListas.getSelectedIndex() == 1 && (!ListDoc.isSelectionEmpty()))//Si la pestaña es la de los documentos y hay alguno seleccionado, habilitamos
+				{
+					BorrarArchivo.setEnabled(true);
+				}
+				else
+				{
+					BorrarArchivo.setEnabled(false); //En cualquier otro caso, deshabilitado
+				}
+				try 
+				{
+					Thread.sleep(1000);
+				} catch (InterruptedException e) 
+				{
+					
+				}
+			}
+		}
 	}
 }
