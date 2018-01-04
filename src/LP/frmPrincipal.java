@@ -910,7 +910,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		chooser.setAcceptAllFileFilterUsed(false); 
 		
 		//Filtrar extensiones de archivos
-		//filtro= Pattern.compile( "\\*\\.pdf", Pattern.CASE_INSENSITIVE );
 		FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.PDF", "pdf");
 		chooser.setFileFilter(filtro);
 		
@@ -990,6 +989,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			//Creamos un nuevo archivo por cada pdf que haya en el directorio
 			//Para ello, primero vemos si estamos en una carpeta, por lo que la primera vez siempre entrará			
 		} 
+		ActualizarListas();
 	}
 	
 	public static void RecursividadCarpeta(String path, boolean esLibro)
@@ -1021,9 +1021,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				{
 					clsArchivo nuevoArchivo = new clsArchivo (nickUsuarioSesion, "Autor", "Apellido", Titulo, path, clsGestor.conseguirNumPags(path), 1, 0, esLibro, false, 0);
 					HashArchivos.add(nuevoArchivo);
+					clsGestor.llenarLibrosDocum(nickUsuarioSesion, HashArchivos, HashLibros, HashDocumentos);
 					CopiarArchivo(path, nuevoArchivo);
 					clsGestor.guardarArchivo(nuevoArchivo.getNick(), nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
-					CargarDatos();
 				} 
 				catch (PdfException e) 
 				{

@@ -72,13 +72,13 @@ public class clsGestor
 		}
     }
 	
-	public static void llenarLibrosDocum(String nickUsarioSesion, HashSet <clsArchivo> HashArchivos, HashSet <clsArchivo> HashLibros, HashSet <clsArchivo> HashDocumentos)
+	public static void llenarLibrosDocum(String nickUsuarioSesion, HashSet <clsArchivo> HashArchivos, HashSet <clsArchivo> HashLibros, HashSet <clsArchivo> HashDocumentos)
 	{
 		if( HashArchivos !=null)
 		{
 			for (clsArchivo a: HashArchivos )
 			{
-				if(a.getNick().equals(nickUsarioSesion))
+				if(a.getNick().equals(nickUsuarioSesion))
 				{
 					if(a.getLibroSi())//INFO: libroSI
 					{
