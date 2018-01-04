@@ -143,16 +143,15 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	
 	//Comentarios
 	private boolean comentarios = true;
-	private JTextPane TextPaneComentarioNuevo = new JTextPane(); 
-	private JPanel PcomentarioNuevo= new JPanel();
-	private JPanel PcomentariosViejos= new JPanel();
+	private static JTextPane TextPaneComentarioNuevo = new JTextPane(); 
+	private static JPanel PcomentarioNuevo= new JPanel();
+	private static JPanel PcomentariosViejos= new JPanel();
 	private JPanel Pcomentarios = new JPanel();
 	private JScrollPane ScrollCViejos = new JScrollPane ();
-	private boolean editable = false;
-	HashSet<clsComentario> HashComentarios = new HashSet<clsComentario>();
-	private ArrayList<JTextPane> listTextPanes = new ArrayList<JTextPane>();
-	private ArrayList<clsComentario> listComentariosVisibles = new ArrayList<clsComentario>();
-	private ArrayList<JLabel> listLabeles = new ArrayList<JLabel>();
+	private static HashSet<clsComentario> HashComentarios = new HashSet<clsComentario>();
+	private static ArrayList<JTextPane> listTextPanes = new ArrayList<JTextPane>();
+	private static ArrayList<clsComentario> listComentariosVisibles = new ArrayList<clsComentario>();
+	private static ArrayList<JLabel> listLabeles = new ArrayList<JLabel>();
 	
 	//Para el Listmodel
 	static HashSet <clsArchivo> HashArchivos = new HashSet<clsArchivo>();
@@ -414,7 +413,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 		//--------------Panel para comentarios-------------//
 		
-		double tamañoPanelC = screenSize.height/3;
+		double tamañoPanelC = screenSize.height/2.7;
 		
 		btnAñadir = new JButton ("Añadir");
 		lbNuevoComent = new JLabel("Nuevo comentario");
@@ -423,15 +422,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 		Pcomentarios.setPreferredSize(new Dimension(225,screenSize.height));
 		Pcomentarios.setBackground(Color.WHITE);
-		Pcomentarios.setLayout(new BorderLayout());
 		
 		PcomentarioNuevo.setPreferredSize(new Dimension(225,(int)tamañoPanelC));
 		PcomentarioNuevo.setBackground(Color.lightGray);
 		
 		TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
-		TextPaneComentarioNuevo.setEditable(editable);
+		TextPaneComentarioNuevo.setEditable(PDFactivo);
 		
-		PcomentariosViejos.setPreferredSize(new Dimension(225, screenSize.height));	
+		PcomentariosViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.15)));
 		PcomentariosViejos.setBackground(Color.lightGray);
 		
 		ScrollCViejos = new JScrollPane(PcomentariosViejos);
@@ -440,55 +438,39 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		PcomentarioNuevo.add(TextPaneComentarioNuevo);
 		PcomentarioNuevo.add(btnAñadir);
 		
-		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.6)));
+		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.15)));
 		
 		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);
 		Pcomentarios.add(lbComentariosAntiguo);
 		Pcomentarios.add(ScrollCViejos, BorderLayout.SOUTH);
 		
 		this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
-		
 			
-			JButton EditC = new JButton ("Editar"); //En su listerner, cambiar editable=true;
-			
-			EditC.addActionListener(new ActionListener()
+		btnAñadir.addActionListener(new ActionListener()
 			{
 				@Override
 				public void actionPerformed(ActionEvent arg0) 
-				{
-					editable=!editable;
-					TextPaneComentarioNuevo.setEditable(editable);
-					
-					if(EditC.getText().equals("Editar"))
-					{
-						EditC.setText("Guardar");
-					}
-					else
+				{	
+					if(PDFactivo)
 					{
 						//Identificar cuál es el archivo en curso del que se ha hecho el comentario
 						for(clsArchivo a: HashArchivos)
 						{
-							if(PDFactivo)
+							if(a.equals(PanelPDF.getPDFabierto()))
 							{
-								String ruta = PanelPDF.getRuta();
-								if(ruta.equals(a.getRuta()))
-								{
-									if(!(TextPaneComentarioNuevo.getText().isEmpty()))
-									{	
-										//GuardarComentario
-										clsArchivo archivoComent = a;
-										clsComentario coment = new clsComentario(TextPaneComentarioNuevo.getText(),archivoComent.getCodArchivo(), PanelPDF.getPagActual(), false, 0);
-																			
-										clsGestor.guardarComentario(coment.getID(), coment.getTexto(), coment.getCodArchivo(), coment.getNumPagina());
-	
-										//Crear de nuevo los comentarios
-										MostrarComentarios();
-									}
+								if(!(TextPaneComentarioNuevo.getText().isEmpty()))
+								{	
+									//GuardarComentario
+									clsComentario coment = new clsComentario(TextPaneComentarioNuevo.getText(),a.getCodArchivo(), PanelPDF.getPagActual(), false, 0);
+																		
+									clsGestor.guardarComentario(coment.getID(), coment.getTexto(), coment.getCodArchivo(), coment.getNumPagina());
+
+									//Crear de nuevo los comentarios
+									MostrarComentarios();
 								}
 							}
-							TextPaneComentarioNuevo.setText("");
 						}
-						EditC.setText("Editar");
+						TextPaneComentarioNuevo.setText("");
 					}
 				}
 			});
@@ -758,6 +740,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			//rotación
 					btnRotar.setEnabled(PDFactivo);
 					lRotacion.setText("Rotar: "+ rotacionValor +"°");
+					
+					MostrarComentarios();
+					
+					TextPaneComentarioNuevo.setEditable(PDFactivo);
 		}		
 	}
 	
@@ -774,7 +760,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ActualizarComponentes();
 	}
 	
-	public void MostrarComentarios()
+	public static void MostrarComentarios()
 	{
 		int cont = 0;
 		
@@ -794,8 +780,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		listTextPanes.clear();
 		listLabeles.clear();
 		
-		ImageIcon iconoBorrar = new ImageIcon(getClass().getResource("../images/Borrar.png"));
-//		Image auxScale = iconoBorrar.getImage().getScaledInstance(10, 10, Image.SCALE_DEFAULT);
+		ImageIcon iconoBorrar = new ImageIcon(frmPrincipal.class.getResource("../images/Borrar.png"));
 		
 		logger.log(Level.INFO, "Añadiendo comentarios al panel de comentarios");
 		
