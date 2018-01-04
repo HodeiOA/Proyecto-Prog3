@@ -175,10 +175,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	static boolean PDFactivo=false;
 	
 	//para el zoom
-	private JLabel cantidadDeZoom;
-    private JButton minus;
-    private JButton plus;
-    private JSlider sliderZoom;
+	private static JLabel cantidadDeZoom;
+    private static JButton minus;
+    private static JButton plus;
+    private static JSlider sliderZoom;
 
     private static final int MIN_ZOOM = 10;
     private static final int MAX_ZOOM = 200;
@@ -188,10 +188,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
     private static final int MINOR_ZOOM_SPACING = 10;
     
     //para la rotación
-    private JLabel lRotacion;
-    private JButton btnRotar;
-    private ImageIcon iRotar;
-    private int rotacionValor;
+    private static JLabel lRotacion;
+    private static JButton btnRotar;
+    private static ImageIcon iRotar;
+    private static int rotacionValor;
 		
     
 	public frmPrincipal (String titulo)
@@ -351,6 +351,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		slider.setPaintLabels(true); //si se ve los números del slider
 		slider.setBackground(SystemColor.inactiveCaption);
 		slider.setMinimum(1);
+		slider.setEnabled(PDFactivo); 	//false
 		
 		//Añadirle al slider el listener
 		  slider.addChangeListener(new ChangeListener()
@@ -493,7 +494,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			Mdetalles.setActionCommand("DETALLES");
 			Meliminar.setActionCommand("ELIMINAR");					
 //		}
-			
+				
 			//zoomBar construcción + rotación
 			
 			minus = new JButton("-");
@@ -502,7 +503,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	        
 	        btnRotar = new JButton();
 	        rotacionValor = 0;
-			lRotacion = new JLabel("Rotar:"+ rotacionValor +"°"); 
+			lRotacion = new JLabel("Rotar: "+ rotacionValor +"°"); 
 
 	        sliderZoom.setMinorTickSpacing(MINOR_ZOOM_SPACING);
 	        sliderZoom.setMajorTickSpacing(MAJOR_ZOOM_SPACING);
@@ -516,6 +517,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	        menuBar.add(minus);
 	        menuBar.add(sliderZoom);
 	        menuBar.add(plus);
+	        
+	    	//preparar el slider zoom y el botón de rotar
+			sliderZoom.setEnabled(PDFactivo); 	//false
+			plus.setEnabled(PDFactivo);
+			minus.setEnabled(PDFactivo);
+			btnRotar.setEnabled(PDFactivo);
 	        
 	        //añado sus listeners al zoom
 	        
@@ -566,7 +573,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			} 
 			catch (Exception e) 
 			{
-				System.err.println( "Error en carga de recurso: coche.png no encontrado" );
+				//logger
+				System.err.println( "Error en carga de recurso: rotar.png no encontrado" );
 				e.printStackTrace();
 			}
 	    	
@@ -726,6 +734,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 					//slider.setMinorTickSpacing(PanelPDF.getPaginasTotal()/3); //las rayitas de cuanto en cuanto
 					slider.setPaintLabels(true); //si se ven los números del slider o no
 					slider.setBackground(SystemColor.inactiveCaption);
+					slider.setEnabled(PDFactivo);
 					
 			//Prepara el texto de los números de página
 					indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.getPaginasTotal();
@@ -738,6 +747,16 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 					progreso.setStringPainted(true);
 					progreso.setValue((intProgress));
 					progreso.setString(intProgress + "%");
+			
+			//zoom
+					sliderZoom.setEnabled(PDFactivo);
+					plus.setEnabled(PDFactivo);
+					minus.setEnabled(PDFactivo);
+					cantidadDeZoom.setText(sliderZoom.getValue() + "%");
+					
+			//rotación
+					btnRotar.setEnabled(PDFactivo);
+					lRotacion.setText("Rotar:"+ rotacionValor +"°");
 		}		
 	}
 	
@@ -748,6 +767,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	public static void SeleccionListas(clsArchivo elegido)
 	{
 		PanelPDF.abrirPDF(elegido);
+		rotacionValor = 0;
+		sliderZoom.setValue(100);
 		PDFactivo=true;
 		ActualizarComponentes();
 	}
@@ -825,6 +846,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		chooser.setFileFilter(filtro);
 		
 		int response = chooser.showOpenDialog(this);
+		
 		if(response == JFileChooser.APPROVE_OPTION)
 		{
 			path = chooser.getSelectedFile().getPath();
@@ -838,19 +860,30 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				HashArchivos.add(nuevoArchivo);
 				CopiarArchivo(path, nuevoArchivo);
 				PanelPDF.abrirPDF(nuevoArchivo);
+				
+				rotacionValor = 0;
+				sliderZoom.setValue(100);
 				PDFactivo=true;
+				
 				ActualizarComponentes();
 				MostrarComentarios(nuevoArchivo);
 				clsGestor.guardarArchivo(nuevoArchivo.getNick(), nuevoArchivo.getNomAutor(), nuevoArchivo.getApeAutor(), nuevoArchivo.getCodArchivo(), nuevoArchivo.getTitulo(), nuevoArchivo.getRuta(), nuevoArchivo.getNumPags(), nuevoArchivo.getUltimaPagLeida(), nuevoArchivo.getTiempo(), nuevoArchivo.getLibroSi());
+				
 				if(esLibro)
 				{
 					HashLibros.add(nuevoArchivo);
-				} else
+				} 
+				else
 				{
 					HashDocumentos.add(nuevoArchivo);
 				}
+				
 				ActualizarListas();
-			} catch (PdfException e) {}
+			} 
+			catch (PdfException e) 
+			{
+				
+			}
 		}
 	}
 	
