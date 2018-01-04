@@ -419,9 +419,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		btnAñadir = new JButton ("Añadir");
 		lbNuevoComent = new JLabel("Nuevo comentario");
 		lbComentariosAntiguo = new JLabel("Comentarios anteriores");
+		lbComentariosAntiguo.setBorder(new EmptyBorder(0,35,0,0));
 		
 		Pcomentarios.setPreferredSize(new Dimension(225,screenSize.height));
-		Pcomentarios.setBackground(Color.WHITE);	
+		Pcomentarios.setBackground(Color.WHITE);
+		Pcomentarios.setLayout(new BorderLayout());
 		
 		PcomentarioNuevo.setPreferredSize(new Dimension(225,(int)tamañoPanelC));
 		PcomentarioNuevo.setBackground(Color.lightGray);
@@ -438,11 +440,11 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		PcomentarioNuevo.add(TextPaneComentarioNuevo);
 		PcomentarioNuevo.add(btnAñadir);
 		
-		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.15)));
+		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.35)));
 		
 		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);
 		Pcomentarios.add(lbComentariosAntiguo);
-		Pcomentarios.add(ScrollCViejos, BorderLayout.CENTER);
+		Pcomentarios.add(ScrollCViejos, BorderLayout.SOUTH);
 		
 		this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
 		
