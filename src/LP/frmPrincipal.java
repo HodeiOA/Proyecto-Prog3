@@ -414,7 +414,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 		//--------------Panel para comentarios-------------//
 		
-		double tamañoPanelC = screenSize.height/2.7;
+		double tamañoPanelC = screenSize.height/3;
 		
 		btnAñadir = new JButton ("Añadir");
 		lbNuevoComent = new JLabel("Nuevo comentario");
@@ -440,7 +440,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		PcomentarioNuevo.add(TextPaneComentarioNuevo);
 		PcomentarioNuevo.add(btnAñadir);
 		
-		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.35)));
+		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.6)));
 		
 		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);
 		Pcomentarios.add(lbComentariosAntiguo);
