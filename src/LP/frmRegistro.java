@@ -32,7 +32,9 @@ import COMUN.clsNickRepetido;
 import LD.clsBD;
 import LN.clsGestor;
 import LN.clsUsuario;
-
+/**
+ * Ventana de diálogo para Login o registro
+ */
 public class frmRegistro extends JDialog implements KeyListener
 {
 	private static Logger logger = Logger.getLogger(frmRegistro.class.getName());
@@ -138,7 +140,8 @@ public class frmRegistro extends JDialog implements KeyListener
  	}
 	
 	/**
-	 * Inicia los Loggers y Handlers de la clase.
+	 * Método para gestionar la entrada de un usuario en el programa. Se controlará si el nick y la contraseña del usuario coinciden con 
+	 * los de alguno de los usuarios de la BD
 	 */
 	public static void InitLogs()
 	{
@@ -164,6 +167,10 @@ public class frmRegistro extends JDialog implements KeyListener
 		}
 	}
 
+	/**
+	 * Método para gestionar la entrada de un usuario en el programa. Se controlará si el nick y la contraseña del usuario coinciden con 
+	 * los de alguno de los usuarios de la BD
+	 */
 	public void Entrar () 
 	{
 		logger.log(Level.INFO, "Empezando inicio de sesión");
@@ -229,6 +236,9 @@ public class frmRegistro extends JDialog implements KeyListener
 			 }
 	}
 	
+	/**
+	 * Método para gestionar la entrada de un usuario en la BD, comprobando que su nick sea único
+	 */
 	public void Registro()
 	{
 		String nick;
@@ -278,6 +288,9 @@ public class frmRegistro extends JDialog implements KeyListener
 	}
 
 	@Override
+	/**
+	 * Método para habilitar opciones de la pantalla de registro a través de teclado
+	 */
 	public void keyPressed(KeyEvent e) 
 	{
 		 int key = e.getKeyCode();

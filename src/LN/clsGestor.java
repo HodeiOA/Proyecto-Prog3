@@ -17,8 +17,18 @@ import COMUN.clsNickRepetido;
 import COMUN.clsNickNoExiste;
 import LD.clsBD;
 
+/**
+ * Esta clase gestionará los métodos necesarios para realizar las acciones solicitadas por las pantallas así como el puente
+ * entre la lógica de datos y de presentación
+ *
+ */
 public class clsGestor
 {
+	/**
+	 * Método para el cálculo del porcentaje leído de un archivo en el momento de llamar al método 
+	 * @param archi archivo del que se calculará el porcentaje de lectura
+	 * @return devuelve un int con el valor del porcentaje leído
+	 */
 	public static int porcentLeido(clsArchivo archi)
 	{
 		int retorno;
@@ -31,6 +41,12 @@ public class clsGestor
 		return retorno; //retorno
 	}
 	
+	/**
+	  * Método para obtener el número de páginas de un archivo sin necesidad de abrirlo en la pantalla
+	  * @param Ruta ruta del archivo cuya cantidad de páginas se quiere consultar
+	  * @return devuelve un int con el número de páginas
+	  * @throws PdfException Excepción que se puede llegar a lanzar en caso de que la ruta sea errónea
+	  */
 	public static int conseguirNumPags (String Ruta) throws PdfException
 	{
 		int retorno;
@@ -47,6 +63,13 @@ public class clsGestor
 	}
 	
 	//métodos para login
+	/**
+	 * Método que comprueba si un usuario está o no ya en la base de datos
+	 * @param nick
+	 * @param contraseña
+	 * @throws clsNickRepetido excepción que indica que el usuario sí que estaba en la base de datos
+	 * @throws clsNickNoExiste excepción que indica que el usuario no estaba en la base de datos
+	 */
 	public static void comprobarExistenciaUsuario(String nick, String contraseña) throws clsNickRepetido, clsNickNoExiste
     {
 		boolean existe;
@@ -72,7 +95,7 @@ public class clsGestor
 		}
     }
 	
-	 /**
+	/**
 	  * Método para llenar las listas de libros y documentos según su tipo (libro o documento) y el nick del usuario ciuyas listas se
 	  * deben cargar
 	  * @param nickUsuarioSesion nick del usuario cuyos archivos se están solicitando
@@ -108,6 +131,19 @@ public class clsGestor
 	//Solo hacemos llamadas a BD, pero hacemos métodods en Gestor para mantener la estructura del programa
 	
 	//INSERTS
+	/**
+	 * Método para guardar un archivo en la BD. Se le pasarán los atributos
+	 * @param nick
+	 * @param nomAutor
+	 * @param apeAutor
+	 * @param codArchivo
+	 * @param titulo
+	 * @param ruta
+	 * @param numPags
+	 * @param ultimaPagLeida
+	 * @param tiempo
+	 * @param libroSi
+	 */
 	public static void guardarArchivo(String nick, String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{ 
 		boolean exito;
@@ -117,6 +153,12 @@ public class clsGestor
 			//no se ha podido guardar
 		}
 	}
+	
+	/**
+	 * Método para guardar un usuario en la BD. Se le pasarán sus atributos:
+	 * @param contraseña
+	 * @param nick
+	 */
 	public static void guardarUsuario(String contraseña, String nick)
 	{
 		boolean exito;
@@ -126,6 +168,14 @@ public class clsGestor
 			//no se ha podido guardar
 		}
 	}
+	
+	/**
+	 * Método para guardar un comentario en la BD. Se le pasan sus atributos:
+	 * @param ID
+	 * @param texto
+	 * @param codArchivo
+	 * @param numPag
+	 */
 	public static void guardarComentario(int ID, String texto, int codArchivo, int numPag)
 	{
 		boolean exito;
@@ -138,8 +188,8 @@ public class clsGestor
 	
 	//DELETE
 	/**
-	 * 
-	 * @param ident
+	 * Método para eliminar una línea de la tabla de la BD de alguno de los objetos de la BD.
+	 * @param ident atributo identificativo del objeto a borrar
 	 * @param tabla debe ser un valor de entre "ARCHIVO", "COMENTARIO" y "USUARIO". de lo contrario, no hará nada
 	 */
 	public static void BorrarObjetoBD(Object ident, String tabla)
@@ -148,38 +198,75 @@ public class clsGestor
 	}
 	
 	//UPDATES
+	/**
+	 * Método para modificar uno de los archivos almacenados en la BD
+	 * @param nuevo archivo con los atributos ya modificados
+	 */
 	public static void ModificarArchivo(clsArchivo nuevo)
 	{
 		clsBD.UpdateArchivo(nuevo.getNick(), nuevo.getNomAutor(), nuevo.getApeAutor(), nuevo.getCodArchivo(), nuevo.getTitulo(), nuevo.getRuta(), nuevo.getNumPags(), nuevo.getUltimaPagLeida(), nuevo.getTiempo(), nuevo.getLibroSi());
 	}
-			
+		
+	/**
+	 * Método para modificar uno de los usuarios almacenados en la BD. Atributos ya modificados:
+	 * @param contraseña
+	 * @param nick
+	 */
 	public static void ModificarUsuario(String contraseña, String nick)
 	{
 		clsBD.UpdateUsuario(contraseña, nick);
 	}
 		
+	/**
+	 * Método para modificar uno de los comentarios almacenados en la BD. Atributos ya modificados:
+	 * @param ID
+	 * @param codArchivo
+	 * @param texto
+	 * @param numPag
+	 */
 	public static void ModificarComentario(int ID, int codArchivo, String texto, int numPag)
 	{
 		clsBD.UpdateComentario(ID, texto, codArchivo, numPag);
 	}
 	
 	//Lecturas
+	/**
+	 * Método para obtener todos los archivos de la BD
+	 * @return devuelve la lista con los archivos leídos
+	 */
 	public static HashSet <clsArchivo> LeerArchivosBD()
 	{
 		 HashSet <clsArchivo> retorno = clsBD.LeerArchivos();
 		 return retorno;
 	}
+	
+	/**
+	 * Método para obtener todos los usuarios de la BD
+	 * @return devuelve la lista con los usuarios leídos
+	 */
 	public static HashSet <clsUsuario> LeerUsuariosBD()
 	{
 		 HashSet <clsUsuario> retorno = clsBD.LeerUsuarios();
 		 return retorno;
 	}
+	
+	/**
+	 * Método para obtener todos los cometarios de la BD
+	 * @return devuelve la lista con los comentarios leídos
+	 */
 	public static HashSet <clsComentario> LeerComentariosBD()
 	{
 		HashSet <clsComentario> retorno = clsBD.LeerComentarios();
 		return retorno;
 	}
 	
+	/**
+	 * Método para conseguir el título de un archivo a partir de una ruta
+	 * @param Lista Lista con todos los archivos de la BD para poder comprobar si el título generado está o no repetido 
+	 * (a través de otro método)
+	 * @param Ruta Ruta a partir de la cual vamos a conseguir el título
+	 * @return
+	 */
 	public static String RecogerTitulo(HashSet<clsArchivo> Lista, String Ruta) // Falta llamar desde los sitios que hace falta
 	{
 		String Nombre;
@@ -199,6 +286,10 @@ public class clsGestor
 		return Nombre;
 	}
 	
+	/**
+	 * Método para que, al crear un archivo, su ruta se modifique de la ruta de la que se importó a la que pasará a ocupar en la carpeta Data
+	 * @param Archivo archivo cuya ruta se va a modificar
+	 */
 	public static void ModificarRuta(clsArchivo Archivo) // Falta llamar desde los sitios que hace falta
 	{
 		String NombreArchivo;
@@ -223,6 +314,13 @@ public class clsGestor
 		} catch (IOException e) {}
 	}
 	
+	/**
+	 * Método para comprobar si el título asignado a asignar a un archivo ya está en la BD y, si lo está, añadirle un número para diferenciarlo
+	 * @param Lista Lista con todos los archivos cuyos títulos se van a comparar con el del archivo actual
+	 * @param paramNombre t´tulo provisional del archivo
+	 * @param Contador número que en el caso base se le asignará al título
+	 * @return
+	 */
 	public static String ComprobarNombreRepetido(HashSet<clsArchivo> Lista, String paramNombre, int Contador)
 	{
 		String Nombre = paramNombre;
@@ -241,6 +339,11 @@ public class clsGestor
 		return Nombre;
 	}
 	
+
+	/**
+	 * Método para comprobar si las carpetas en las que se van a almacenar los archivos que se vayan importando. En caso de que 
+	 * no existan, se crearán
+	 */
 	public static void ComprobarCarpeta()
 	{
 		File Data = new File(".\\Data");
@@ -256,6 +359,11 @@ public class clsGestor
 //		if(docum) logger.log(Level.INFO, "Se caba de crear la carpeta 'Documentos'");
 	}
 	
+	/**
+	 * Método para elimiar la ruta de un archivo una vez eliminado un archivo de la BD
+	 * @param ruta
+	 * @throws IOException
+	 */
 	public static void EliminarRuta(String ruta) throws IOException
 	{
 		Files.delete(Paths.get(ruta));

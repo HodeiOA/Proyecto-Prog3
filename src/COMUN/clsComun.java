@@ -1,5 +1,6 @@
 package COMUN;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -13,18 +14,17 @@ import LN.clsComentario;
 import LN.clsGestor;
 
 /**
- * En esta clase es donde tendremos el método para que el archivo y el comentario tengan un número diferente en cada registro, 
- * y controlará que en cada ejecución sigan en memoria los ya creados anteriormente y añadiá 1 al código mayor.
  */
 public class clsComun 
-{	
+{
+	/**Crearemos los códigos de los archivos y comentarios automáticamnete 
+	 * desde el anterior añadiendole uno.
+	 */
+	
 	private static Logger logger = Logger.getLogger( clsComun.class.getName());
 	static Handler handlerPantalla;
 	static Handler handlerArchivo;
 	
-	/**
-	 * Método para uso de loggers
-	 */
 	public static void InitLogs()
 	{
 		
@@ -49,9 +49,6 @@ public class clsComun
 		}
 	}
 	
-	/**
-	 * Método de generación de códigos de archivo
-	 */
 	public static void siguienteArchivo()
 	{
 		InitLogs();
@@ -82,9 +79,6 @@ public class clsComun
 		logger.log( Level.INFO, "fin lectura códigos");
 	}
 	
-	/**
-	 * Método de generación de códigos de comentario
-	 */
 	public static void siguienteComentario()
 	{
 		InitLogs();

@@ -111,9 +111,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private JMenuItem libroC = new JMenuItem("Libro");
 	private JMenuItem documentoC = new JMenuItem("Documento");
 	private JMenuItem BorrarArchivo = new JMenuItem ("Eliminar archivo");
-	private JMenu Mcom = new JMenu("Comentarios");
-	private JMenuItem ExportarComentarios = new JMenuItem( "Exportar comentarios"); //Hacer que cuando se estén viendo los comentarios pase a poner ocultar comentarios
-	// JMenu de sesión: cerrar sesión
 		
 	//Para el menú que se despliega a al hacer click derecho sobre un elemento de la lista
 	private JPopupMenu popup;
@@ -262,9 +259,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		archivo.add(BorrarArchivo);
 		BorrarArchivo.setEnabled(false); //Esto lo cambiaremos cuando tenga algo seleccionado en la lista. Mientras tanto, false
 		
-		menuBar.add(Mcom);
-		Mcom.add(ExportarComentarios);
-		
 		//Como son varios y son parecidos, los listeners del menú se harán con Action Commands
 		libro.setActionCommand("IMPORTAR_LIBRO");
 		libro.addActionListener(this);
@@ -280,10 +274,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 		BorrarArchivo.setActionCommand("BORRAR");
 		BorrarArchivo.addActionListener(this);
-		
-		ExportarComentarios.setActionCommand("EXPORTAR");
-		ExportarComentarios.addActionListener(this);
-		
+			
 		//Layout para el panel
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
@@ -532,9 +523,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				{
 					sliderZoom.setValue(sliderZoom.getValue()+MINOR_ZOOM_SPACING);
 					PanelPDF.zoom(sliderZoom.getValue()/100f, PanelPDF.getPagActual(),rotacionValor);
-					System.out.println("GET VALUE SLIDERZOOM:" + sliderZoom.getValue());
 				}   
-				});
+			});
 	        
 	        btnMinus.addActionListener(new ActionListener()
 			{
@@ -542,9 +532,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				{
 					sliderZoom.setValue(sliderZoom.getValue()-MINOR_ZOOM_SPACING);
 		            PanelPDF.zoom(sliderZoom.getValue()/100f, PanelPDF.getPagActual(),rotacionValor);
-					System.out.println("GET VALUE SLIDERZOOM:" + sliderZoom.getValue());
 				}   
-				});
+			});
 	        
 	        sliderZoom.addChangeListener(new ChangeListener()
 			{
@@ -572,9 +561,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			} 
 			catch (Exception e) 
 			{
-				//logger
-				System.err.println( "Error en carga de recurso: rotar.png no encontrado" );
-				e.printStackTrace();
+				logger.log(Level.INFO , "Error en carga de recurso: rotar.png no encontrado" );
 			}
 	    	
 	        menuBar.add(btnRotar);
@@ -706,12 +693,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
     	catch (SecurityException e1) 
     	{
     		logger.log(Level.SEVERE, e1.getMessage(), e1);
-			e1.printStackTrace();
 		} 
     	catch (IOException e1)
     	{
 			logger.log(Level.SEVERE, e1.getMessage(), e1);
-			e1.printStackTrace();
 		}
 	}
 	
@@ -728,14 +713,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			//Prepara el texto del slider
 			int max = PanelPDF.getPaginasTotal();
 			int PaginasActual = PanelPDF.getPagActual();
-					slider.setMaximum(max);
-					slider.setValue(PaginasActual);
-					slider.setPaintTicks(true);//las rayitas que marcan los números
-					slider.setMajorTickSpacing(PanelPDF.getPaginasTotal()-1); // de cuanto en cuanto los números en el slider
-					//slider.setMinorTickSpacing(PanelPDF.getPaginasTotal()/3); //las rayitas de cuanto en cuanto
-					slider.setPaintLabels(true); //si se ven los números del slider o no
-					slider.setBackground(SystemColor.inactiveCaption);
-					
+
+			slider.setPaintLabels(true); //si se ven los números del slider o no
+			slider.setPaintTicks(true);//las rayitas que marcan los números
+			slider.setBackground(SystemColor.inactiveCaption);
+			slider.setMaximum(max);
+			slider.setValue(PaginasActual);		
 						
 			//Prepara el texto de los números de página
 					indicadorPaginas = ""+ PanelPDF.getPagActual() +" / " + PanelPDF.getPaginasTotal();
@@ -1011,7 +994,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		}
 		else
 		{
-			System.out.println("importar carpeta documento");
 			logger.log(Level.INFO, "Seleccionando carpeta de documentos");
 			chooser.setDialogTitle("Importar carpeta documentos");
 		}

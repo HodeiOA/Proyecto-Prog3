@@ -1,8 +1,5 @@
 package LN;
-/**
- * Esta clase sirve para la creación de objetos de tipo clsCronometro que será un hilo que cuente cuánto tiempo lleva 
- * un usuario leyendo un archivo del programa
- */
+
 public class clsCronometro extends Thread
 {
 	private boolean isRunning = true;
