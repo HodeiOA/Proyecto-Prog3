@@ -243,9 +243,9 @@ public class clsPanelPDF extends JScrollPane
 	 * Permite rotar el PDF activo en el panel.
 	 * 
 	 * @param rotacionValor el giro en grados que se desea rotar
-	 * @param pagActual ????????????
+	 * @param pagActual 
 	 */
-	public void rotar (int rotacionValor, int pagActual)
+	public void rotar (int rotacionValor)
 	{
 		logger.log(Level.INFO, "PDF rotado " + rotacionValor + "º");
 		
@@ -273,13 +273,13 @@ public class clsPanelPDF extends JScrollPane
 	 * @param pagActual ???????????
 	 * @param rotacionValor ?????????
 	 */
-	public void zoom (float zoom, int pagActual, int rotacionValor)
+	public void zoom (float zoom, int rotacionValor)
 	{
 		logger.log(Level.INFO, "Aplicado zoom de " + zoom);
 		
 		escalaActual = escala*zoom;
 		
-		PDFdecoder.setPageParameters(escalaActual, pagActual,rotacionValor);
+		PDFdecoder.setPageParameters(escalaActual, PagActual,rotacionValor);
 		PDFdecoder.invalidate();
 	}
 

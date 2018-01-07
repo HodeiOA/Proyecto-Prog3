@@ -522,7 +522,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				public void actionPerformed(ActionEvent e)
 				{
 					sliderZoom.setValue(sliderZoom.getValue()+MINOR_ZOOM_SPACING);
-					PanelPDF.zoom(sliderZoom.getValue()/100f, PanelPDF.getPagActual(),rotacionValor);
+					PanelPDF.zoom(sliderZoom.getValue()/100f, rotacionValor);
 				}   
 			});
 	        
@@ -531,7 +531,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				public void actionPerformed(ActionEvent e)
 				{
 					sliderZoom.setValue(sliderZoom.getValue()-MINOR_ZOOM_SPACING);
-		            PanelPDF.zoom(sliderZoom.getValue()/100f, PanelPDF.getPagActual(),rotacionValor);
+		            PanelPDF.zoom(sliderZoom.getValue()/100f,rotacionValor);
 				}   
 			});
 	        
@@ -541,7 +541,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				{
 					if (sliderZoom.getValueIsAdjusting()) 
 					{
-			            PanelPDF.zoom(sliderZoom.getValue()/100f, PanelPDF.getPagActual(),rotacionValor);
+			            PanelPDF.zoom(sliderZoom.getValue()/100f, rotacionValor);
 						return;
 			        }
 			        cantidadDeZoom.setText(sliderZoom.getValue() + "%");			
@@ -580,7 +580,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	   						rotacionValor = 0;					
 	   					}
 
-	   					PanelPDF.rotar(rotacionValor, PanelPDF.getPagActual());
+	   					PanelPDF.rotar(rotacionValor);
  	   					
 	   					lRotacion.setText("Rotar: "+ rotacionValor +"°");	//si quito esto no funciona y no lo entiendo
 	   				}   
