@@ -1,6 +1,8 @@
 package LN;
 
-
+/**
+ * Esta clase sirve para la creación de objetos de tipo clsArchivo
+ */
 public class clsArchivo implements Comparable
 {
 
@@ -11,11 +13,25 @@ public class clsArchivo implements Comparable
 	private String ruta;	
 	private int numPags;
 	private int ultimaPagLeida;
-	private int tiempo;	//tiempo de lectura en  segundos
+	private int tiempo;	
 	private boolean libroSi;
 	private static int sigCodArchivo;
 	private String nick;
 
+	/**
+	 * Este método sirve para crear objetos de tipo clsArchivo mediante los atributos pasados por parámetro
+	 * @param nick
+	 * @param nomAutor
+	 * @param apeAutor
+	 * @param titulo
+	 * @param ruta
+	 * @param numPags
+	 * @param ultimaPagLeida
+	 * @param tiempo, tiempo de lectura en  segundos
+	 * @param libroSi
+	 * @param leerBD
+	 * @param IDBD
+	 */
 	public clsArchivo(String nick, String nomAutor, String apeAutor, String titulo, String ruta, 
 			int numPags, int ultimaPagLeida, int tiempo, boolean libroSi, boolean leerBD, int IDBD) 
 	{
@@ -114,9 +130,23 @@ public class clsArchivo implements Comparable
 	public void setLibroSi(boolean libroSi) {
 		this.libroSi = libroSi;
 	}
+	public static int getSigCodArchivo() 
+	{
+		return sigCodArchivo;
+	}
+
+	public static void setSigCodArchivo(int sigCodArchivo) 
+	{
+		clsArchivo.sigCodArchivo = sigCodArchivo;
+	}
 	
+	/**
+	 * Este método permite generar un hashCode para los objetos clsArchivo
+	 * @return result devolverá el hashCode del objeto según su codArchivo
+	 */
 	@Override
-	public int hashCode() {
+	public int hashCode() 
+	{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + codArchivo;
@@ -137,10 +167,15 @@ public class clsArchivo implements Comparable
 			return false;
 		return true;
 	}
-
+	
+	/**
+	 * Este método permite comparar un objeto de tipo clsArchivo con otro de su mismo tipo
+	 * @param o será el objeto de tipo clsArchivo a comparar con el objto del que se llame al método
+	 * @return devolverá un int que indicará si, según el criterio elegido, el objeto debería ir antes o después del otro objeto
+	 */
 	public int compareTo(Object o)	//devuelve un 1 o un 0
 	{
-		Integer a = this.getCodArchivo();	//integer viene de object
+		Integer a = this.getCodArchivo();
 		
 		clsArchivo b= (clsArchivo)o;
 		
@@ -157,20 +192,12 @@ public class clsArchivo implements Comparable
 		return a.compareTo(b.getCodArchivo());
 	}
 
-	public static int getSigCodArchivo() {
-		return sigCodArchivo;
-	}
-
-	public static void setSigCodArchivo(int sigCodArchivo) {
-		clsArchivo.sigCodArchivo = sigCodArchivo;
-	}
-
+	/**
+	 * Este método servirá para mostrar los objetos por pantalla
+	 */
 	@Override
 	public String toString() 
 	{
-		return (getTitulo());
+		return this.titulo + ".  Tiempo de lectura: "+ this.tiempo;
 	}
-	
-	
-	
 }

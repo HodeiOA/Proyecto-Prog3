@@ -1,5 +1,7 @@
 package COMUN;
-
+/**
+ * Esta clase es la excepción que se puede llegar a dar al intentar introducir un nick que no es correcto.
+ */
 public class clsNickNoExiste extends Exception
 {
 	private String nick;

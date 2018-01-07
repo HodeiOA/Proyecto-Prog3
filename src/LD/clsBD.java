@@ -1,40 +1,60 @@
 package LD;
 
-import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
-//import java.util.logging.FileHandler;
-//import java.util.logging.Handler;
-//import java.util.logging.Level;
-//import java.util.logging.SimpleFormatter;
-//import java.util.logging.StreamHandler;
-import java.util.logging.*;
 
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
 
 import javax.swing.JOptionPane;
 
-import com.sun.istack.internal.logging.Logger;
-
+import COMUN.clsComun;
 import LN.clsArchivo;
 import LN.clsComentario;
 import LN.clsUsuario;
 
+
 public class clsBD
 {
-	private static Logger logger = Logger.getLogger(clsBD.class);
+	private static Logger logger = Logger.getLogger( clsComun.class.getName());
+	static Handler handlerPantalla;
+	static Handler handlerArchivo;
 	
 	private static Connection connection = null;
 	private static Statement statement = null;
 	private static ResultSet rs=null;
-	
-	
-//	static Handler h = new StreamHandler(System.out, new SimpleFormatter());
 
-
+	public static void InitLogs()
+	{
+		handlerPantalla = new StreamHandler( System.out, new SimpleFormatter() );
+    	handlerPantalla.setLevel( Level.ALL );
+    	logger.addHandler( handlerPantalla );
+    	
+    	try 
+    	{
+			handlerArchivo = new FileHandler ( "clsBD.log.xml");
+			handlerArchivo.setLevel(Level.WARNING);
+			logger.addHandler(handlerArchivo);
+		}
+    	catch (SecurityException e1) 
+    	{
+    		logger.log(Level.SEVERE, e1.getMessage(), e1);
+		} 
+    	catch (IOException e1)
+    	{
+			logger.log(Level.SEVERE, e1.getMessage(), e1);
+		}
+	}
+	
 	/** Inicializa una BD SQLITE y devuelve una conexión con ella. Debe llamarse a este 
 	 * método antes que ningún otro, y debe devolver no null para poder seguir trabajando con la BD.
 	 * @param nombreBD	Nombre de fichero de la base de datos
@@ -42,6 +62,8 @@ public class clsBD
 	 */
 	public static Connection initBD ( String nombreBD ) 
 	{		
+		InitLogs();	
+
 		try
 		{
 		    Class.forName("org.sqlite.JDBC");
@@ -53,7 +75,6 @@ public class clsBD
 		
 		catch (ClassNotFoundException | SQLException e) 
 		{
-			//SEVERE: e.getMessage()
 			logger.log( Level.SEVERE, e.getMessage(), e );
 
 			JOptionPane.showMessageDialog( null, "Error de conexión!! No se ha podido conectar con " + nombreBD , "ERROR", JOptionPane.ERROR_MESSAGE );
@@ -66,6 +87,8 @@ public class clsBD
 	 */
 	public static void close() 
 	{
+		InitLogs();	
+
 		try 
 		{
 			statement.close();
@@ -73,7 +96,6 @@ public class clsBD
 		} 
 		catch (SQLException e)
 		{
-			//SEVERE: e.getMessage()
 			logger.log( Level.SEVERE, e.getMessage(), e );
 
 			e.printStackTrace();
@@ -85,6 +107,8 @@ public class clsBD
 	 */
 	public static Connection getConnection() 
 	{
+		InitLogs();	
+
 		return connection;
 	}
 	
@@ -94,21 +118,21 @@ public class clsBD
 	 */
 	public static Statement getStatement() 
 	{
+		InitLogs();	
+
 		return statement;
 	}
-	
-	
-	//Crear tablas 
 	
 	/** Crea una tabla de archivos en una base de datos, si no existía ya.
 	 * Debe haberse inicializado la conexión correctamente.
 	 */
 	public static void crearTablaArchivo() 
 	{
+		InitLogs();	
+
 		if (statement==null) return;
 		try
 		{ 
-			//INFO: Creando tabla
 			logger.log( Level.INFO, "Creando tabla");
 			
 			statement.executeUpdate("create table fichero_archivo " +
@@ -127,7 +151,6 @@ public class clsBD
 					+ " primary key(codArchivo)"
 					+ ")");
 			
-			//Tabla creada
 			logger.log( Level.INFO, "Tabla creada");
 
 		} 
@@ -144,6 +167,8 @@ public class clsBD
 	 */
 	public static void crearTablaUsuario() 
 	{
+		InitLogs();	
+
 		if (statement==null) return;
 		try
 		{
@@ -162,6 +187,8 @@ public class clsBD
 	 */
 	public static void crearTablaComentario() 
 	{
+		InitLogs();	
+
 		if (statement==null) return;
 		try
 		{
@@ -195,36 +222,35 @@ public class clsBD
 	 */
 	public static boolean InsertArchivo (String nick, String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
-				try 
-				{
-					//Insertando
-					logger.log( Level.INFO, "Insertando");
-					
-					String sentSQL = "insert into fichero_archivo values(" +
-							"'" + nick + "', " +
-							"'" + nomAutor + "', " +
-							"'" + apeAutor + "', " +
-							"'" + codArchivo + "', " +
-							"'" + titulo + "', " +
-							"'" + ruta + "', " +
-							"'" + numPags + "', " +
-							"'" + ultimaPagLeida + "', " +
-							"'" + tiempo + "', " +
-							"'" + libroSi + "')";
-					
-					//insertado
-	            	logger.log( Level.INFO, "insertado");
-	            	
-					int val = statement.executeUpdate( sentSQL );
-					if (val!=1) return false; //Error, no se ha insertado
-					return true;
-				} 
-				catch (SQLException e) 
-				{
-					logger.log( Level.WARNING, e.getMessage(), e );
-					return false;
-				}
+		InitLogs();	
 
+			try 
+			{
+				logger.log( Level.INFO, "Insertando");
+				
+				String sentSQL = "insert into fichero_archivo values(" +
+						"'" + nick + "', " +
+						"'" + nomAutor + "', " +
+						"'" + apeAutor + "', " +
+						"'" + codArchivo + "', " +
+						"'" + titulo + "', " +
+						"'" + ruta + "', " +
+						"'" + numPags + "', " +
+						"'" + ultimaPagLeida + "', " +
+						"'" + tiempo + "', " +
+						"'" + libroSi + "')";
+				
+            	logger.log( Level.INFO, "insertado");
+            	
+				int val = statement.executeUpdate( sentSQL );
+				if (val!=1) return false; //Error, no se ha insertado
+				return true;
+			} 
+			catch (SQLException e) 
+			{
+				logger.log( Level.WARNING, e.getMessage(), e );
+				return false;
+			}
 	}
 	
 	/**
@@ -236,6 +262,8 @@ public class clsBD
 	 */
 	public static boolean InsertUsuario (String contraseña, String nick)
 	{
+		InitLogs();	
+
 		try 
 		{
 			String sentSQL = "insert into fichero_usuario values(" +
@@ -263,6 +291,8 @@ public class clsBD
 	 */
 	public static boolean InsertComentario (int ID, String texto, int codArchivo, int numPag)
 	{
+		InitLogs();	
+
 		try 
 		{
 			String sentSQL = "insert into fichero_comentario values(" +
@@ -292,20 +322,35 @@ public class clsBD
 	 */
 	public static boolean BorrarFila (Object ident, String tabla)
 	{	
+		InitLogs();	
+
     	logger.log( Level.INFO, tabla);
 
 		switch(tabla)
 		{
 			case "ARCHIVO":
+				
 				try 
 				{
-					//Borrando
+					logger.log( Level.INFO, "borrando fila de archivo");
+
 					int codArchivo=(Integer)ident;
 					String sentSQL = "DELETE FROM fichero_archivo WHERE codArchivo = "+codArchivo;
 					int val = statement.executeUpdate( sentSQL );
-					if (val!=1) return false;   //Error de borrado
-					return true;//Borrado correctamente
+					
+					if (val!=1) 
+					{
+						logger.log( Level.INFO,"Error de borrado");
+						return false;   
+						
+					}	
+					else
+					{
+						logger.log( Level.INFO,"Borrado correctamente");
+						return true;
+					}	
 				}
+				
 				catch (SQLException e) 
 				{
 					logger.log( Level.WARNING, e.getMessage(), e );
@@ -314,11 +359,23 @@ public class clsBD
 				
 			case "USUARIO":
 				try 
-				{
+				{	
+					logger.log( Level.INFO, "borrando fila de usuario");
+
 					String sentSQL = "DELETE FROM fichero_usuario WHERE nick = "+ident;
 					int val = statement.executeUpdate( sentSQL );
-					if (val!=1) return false; 
-					return true;
+					
+					if (val!=1) 
+					{
+						logger.log( Level.INFO,"Error de borrado");
+						return false;   
+						
+					}	
+					else
+					{
+						logger.log( Level.INFO,"Borrado correctamente");
+						return true;
+					}	
 				}
 				catch (SQLException e) 
 				{
@@ -329,11 +386,23 @@ public class clsBD
 			case "COMENTARIO":
 				try 
 				{
+					logger.log( Level.INFO, "borrando fila de comentario");
+
 					int ID=(Integer)ident;
 					String sentSQL = "DELETE FROM fichero_comentario WHERE ID = "+ID;
 					int val = statement.executeUpdate( sentSQL );
-					if (val!=1) return false; 
-					return true;
+					
+					if (val!=1) 
+					{
+						logger.log( Level.INFO,"Error de borrado");
+						return false;   
+						
+					}	
+					else
+					{
+						logger.log( Level.INFO,"Borrado correctamente");
+						return true;
+					}	
 				}
 				catch (SQLException e) 
 				{
@@ -363,9 +432,11 @@ public class clsBD
 	 */ 
 	public static boolean UpdateArchivo (String nick, String nomAutor, String apeAutor, int codArchivo, String titulo, String ruta, int numPags, int ultimaPagLeida, int tiempo,  boolean libroSi)
 	{
+		InitLogs();	
+
 				try 
 				{
-	            	logger.log( Level.INFO, "Modificando");
+	            	logger.log( Level.INFO, "Modificando Archivo");
 
 					String sentSQL = "update fichero_archivo set "+
 							"nick = '" + nick + "', " +
@@ -378,18 +449,29 @@ public class clsBD
 							"tiempo = " + tiempo + ", " +
 							"libroSi = '"+libroSi +
 							"' where codArchivo = "+ codArchivo + "";
-					System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
+					
+					logger.log( Level.INFO,"Tabla a modificar:" + sentSQL);
+					
 					int val = statement.executeUpdate( sentSQL );
-					if (val!=1) return false; //fallo
-					// Se tiene que añadir 1 - error si no
-					return true; //bien
+					
+					if (val!=1) 
+					{
+						logger.log( Level.INFO,"Error de modificación");
+						return false;   
+						
+					}	
+					else
+					{
+						logger.log( Level.INFO,"Modificado correctamente");
+						return true;
+					}	
 				} 
+				
 				catch (SQLException e) 
 				{
 					logger.log( Level.WARNING, e.getMessage(), e );
 					return false;
 				}
-
 	}
 	
 	/**
@@ -401,15 +483,32 @@ public class clsBD
 	 */
 	public static boolean UpdateUsuario (String contraseña, String nick)
 	{
+		InitLogs();	
+
 		try 
 		{
+			logger.log( Level.INFO, "Modificando Usuario");
+			
 			String sentSQL = "update fichero_usuario set " +
 					 "contraseña = '"+ contraseña + "'" +
 					"where nick= '" + nick + "'";
-			System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
+			
+			logger.log( Level.INFO,"Tabla a modificar:" + sentSQL);
+			
 			int val = statement.executeUpdate( sentSQL );
-			if (val!=1) return false;  // Se tiene que añadir 1 - error si no
-			return true;
+			
+			if (val!=1) 
+			{
+				logger.log( Level.INFO,"Error de modificación");
+				return false;   
+				
+			}	
+			else
+			{
+				logger.log( Level.INFO,"Modificado correctamente");
+				return true;
+			}	
+		
 		} 
 		
 		catch (SQLException e) 
@@ -430,17 +529,36 @@ public class clsBD
 	 */
 	public static boolean UpdateComentario (int ID, String texto, int codArchivo, int numPag)
 	{
+		InitLogs();	
+
 		try 
 		{
+			logger.log( Level.INFO, "Modificando Comentario");
+			
 			String sentSQL = "update fichero_comentario set " +
 					"ID=" + ID + ", " +
 					 "texto= '" + texto + "', " +
 					 "codArchivo =" + codArchivo + ", " +
 					 "numPag = " + numPag + 
 					 " where ID = "+ ID +"";
+			
 			int val = statement.executeUpdate( sentSQL );
-			return true;
+			
+			logger.log( Level.INFO,"Tabla a modificar:" + sentSQL);
+						
+			if (val!=1) 
+			{
+				logger.log( Level.INFO,"Error de modificación");
+				return false;   
+				
+			}	
+			else
+			{
+				logger.log( Level.INFO,"Modificado correctamente");
+				return true;
+			}	
 		} 
+		
 		catch (SQLException e) 
 		{
 			logger.log( Level.WARNING, e.getMessage(), e );
@@ -457,19 +575,35 @@ public class clsBD
 	 */
 	public static boolean DropTable(String tabla)
 	{
+		InitLogs();	
+
 		//info: tabla
-    	logger.log( Level.INFO, tabla);
+    	logger.log( Level.INFO,"Borrar" + tabla);
 
 		switch (tabla)
 		{
 			case "ARCHIVO":
 				try
 				{
-//					System.out.println("borrar tabla archivo");
+					logger.log( Level.INFO, "borrar tabla archivo");
+
 					String sentSQL = "drop table fichero_archivo";
-//					System.out.println(sentSQL);
+					
+					logger.log( Level.INFO, "borrar tabla:" + sentSQL);
+
 					int val = statement.executeUpdate( sentSQL );
-					return true;
+					
+					if (val!=1) 
+					{
+						logger.log( Level.INFO,"Error de borrado");
+						return false;   
+						
+					}	
+					else
+					{
+						logger.log( Level.INFO,"Borrado correctamente");
+						return true;
+					}	
 				} 
 				catch (SQLException e) 
 				{
@@ -480,9 +614,25 @@ public class clsBD
 			case "USUARIO":
 				try
 				{
+					logger.log( Level.INFO, "borrar tabla usuario");
+
 					String sentSQL = "drop table fichero_usuario";
+					
+					logger.log( Level.INFO, "borrar tabla:" + sentSQL);
+
 					int val = statement.executeUpdate( sentSQL );
-					return true;
+					
+					if (val!=1) 
+					{
+						logger.log( Level.INFO,"Error de borrado");
+						return false;   
+						
+					}	
+					else
+					{
+						logger.log( Level.INFO,"Borrado correctamente");
+						return true;
+					}	
 				} 
 				catch (SQLException e) 
 				{
@@ -493,9 +643,25 @@ public class clsBD
 			case "COMENTARIO":
 				try
 				{
+					logger.log( Level.INFO, "borrar tabla comentario");
+
 					String sentSQL = "drop table fichero_comentario";
+					
+					logger.log( Level.INFO, "borrar tabla:" + sentSQL);
+
 					int val = statement.executeUpdate( sentSQL );
-					return true;
+					
+					if (val!=1) 
+					{
+						logger.log( Level.INFO,"Error de borrado");
+						return false;   
+						
+					}	
+					else
+					{
+						logger.log( Level.INFO,"Borrado correctamente");
+						return true;
+					}	
 				} 
 				catch (SQLException e) 
 				{
@@ -515,17 +681,23 @@ public class clsBD
 	 */
 	public static HashSet <clsArchivo> LeerArchivos()
 	{		
+		InitLogs();	
+
 		 HashSet <clsArchivo> retorno=new  HashSet <clsArchivo>();
 			try 
 			{
 				String sentSQL = "SELECT * FROM fichero_archivo";
 				rs=statement.executeQuery( sentSQL );
+				
+				logger.log( Level.INFO, "Lectura de archivos:" + sentSQL);
+				
 				if(rs!=null)
 				{
 					while (rs.next())
 					{ 
-						//clsArchivo.ToString()
-						 clsArchivo archivo = new clsArchivo(
+						logger.log( Level.INFO, "Lectura de archivo:" + rs.getInt("codArchivo") + " / " + rs.getString("nick"));
+
+						clsArchivo archivo = new clsArchivo(
 								 rs.getString("nick"), rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
 								 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
 								 Boolean.parseBoolean(rs.getString("libroSi")), true, rs.getInt("codArchivo"));
@@ -533,12 +705,12 @@ public class clsBD
 					}
 					rs.close();	
 				}
-					
 				return retorno;
 			}
 			catch (SQLException e) 
 			{
 				logger.log( Level.WARNING, e.getMessage(), e );
+				
 				retorno= new HashSet <clsArchivo>();
 				return null;
 			}	
@@ -550,18 +722,25 @@ public class clsBD
 	 */
 	public static HashSet <clsUsuario> LeerUsuarios()
 	{		
+		InitLogs();	
+
 		 HashSet <clsUsuario> retorno=new  HashSet <clsUsuario>();
 				
 		 	try 
 			{
+
 				String sentSQL = "select * from fichero_usuario";
 				rs=statement.executeQuery( sentSQL );
+				
+				logger.log( Level.INFO, "Lectura de usuarios:" + sentSQL);
+				
 				if(rs!=null)
 				{
 					while (rs.next())
 					{ 
-						 clsUsuario usuario = new clsUsuario(
-								 rs.getString("nick"), rs.getString("contraseña"));				
+						logger.log( Level.INFO, "Lectura de usuarios:" + rs.getString("contraseña") + " / " + rs.getString("nick"));
+
+						 clsUsuario usuario = new clsUsuario( rs.getString("nick"), rs.getString("contraseña"));				
 						
 						retorno.add(usuario);
 					}
@@ -583,28 +762,36 @@ public class clsBD
 	 */
 	public static HashSet <clsComentario> LeerComentarios()
 	{		
-		 HashSet <clsComentario> retorno=new  HashSet <clsComentario>();
-				try 
-				{
-					String sentSQL = "select * from fichero_comentario";
-					rs=statement.executeQuery( sentSQL );
-					if(rs!=null)
-					{
-						while (rs.next())
-						{ 
-							//String texto, int codArchivo, int numPagina
-							clsComentario comentario = new clsComentario(
-									 rs.getString("texto"), rs.getInt("codArchivo"), rs.getInt("numPag"), true, rs.getInt("ID"));				
-							retorno.add(comentario);
-						}
-						rs.close();
-					}
-					return retorno;
+		InitLogs();	
+
+		HashSet <clsComentario> retorno=new  HashSet <clsComentario>();
+		
+		try 
+		{
+
+			String sentSQL = "select * from fichero_comentario";
+			rs=statement.executeQuery( sentSQL );
+			
+			logger.log( Level.INFO, "Lectura de comentarios:" + sentSQL);
+			
+			if(rs!=null)
+			{
+				while (rs.next())
+				{ 
+					logger.log( Level.INFO, "Lectura de comentarios:" + rs.getString("texto") + " / " + rs.getInt("codArchivo")  + " / " +rs.getInt("numPag") + " / " + rs.getInt("ID"));
+
+					clsComentario comentario = new clsComentario(rs.getString("texto"), 
+							rs.getInt("codArchivo"), rs.getInt("numPag"), true, rs.getInt("ID"));				
+					retorno.add(comentario);
 				}
-				catch (SQLException e) 
-				{
-					logger.log( Level.WARNING, e.getMessage(), e );
-					return null;
-				}	
+				rs.close();
+			}
+			return retorno;
+		}
+		catch (SQLException e) 
+		{
+			logger.log( Level.WARNING, e.getMessage(), e );
+			return null;
+		}	
 	}
 }

@@ -1,3 +1,12 @@
+ /**
+  * Este programa consiste en un visor de archivos de extensión .PDF para su visualización y gestión. 
+  * Se trata de un visor de archivos orientado a un uso similar a los de un libro electrónico, por lo que se hará una división entre 
+  * libros y documentos para poder gestionarlos según su tipología. Así mismo, con cada uno de los archivos el usuario podrá controlar 
+  * ciertos aspectos de su lectura, así como hacer y visualizar comentarios en cada una de las páginas de cada uno de los documentos.
+  * @author NAGORE CELADA BELTRÁN, MAIDER CALZADA ALÁEZ y HODEI OLASKOAGA APEZETXEA
+  * @version 1.0
+**/
+
 package COMUN;
 
 import javax.swing.SwingUtilities;

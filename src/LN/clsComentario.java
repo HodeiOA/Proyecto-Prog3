@@ -1,5 +1,7 @@
 package LN;
-
+/**
+ * Esta clase sirve para la creación de objetos de tipo clsComentario
+ */
 public class clsComentario implements Comparable
 {
 	private static int sigID;
@@ -8,6 +10,14 @@ public class clsComentario implements Comparable
 	private int codArchivo;
 	private int numPagina;
 	
+	/**
+	 * Este método sirve para crear objetos de tipo clsComentario mediante los atributos pasados por parámetro
+	 * @param texto
+	 * @param codArchivo
+	 * @param numPagina
+	 * @param leerBD
+	 * @param IDBD
+	 */
 	public clsComentario(String texto, int codArchivo, int numPagina, boolean leerBD, int IDBD)
 	{
 		Texto = texto;
@@ -29,6 +39,7 @@ public class clsComentario implements Comparable
 				}		
 	}
 
+	//Getters y Setters
 	public static int getSigID() 
 	{
 		return sigID;
@@ -63,7 +74,12 @@ public class clsComentario implements Comparable
 	{
 		return numPagina;
 	}
-
+	
+	/**
+	 * Este método permite comparar un objeto de tipo clsComentario con otro de su mismo tipo
+	 * @param o será el objeto de tipo clsComentario a comparar con el objto del que se llame al método
+	 * @return devolverá un int que indicará si, según el criterio elegido, el objeto debería ir antes o después del otro objeto
+	 */
 	@Override
 	public int compareTo(Object o) 
 	{
