@@ -197,7 +197,7 @@ public class clsGestor
 		NombreArchivo = Archivo.getTitulo() + ".pdf";
 		
 		FROM = Paths.get(Archivo.getRuta());
-		if(Archivo.getRuta().contains("Libro"))
+		if(Archivo.getLibroSi())
 		{
 			TO = Paths.get(".\\Data\\Libros");
 		} else
