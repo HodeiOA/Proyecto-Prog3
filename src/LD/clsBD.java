@@ -33,10 +33,6 @@ public class clsBD
 	private static Connection connection = null;
 	private static Statement statement = null;
 	private static ResultSet rs=null;
-	
-	
-//	static Handler h = new StreamHandler(System.out, new SimpleFormatter());
-
 
 	/** Inicializa una BD SQLITE y devuelve una conexión con ella. Debe llamarse a este 
 	 * método antes que ningún otro, y debe devolver no null para poder seguir trabajando con la BD.
@@ -382,7 +378,7 @@ public class clsBD
 							"tiempo = " + tiempo + ", " +
 							"libroSi = '"+libroSi +
 							"' where codArchivo = "+ codArchivo + "";
-					System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
+					logger.log(Level.INFO, sentSQL);
 					int val = statement.executeUpdate( sentSQL );
 					if (val!=1) return false; //fallo
 					// Se tiene que añadir 1 - error si no
@@ -410,7 +406,7 @@ public class clsBD
 			String sentSQL = "update fichero_usuario set " +
 					 "contraseña = '"+ contraseña + "'" +
 					"where nick= '" + nick + "'";
-			System.out.println( sentSQL );  // (Quitar) para ver lo que se hace
+			logger.log( Level.INFO, sentSQL ); 
 			int val = statement.executeUpdate( sentSQL );
 			if (val!=1) return false;  // Se tiene que añadir 1 - error si no
 			return true;
@@ -461,7 +457,7 @@ public class clsBD
 	 */
 	public static boolean DropTable(String tabla)
 	{
-		//info: tabla
+
     	logger.log( Level.INFO, tabla);
 
 		switch (tabla)
@@ -469,9 +465,9 @@ public class clsBD
 			case "ARCHIVO":
 				try
 				{
-//					System.out.println("borrar tabla archivo");
+					logger.log( Level.INFO,"borrar tabla archivo");
 					String sentSQL = "drop table fichero_archivo";
-//					System.out.println(sentSQL);
+					logger.log( Level.INFO, sentSQL);
 					int val = statement.executeUpdate( sentSQL );
 					return true;
 				} 
