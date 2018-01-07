@@ -906,7 +906,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	}
 	
 	/**
-	 * Actualiza los ListModel con las lisats de libros y documentos
+	 * Actualiza los ListModel con las listas de libros y documentos
 	 * cargados en la clase.
 	 */
 	public static void ActualizarListas()
