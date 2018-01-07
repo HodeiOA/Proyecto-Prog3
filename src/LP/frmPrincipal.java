@@ -77,6 +77,12 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 
+/**
+ * Clase de tipo JFrame que contiene la parte gráfica principal del programa.
+ * 
+ * @author
+ *
+ */
 public class frmPrincipal extends JFrame implements ActionListener, ChangeListener, ListSelectionListener
 {
 	//Logger
@@ -200,7 +206,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
     private static ImageIcon iRotar;
     private static int rotacionValor;
 		
-    
+    /**
+     * El constructor construye la pantalla y sus elementos, y carga
+     * los datos de la base de datos.
+     * 
+     * @param titulo recibe el título que tendrá la ventana
+     */
 	public frmPrincipal (String titulo)
 	{
 		InitLogs();
@@ -675,6 +686,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		hiloHabilitar.start();
 	}
 	
+	/**
+	 * Inicia los Loggers y Handlers de la clase.
+	 */
 	public static void InitLogs()
 	{
 		//---gestión de Loggs:---			
@@ -701,6 +715,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		}
 	}
 	
+	/**
+	 * Actualiza los componentes y contenedores de la pantalla según
+	 * el estado de PADactivo.
+	 */
 	public static void ActualizarComponentes()
 	{
 		if(PDFactivo)
@@ -753,7 +771,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	
 	/**
 	 * Abre el archivo seleccionado en la lista
-	 * @param elegido
+	 * 
+	 * @param elegido recibe el objeto clsArchivo que debe abrir
 	 */
 	public static void SeleccionListas(clsArchivo elegido)
 	{
@@ -764,6 +783,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ActualizarComponentes();
 	}
 	
+	/**
+	 * Muestra los comentarios del PDF activo en el panel.
+	 */
 	public static void MostrarComentarios()
 	{
 		int cont = 0;
@@ -870,7 +892,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	}
 	
 	/**
-	 * En este método cargamos los datos, en este caso la lista de películas.
+	 * Carga los datos de las propiedades de la pantalla y las listas de
+	 * objetos de tipo clsArchivo.
 	 */
 	public static void CargarDatos()
 	{
@@ -882,6 +905,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		modelDocumentos = new modelArchivos(HashDocumentos);
 	}
 	
+	/**
+	 * Actualiza los ListModel con las lisats de libros y documentos
+	 * cargados en la clase.
+	 */
 	public static void ActualizarListas()
 	{
 		modelLibros.setLista(HashLibros);
@@ -959,6 +986,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		}
 	}
 	
+	/**
+	 * Permite importar los archivos PDF de la carpeta seleccionada y
+	 * de las subcarpetas de esta.
+	 * 
+	 * @param esLibro recibe un boolean que define si es un libro o un documento
+	 */
 	public void SeleccionarArchivosDeCarpeta(boolean esLibro)
 	{
 		String carp = ultimaCarpeta;  
@@ -997,6 +1030,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		ActualizarListas();
 	}
 	
+	/**
+	 * Método recursivo que recorre los ficheros de la carpeta y las subcarpetas.
+	 * 
+	 * @param path recibe la ruta de la carpeta
+	 * @param esLibro recibe un boolean que define si es un libro o un documento
+	 */
 	public static void RecursividadCarpeta(String path, boolean esLibro)
 	{
 		File fic = new File (path);
@@ -1038,6 +1077,12 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		}
 	}
 	
+	/**
+	 * Método que copia el fichero de una ruta origen a una destino especificadas.
+	 * 
+	 * @param DireccionOrigen recibe un String que especifica la ruta de origen
+	 * @param ArchivoDireccionDestino recibe un String que especifica la ruta de destino
+	 */
 	public static void CopiarArchivo(String DireccionOrigen, clsArchivo ArchivoDireccionDestino)
 	{
 		String NombreArchivo;
@@ -1072,6 +1117,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			logger.log(Level.INFO, "Archivo copiado" );
 	}
 
+	/**
+	 * Método que permite borrar un objeto de tipo clsArchivo del programa y la base de datos.
+	 */
 	public static void BorrarArchivo()
 	{
 		clsArchivo borrar;
@@ -1176,8 +1224,9 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 	}
 	/**
-	 * Hilo para comprobar cuándo cambia el nick en frmRegistro y cargar las listas correspondientes a ese usuario
-	 * @author ALUMNO
+	 * Hilo para comprobar cuándo cambia el nick en frmRegistro y cargar las listas pertenecientes a ese usuario.
+	 * 
+	 * @author
 	 *
 	 */
 	public class hiloNick extends Thread 
@@ -1206,6 +1255,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			}
 		}
 	}
+	
+	/**
+	 * Hilo que permite identificar si hay algún elemento seleccionado en la lista
+	 * de libros o documentos del que se desea eliminar un objeto.
+	 * 
+	 * @author
+	 *
+	 */
 	public class hiloHabilitarBorrado extends Thread 
 	{
 		@Override

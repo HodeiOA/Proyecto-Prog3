@@ -7,8 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.StreamHandler;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -29,6 +35,10 @@ import LN.clsUsuario;
 
 public class frmRegistro extends JDialog implements KeyListener
 {
+	private static Logger logger = Logger.getLogger(frmRegistro.class.getName());
+	private static Handler handlerPantalla;
+	private static Handler handlerArchivo;
+	
 	private JTextField tfUsername;
 	private JPasswordField pfPassword;
 	private JLabel lbUsername;
@@ -49,8 +59,10 @@ public class frmRegistro extends JDialog implements KeyListener
 	public frmRegistro (JFrame frame)
 	{
 		//constructor del JDialog
-		
 		super (frame,"Login", true);
+		
+		InitLogs();
+		
 		//Cambiar
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
@@ -125,9 +137,36 @@ public class frmRegistro extends JDialog implements KeyListener
       	panelBotonera.setLayout(new FlowLayout());
  	}
 	
+	/**
+	 * Inicia los Loggers y Handlers de la clase.
+	 */
+	public static void InitLogs()
+	{
+		handlerPantalla = new StreamHandler( System.out, new SimpleFormatter() );
+		handlerPantalla.setLevel(Level.ALL);
+		logger.addHandler(handlerPantalla);
+		
+		try 
+		{
+			handlerArchivo = new FileHandler("frmRegistro.log.xml");
+			handlerArchivo.setLevel(Level.WARNING);
+			logger.addHandler(handlerArchivo);
+		} 
+		catch (SecurityException e) 
+		{
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			e.printStackTrace();
+		} 
+		catch (IOException e) 
+		{
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			e.printStackTrace();
+		}
+	}
 
 	public void Entrar () 
 	{
+		logger.log(Level.INFO, "Empezando inicio de sesión");
 		String nick;
 		String pass;
 		HashSet <clsUsuario> usuarios=clsGestor.LeerUsuariosBD();
@@ -144,16 +183,16 @@ public class frmRegistro extends JDialog implements KeyListener
 				} 
 				catch (clsNickRepetido e)
 				{
-					//El nick está en la BD
-					//Comprobar que la contraseña es correcta
+					logger.log(Level.INFO, "El nick está en la base de datos");
+					logger.log(Level.INFO, "Procediendo a comprobar si la contraseña es correcta");
 					for(clsUsuario a: usuarios)
 					{ 
 						if(a.getNick().equals(nick))
 						{
-							//El nick existe
+							logger.log(Level.INFO, "El nick coincide");
 							if(a.getContraseña().equals(pass))
 							{
-								// La contraseña es la correcta
+								logger.log(Level.INFO, "La contraseña coincide");
 								JOptionPane.showMessageDialog(this,"Bienvenido " + nick + ".", "Usuario correcto", JOptionPane.INFORMATION_MESSAGE);
 								frmPrincipal.nickUsuarioSesion=nick;
 								dispose();
@@ -169,7 +208,7 @@ public class frmRegistro extends JDialog implements KeyListener
 						{
 							if(!(a.getContraseña().equals(pass)))
 							{
-								//la contraseña es incorrecta
+								logger.log(Level.INFO, "La contraseña no coincide");
 								JOptionPane.showMessageDialog(this,"La contraseña introducida no concuerda con la del nick "+ nick + ". Por favor, vuelve a intentarlo", "Contraseña incorrecta", JOptionPane.ERROR_MESSAGE);
 							}
 						}
@@ -177,20 +216,20 @@ public class frmRegistro extends JDialog implements KeyListener
 				}
 				catch (clsNickNoExiste e)
 				{
-					//El nick no coincide
+					logger.log(Level.INFO, "El nick no coincide");
 					JOptionPane.showMessageDialog(this, e.getMessage(), "Registro", JOptionPane.ERROR_MESSAGE);
 				};
 			 } 
 			 else 
 			 {
 				 JOptionPane.showMessageDialog(this, "Usuario o contraseña no introducidos", "Registro", JOptionPane.ERROR_MESSAGE);
-			   // reinicio username y password
+				 logger.log(Level.INFO, "Vaciando valores de los campos Username y Password");
 			   tfUsername.setText("");
 	           pfPassword.setText("");
 			 }
 	}
 	
-	public void Registro() //En cada option pane, poner loggers, info y warning
+	public void Registro()
 	{
 		String nick;
 		String pass;
@@ -204,16 +243,19 @@ public class frmRegistro extends JDialog implements KeyListener
 				try 
 				{
 					clsGestor.comprobarExistenciaUsuario(nick, pass);
-					
-				} catch (clsNickRepetido e)
+				} 
+				catch 
+				(clsNickRepetido e)
 				{
 					JOptionPane.showMessageDialog(this, e.getMessage(), "Registro", JOptionPane.ERROR_MESSAGE);
+					logger.log(Level.WARNING, e.getMessage());
 			
 				}
 				catch (clsNickNoExiste e)
 				{
 					//En este caso, aunque sea una excepción porque en otro caso es un error, que dé esta excepción es que todo va bien
 					JOptionPane.showMessageDialog(this,"¡Registro exitoso!");
+					logger.log(Level.INFO, "El nick no existe. Puede registrarse el usuario.");
 					clsGestor.guardarUsuario(pass, nick);
 				};
 			 } 
@@ -221,7 +263,8 @@ public class frmRegistro extends JDialog implements KeyListener
 			 else 
 			 {
 				 JOptionPane.showMessageDialog(this, "Usuario o contraseña no introducidos", "Registro", JOptionPane.ERROR_MESSAGE);
-			   // reinicio username y password
+				 logger.log(Level.WARNING, "Usuario o contraseña no introducidos");
+				 logger.log(Level.INFO, "Vaciando valores de los campos Username y Password");
 			   tfUsername.setText("");
 	           pfPassword.setText("");
 			 }	
@@ -231,7 +274,6 @@ public class frmRegistro extends JDialog implements KeyListener
 	@Override
 	public void keyTyped(KeyEvent e) 
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -242,7 +284,7 @@ public class frmRegistro extends JDialog implements KeyListener
 		 
 		  if (key == KeyEvent.VK_ENTER) 
 		  {
-			  //lo hace sólo si he pulsado enter en los textfields
+			  logger.log(Level.INFO, "Tecla Enter pulsada");
 			  if (e.getSource()==tfUsername||e.getSource()==pfPassword)
 			  {
 				  Entrar();
@@ -250,7 +292,7 @@ public class frmRegistro extends JDialog implements KeyListener
 		  }	
 		  if(e.getKeyCode()==KeyEvent.VK_ESCAPE)
 		  {
-			  //se hará siempre que le de a escape
+			  logger.log(Level.INFO, "Tecla Escape pulsada");
              System.exit(0);
          }
 	}
@@ -258,7 +300,6 @@ public class frmRegistro extends JDialog implements KeyListener
 	@Override
 	public void keyReleased(KeyEvent e) 
 	{
-		// TODO Auto-generated method stub
 		
 	}
 }
