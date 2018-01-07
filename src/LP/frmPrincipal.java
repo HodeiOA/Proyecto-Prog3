@@ -95,7 +95,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private int x = 0;
 	private int y = 0;
 	private Dimension screenSize;
-	private Toolkit mipantalla;
+	private static Toolkit mipantalla;
 	
 	public static String nickUsuarioSesion = "";
 	private hiloNick hiloNick;
@@ -149,8 +149,8 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private static JTextPane TextPaneComentarioNuevo = new JTextPane(); 
 	private static JPanel PcomentarioNuevo = new JPanel();
 	private static JPanel PcomentariosViejos = new JPanel();
-	private JPanel Pcomentarios = new JPanel();
-	private JScrollPane ScrollCViejos = new JScrollPane ();
+	private static JPanel Pcomentarios = new JPanel();
+	private static JScrollPane ScrollCViejos = new JScrollPane ();
 	private static HashSet<clsComentario> HashComentarios = new HashSet<clsComentario>();
 	private static ArrayList<JTextPane> listTextPanes = new ArrayList<JTextPane>();
 	private static ArrayList<clsComentario> listComentariosVisibles = new ArrayList<clsComentario>();
@@ -415,38 +415,37 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		
 		//--------------Panel para comentarios-------------//
 		
-		double tamañoPanelC = screenSize.height/2.7;
-		
 		btnAñadir = new JButton ("Añadir");
 		lbNuevoComent = new JLabel("Nuevo comentario");
 		lbComentariosAntiguo = new JLabel("Comentarios anteriores");
 		lbComentariosAntiguo.setBorder(new EmptyBorder(0,35,0,0));
-		
-		Pcomentarios.setPreferredSize(new Dimension(225,screenSize.height));
+				
 		Pcomentarios.setBackground(Color.WHITE);
-		
-		PcomentarioNuevo.setPreferredSize(new Dimension(225,(int)tamañoPanelC));
+			
 		PcomentarioNuevo.setBackground(Color.lightGray);
-		
+		PcomentarioNuevo.setVisible(false);
+				
 		TextPaneComentarioNuevo.setPreferredSize(new Dimension(200, 200));
 		TextPaneComentarioNuevo.setEditable(PDFactivo);
-		
-		PcomentariosViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.15)));
+				
 		PcomentariosViejos.setBackground(Color.lightGray);
-		
+		PcomentariosViejos.setVisible(false);
+			
 		ScrollCViejos = new JScrollPane(PcomentariosViejos);
-		
+		ScrollCViejos.setViewportView(PcomentariosViejos);
+		ScrollCViejos.setVisible(false);
+		ScrollCViejos.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		ScrollCViejos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			
 		PcomentarioNuevo.add(lbNuevoComent);
 		PcomentarioNuevo.add(TextPaneComentarioNuevo);
 		PcomentarioNuevo.add(btnAñadir);
-		
-		ScrollCViejos.setPreferredSize(new Dimension(215,(int)(tamañoPanelC*1.15)));
-		
+			
 		Pcomentarios.add(PcomentarioNuevo, BorderLayout.NORTH);
-		Pcomentarios.add(lbComentariosAntiguo);
+		Pcomentarios.add(lbComentariosAntiguo, BorderLayout.CENTER);
 		Pcomentarios.add(ScrollCViejos, BorderLayout.SOUTH);
-		
-		this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
+				
+			this.getContentPane().add(Pcomentarios, BorderLayout.EAST);
 			
 		btnAñadir.addActionListener(new ActionListener()
 			{
@@ -750,6 +749,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				sliderZoom.setEnabled(PDFactivo);
 				btnPlus.setEnabled(PDFactivo);
 				btnMinus.setEnabled(PDFactivo);
+				
+				Pcomentarios.setPreferredSize(new Dimension(250,panelListas.getHeight()));
+				PcomentarioNuevo.setPreferredSize(new Dimension(250,panelListas.getHeight()/3));
+				PcomentarioNuevo.setVisible(true);
+				ScrollCViejos.setPreferredSize(new Dimension(250,(int) mipantalla.getScreenSize().getHeight()*3));	
+				ScrollCViejos.setVisible(true);
+				PcomentariosViejos.setPreferredSize(new Dimension(250,(int) mipantalla.getScreenSize().getHeight()*4));
+				PcomentariosViejos.setVisible(true);
 	}
 	
 	/**
@@ -776,14 +783,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 		HashComentarios = clsGestor.LeerComentariosBD();
 		listComentariosVisibles.clear();
 		
-		for(JTextPane auxPane: listTextPanes)
-		{
-			PcomentariosViejos.remove(auxPane);
-		}
-		for(JLabel auxLabel: listLabeles)
-		{
-			PcomentariosViejos.remove(auxLabel);
-		}
+		PcomentariosViejos.removeAll();
 		
 		PcomentariosViejos.repaint();
 		listTextPanes.clear();
@@ -802,7 +802,6 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 					cont++;
 					
 					JLabel label = new JLabel(iconoBorrar);
-					label.setBorder(new EmptyBorder(20,1,1,160));
 					label.addMouseListener(new MouseListener()
 							{
 
@@ -810,16 +809,36 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 								public void mouseClicked(MouseEvent e) 
 								{
 									int index = listLabeles.indexOf(e.getSource());
+									clsGestor.BorrarObjetoBD(listComentariosVisibles.get(index).getID(), "COMENTARIO");
 									
-									PcomentariosViejos.remove(listTextPanes.get(index));
-									PcomentariosViejos.remove(listLabeles.get(index));
-									PcomentariosViejos.repaint();
+									PcomentariosViejos.removeAll();
 									
 									clsGestor.BorrarObjetoBD(listComentariosVisibles.get(index).getID(), "COMENTARIO");
 									
 									listTextPanes.remove(index);
 									listLabeles.remove(index);
 									listComentariosVisibles.remove(index);
+									
+									for(int i = 0; i < listLabeles.size(); i++)
+									{
+										JPanel auxPanel1 = new JPanel();
+										JPanel auxPanel2 = new JPanel();
+										auxPanel1.setPreferredSize(new Dimension(225, 20));
+										auxPanel1.setOpaque(false);
+										auxPanel2.setPreferredSize(new Dimension(160, 16));
+										auxPanel2.setOpaque(false);
+										
+										PcomentariosViejos.add(auxPanel1);
+										PcomentariosViejos.add(auxPanel2);
+										PcomentariosViejos.add(listLabeles.get(i));
+										PcomentariosViejos.add(listTextPanes.get(i));
+									}
+									
+									JPanel auxPanel3 = new JPanel();
+									auxPanel3.setPreferredSize(new Dimension(225, 20));
+									auxPanel3.setOpaque(false);
+									PcomentariosViejos.add(auxPanel3);
+									PcomentariosViejos.repaint();
 								}
 
 								@Override
@@ -863,6 +882,14 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 					
 					pane.setText(c.getTexto());
 					
+					JPanel auxPanel1 = new JPanel();
+					JPanel auxPanel2 = new JPanel();
+					auxPanel1.setPreferredSize(new Dimension(225, 20));
+					auxPanel1.setOpaque(false);
+					auxPanel2.setPreferredSize(new Dimension(160, 16));
+					auxPanel2.setOpaque(false);
+					PcomentariosViejos.add(auxPanel1);
+					PcomentariosViejos.add(auxPanel2);
 					PcomentariosViejos.add(label);
 					PcomentariosViejos.add(pane);
 					
@@ -870,6 +897,10 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				}
 			}
 		}
+		JPanel auxPanel3 = new JPanel();
+		auxPanel3.setPreferredSize(new Dimension(225, 20));
+		auxPanel3.setOpaque(false);
+		PcomentariosViejos.add(auxPanel3);
 		PcomentariosViejos.repaint();
 		logger.log(Level.INFO,"Comentarios añadidos: " + cont);
 	}
