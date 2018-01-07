@@ -72,26 +72,37 @@ public class clsGestor
 		}
     }
 	
+	 /**
+	  * Método para llenar las listas de libros y documentos según su tipo (libro o documento) y el nick del usuario ciuyas listas se
+	  * deben cargar
+	  * @param nickUsuarioSesion nick del usuario cuyos archivos se están solicitando
+	  * @param HashArchivos lista con todos los archivos de la base de datos
+	  * @param HashLibros lista en la que se almacenarán los libros de la BD correspondientes al usuario
+	  * @param HashDocumentos lista en la que se almacenarán los documentos de la BD correspondientes al usuario
+	  */
 	public static void llenarLibrosDocum(String nickUsuarioSesion, HashSet <clsArchivo> HashArchivos, HashSet <clsArchivo> HashLibros, HashSet <clsArchivo> HashDocumentos)
 	{
+		HashLibros.clear();
+		HashDocumentos.clear();
 		if( HashArchivos !=null)
 		{
 			for (clsArchivo a: HashArchivos )
-			{
+			{				
 				if(a.getNick().equals(nickUsuarioSesion))
 				{
 					if(a.getLibroSi())//INFO: libroSI
 					{
 						HashLibros.add(a); //añadido a libros
+						System.out.println("libro a hash");
 					}
 					else
 					{
 						HashDocumentos.add(a); //añadido a documentos
+						System.out.println("docum a hash");
 					}
 				}
 			}
-		}
-			
+		}			
 	}
 	
 	//Solo hacemos llamadas a BD, pero hacemos métodods en Gestor para mantener la estructura del programa

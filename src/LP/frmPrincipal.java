@@ -160,7 +160,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	private static ArrayList<JLabel> listLabeles = new ArrayList<JLabel>();
 	
 	//Para el Listmodel
-	private static HashSet <clsArchivo> HashArchivos = new HashSet<clsArchivo>();
+	static HashSet <clsArchivo> HashArchivos = new HashSet<clsArchivo>();
 	private static HashSet <clsArchivo> HashLibros = new HashSet<clsArchivo>();
 	private static HashSet <clsArchivo> HashDocumentos = new HashSet<clsArchivo>();
 	private static modelArchivos modelLibros;
@@ -911,6 +911,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 	 */
 	public static void ActualizarListas()
 	{
+		clsGestor.llenarLibrosDocum(nickUsuarioSesion, HashArchivos, HashLibros, HashDocumentos);
 		modelLibros.setLista(HashLibros);
 		modelDocumentos.setLista(HashDocumentos);
 	}
@@ -1171,28 +1172,36 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				
 				if(option == JOptionPane.OK_OPTION)
 				{
-					
-					
-					String ruta = PanelPDF.getPDFabierto().getRuta();
-					
+					String ruta;
+										
 					if(panelListas.getSelectedIndex() == 0)
 					{
 						if(ListLibros.getSelectedValue().equals(PanelPDF.getPDFabierto()))
+						{
 							PDFactivo = false;
 							PanelPDF.CerrarPDF();
+						}
+						ruta = ((clsArchivo) ListLibros.getSelectedValue()).getRuta();
 					} 
 					else
 					{
 						if(ListDoc.getSelectedValue().equals(PanelPDF.getPDFabierto()))
+						{
 							PDFactivo = false;
 							PanelPDF.CerrarPDF();
+						}	
+						ruta = ((clsArchivo) ListDoc.getSelectedValue()).getRuta();
 					}
-					try {
+					try 
+					{
 						clsGestor.EliminarRuta(ruta);
-					} catch (IOException e1) {}
-					
-					ActualizarComponentes();
+					} catch (IOException e1)
+					{
+						
+					}
+										
 					BorrarArchivo();
+					ActualizarComponentes();
 					ActualizarListas();
 				}	
 				break;

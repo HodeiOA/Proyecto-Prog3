@@ -5,12 +5,15 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.HashSet;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -18,6 +21,11 @@ import javax.swing.JTextField;
 import LN.clsArchivo;
 import LN.clsGestor;
 
+/**
+ * Ventana para mostrar la información de un archivo y modificar parte de ella, el título, el nombre del autor, el apellido del autor y el 
+ * tipo de archivo
+ *
+ */
 public class frmDatosArchivo extends JDialog
 {
 	JButton ButEditar = new JButton("Editar");
@@ -58,7 +66,15 @@ public class frmDatosArchivo extends JDialog
 	String M;
 	String S;
 	
-	public frmDatosArchivo( clsArchivo archivo, JFrame frame)
+	//Listas
+	HashSet <clsArchivo> archivos = new HashSet <clsArchivo> ();
+
+	/**
+	 * Constructor del JDialog 
+	 * @param archivo archivo cuya información se va a mostrar en la ventana
+	 * @param frame ventana principal sobre la que se va a mostrar la ventana
+	 */
+	public frmDatosArchivo( clsArchivo archivo, frmPrincipal frame)
 	{
 		super(frame, "Datos del archivo nº" + archivo.getCodArchivo() +"", true);
 		
@@ -216,21 +232,54 @@ public class frmDatosArchivo extends JDialog
 				}
 				else
 				{
-					Ttitulo.setEditable(false);
-					Tnombre.setEditable(false);
-					Tapellido.setEditable(false);
-					RadioLibro.setEnabled(false);
-					RadioDoc.setEnabled(false);
+					//Hay que comprobar que el nuevo título no exista ya
+					boolean tituloBien = true;
 					
-					archivo.setTitulo(Ttitulo.getText());
-					archivo.setNomAutor(Tnombre.getText());
-					archivo.setApeAutor(Tapellido.getText());
-					archivo.setLibroSi(RadioLibro.isSelected());//No nos hace falta mirar radioDoc porque al estar en el ButtonGroup si uno es cierto el otro es falso
-					//IMPORTANTE: Si cambia la selección de libroSi, habrá que cambria, además, su ruta, moviéndolo a la carpeta que le corresponda
-					clsGestor.ModificarRuta(archivo);
-					clsGestor.ModificarArchivo(archivo);
-					Truta.setText(archivo.getRuta());
-					ButEditar.setText("Editar");
+					archivos = clsGestor.LeerArchivosBD();
+					
+					for(clsArchivo a : archivos)
+					{
+						if((a.getCodArchivo() != archivo.getCodArchivo()) && (a.getTitulo().equals(Ttitulo.getText())))
+						{
+							//Si hay un archivo que no es él mismo que tiene ese título, el título no estará bien
+							tituloBien=false;
+						}
+					}
+					
+					if(tituloBien)
+					{	
+						frame.HashArchivos.remove(archivo);
+						Ttitulo.setEditable(false);
+						Tnombre.setEditable(false);
+						Tapellido.setEditable(false);
+						RadioLibro.setEnabled(false);
+						RadioDoc.setEnabled(false);
+						
+						archivo.setTitulo(Ttitulo.getText());
+						archivo.setNomAutor(Tnombre.getText());
+						archivo.setApeAutor(Tapellido.getText());
+						archivo.setLibroSi(RadioLibro.isSelected());//No nos hace falta mirar radioDoc porque al estar en el ButtonGroup si uno es cierto el otro es falso
+						//IMPORTANTE: Si cambia la selección de libroSi, habrá que cambria, además, su ruta, moviéndolo a la carpeta que le corresponda
+						String rutaAnterior = archivo.getRuta();
+						frmPrincipal.CopiarArchivo(archivo.getRuta(), archivo);
+						try {
+							clsGestor.EliminarRuta(rutaAnterior);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						clsGestor.ModificarArchivo(archivo);
+						Truta.setText(archivo.getRuta());
+						ButEditar.setText("Editar");
+						frame.HashArchivos.add(archivo);
+						frame.ActualizarListas();
+					}
+					else
+					{
+						System.out.println("título mal");
+						JOptionPane.showMessageDialog(frame, "el título elegido ya existe. Por favor, elige otro.", "Error de título",  JOptionPane.ERROR_MESSAGE);
+					}
+				
 				}
 			}
 		});
