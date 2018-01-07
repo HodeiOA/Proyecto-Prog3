@@ -751,7 +751,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 				btnMinus.setEnabled(PDFactivo);
 				
 				Pcomentarios.setPreferredSize(new Dimension(250,panelListas.getHeight()));
-				PcomentarioNuevo.setPreferredSize(new Dimension(250,panelListas.getHeight()/3));
+				PcomentarioNuevo.setPreferredSize(new Dimension(250,270));
 				PcomentarioNuevo.setVisible(true);
 				ScrollCViejos.setPreferredSize(new Dimension(250,(int) mipantalla.getScreenSize().getHeight()*3));	
 				ScrollCViejos.setVisible(true);
