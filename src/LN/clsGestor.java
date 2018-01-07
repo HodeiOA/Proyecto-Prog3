@@ -36,7 +36,7 @@ public class clsGestor
 		
 		aux = (float) archi.getUltimaPagLeida()/archi.getNumPags();
 		aux = aux*100;
-		retorno = (int) aux; //INFO: archi.getUltimaPagLeida(), archi.getNumPags()
+		retorno = (int) aux;
 		
 		return retorno; //retorno
 	}
@@ -85,13 +85,11 @@ public class clsGestor
 		{
 			clsNickRepetido repe=new clsNickRepetido(nick);
 			throw repe;
-			//WARNING: existe
 		}
 		else
 		{
 			clsNickNoExiste noExiste= new clsNickNoExiste(nick);
 			throw noExiste;
-			//WARNING: no existe
 		}
     }
 	
@@ -113,14 +111,13 @@ public class clsGestor
 			{				
 				if(a.getNick().equals(nickUsuarioSesion))
 				{
-					if(a.getLibroSi())//INFO: libroSI
+					if(a.getLibroSi())
 					{
-						HashLibros.add(a); //añadido a libros
-						System.out.println("libro a hash");
+						HashLibros.add(a); 
 					}
 					else
 					{
-						HashDocumentos.add(a); //añadido a documentos
+						HashDocumentos.add(a); 
 						System.out.println("docum a hash");
 					}
 				}
@@ -182,7 +179,6 @@ public class clsGestor
 		exito=clsBD.InsertComentario(ID, texto, codArchivo, numPag);
 		if(!exito)
 		{
-			//Poner Logger
 		}
 	}
 	
@@ -350,13 +346,9 @@ public class clsGestor
 		File Libros = new File(".\\Data\\Libros");
 		File Documentos = new File(".\\Data\\Documentos");
 		
-		boolean data = Data.mkdir(); 
-		boolean libros = Libros.mkdir();
-		boolean docum = Documentos.mkdir();
-		
-//		if(data) logger.log(Level.INFO, "Se caba de crear la carpeta 'Data'");
-//		if(libros) logger.log(Level.INFO, "Se caba de crear la carpeta 'Libros'");
-//		if(docum) logger.log(Level.INFO, "Se caba de crear la carpeta 'Documentos'");
+		Data.mkdir(); 
+		Libros.mkdir();
+		Documentos.mkdir();
 	}
 	
 	/**
