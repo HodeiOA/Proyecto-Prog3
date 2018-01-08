@@ -1152,6 +1152,7 @@ public class frmPrincipal extends JFrame implements ActionListener, ChangeListen
 			HashLibros.remove(borrar);
 			logger.log(Level.INFO, "Borrando libro" );
 		}
+		HashArchivos.remove(borrar);
 		clsGestor.BorrarObjetoBD(borrar.getCodArchivo(), "ARCHIVO");
 		logger.log(Level.INFO, "Archivo nº "+  borrar.getCodArchivo() + " borrado");
 	}

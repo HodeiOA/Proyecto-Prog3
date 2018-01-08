@@ -17,7 +17,6 @@ import java.util.logging.*;
 
 import javax.swing.JOptionPane;
 
-import com.sun.istack.internal.logging.Logger;
 
 import LN.clsArchivo;
 import LN.clsComentario;
@@ -28,7 +27,7 @@ import LN.clsUsuario;
  */
 public class clsBD
 {
-	private static Logger logger = Logger.getLogger(clsBD.class);
+	private static Logger logger = Logger.getLogger(clsBD.class.getName());
 	
 	private static Connection connection = null;
 	private static Statement statement = null;
@@ -167,7 +166,7 @@ public class clsBD
 		{
 			statement.executeUpdate("create table fichero_comentario " +
 				"( ID int, Texto string, codArchivo int, numPag int, primary key(ID)"
-				+ ", foreign key (codArchivo) references fichero_archivo(codArchivo"
+				//+ ", foreign key (codArchivo) references fichero_archivo(codArchivo"
 				+ ")");
 
 		} 
@@ -524,7 +523,6 @@ public class clsBD
 				{
 					while (rs.next())
 					{ 
-						//clsArchivo.ToString()
 						 clsArchivo archivo = new clsArchivo(
 								 rs.getString("nick"), rs.getString("nomAutor"), rs.getString("apeAutor"), rs.getString("titulo"),
 								 rs.getString("ruta"), rs.getInt("numPags"), rs.getInt("ultimaPagLeida"), rs.getInt("tiempo"),
